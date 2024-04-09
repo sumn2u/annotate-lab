@@ -1,36 +1,36 @@
 // @flow
 
-import React from "react"
-import { ThemeProvider, createTheme } from "@mui/material/styles"
-import { makeStyles } from "@mui/styles"
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ReactNode } from "react";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    fontFamily: '"Inter", sans-serif',
-  },
-}))
+// const useStyles = makeStyles(() => ({
+//   container: {
+//     fontFamily: '"Inter", sans-serif',
+//   },
+// }));
 
 const theme = createTheme({
   typography: {
     fontFamily: '"Inter", "Roboto", sans-serif',
   },
-  overrides: {
+  components: {
     MuiButton: {
-      root: {
-        textTransform: "none",
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
       },
     },
   },
-})
+});
 
-export const Theme = ({ children }: any) => {
-  const classes = useStyles()
+export const Theme = ({ children }: { children: ReactNode }) => {
   return (
     <ThemeProvider theme={theme}>
       {/* <div className={classes.container}>{children}</div> */}
       <div>{children}</div>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default Theme
+export default Theme;

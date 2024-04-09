@@ -1,25 +1,25 @@
 // @flow
 
-const getTimeString = (ms, precision = 1) => {
+const getTimeString = (ms: number, precision = 1) => {
   if (ms < 1000) {
-    return ms + "ms"
+    return ms + "ms";
   } else {
-    const secs = ms / 1000
+    const secs = ms / 1000;
     if (secs < 60) {
       if (Number.isInteger(secs)) {
-        return secs + "s"
+        return secs + "s";
       } else {
-        return secs.toFixed(precision) + "s"
+        return secs.toFixed(precision) + "s";
       }
     } else {
-      const mins = secs / 60
+      const mins = secs / 60;
       if (Number.isInteger(mins)) {
-        return mins + "m"
+        return mins + "m";
       } else {
-        return mins.toFixed(precision) + "m"
+        return mins.toFixed(precision) + "m";
       }
     }
   }
-}
+};
 
-export default getTimeString
+export default getTimeString;

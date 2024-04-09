@@ -1,19 +1,20 @@
 // @flow
 
-import React, { useState } from "react"
-import Button from "@mui/material/Button"
-import { makeStyles } from "@mui/styles"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
-import Select from "react-select"
-import Code from "react-syntax-highlighter"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
-import MonacoEditor from "react-monaco-editor"
+import { useState } from "react";
+import Button from "@mui/material/Button";
+import { makeStyles } from "@mui/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Select from "react-select";
+import Code from "react-syntax-highlighter";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import MonacoEditor from "react-monaco-editor";
+import { AnnotatorProps } from "../Annotator";
 
-const theme = createTheme()
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+const useStyles = makeStyles(() => ({
   editBar: {
     padding: 10,
     borderBottom: "1px solid #ccc",
@@ -29,17 +30,47 @@ const useStyles = makeStyles((theme) => ({
   specificationArea: {
     padding: 10,
   },
-}))
+}));
 
 const loadSavedInput = () => {
   try {
-    return JSON.parse(window.localStorage.getItem("customInput") || "{}")
+    return JSON.parse(window.localStorage.getItem("customInput") || "{}");
   } catch (e) {
-    return {}
+    return {};
   }
-}
+};
 
-export const examples = {
+export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
+  FULL: () => ({
+    taskDescription:
+      "Annotate each image according to this _markdown_ specification.",
+    regionTagList: ["has-bun"],
+    regionClsList: ["hotdog", "not-hotdog"],
+    enabledTools: [
+      "select",
+      "create-point",
+      "create-box",
+      "create-polygon",
+      "create-line",
+      "create-expanding-line",
+      "show-mask",
+    ],
+    showTags: true,
+    images: [
+      {
+        src: "https://images.unsplash.com/photo-1496905583330-eb54c7e5915a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
+        name: "hot-dogs-1",
+      },
+      {
+        src: "https://www.bianchi.com/wp-content/uploads/2019/07/YPB17I555K.jpg",
+        name: "bianchi-oltre-xr4",
+      },
+    ],
+    showPointDistances: true,
+    allowComments: true,
+    fullImageSegmentationMode: true,
+    autoSegmentationOptions: { type: "autoseg" },
+  }),
   "Simple Bounding Box": () => ({
     taskDescription:
       "Annotate each image according to this _markdown_ specification.",
@@ -74,20 +105,18 @@ export const examples = {
     ],
   }),
   Custom: () => loadSavedInput(),
-}
+};
 
 const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
-  const c = useStyles()
-  const [currentError, changeCurrentError] = useState()
+  const c = useStyles();
+  const [currentError, changeCurrentError] = useState<string | null>(null);
   const [selectedExample, changeSelectedExample] = useState(
-    window.localStorage.getItem("customInput")
-      ? "Custom"
-      : "Simple Bounding Box"
-  )
-  const [outputDialogOpen, changeOutputOpen] = useState(false)
+    window.localStorage.getItem("customInput") ? "Custom" : "FULL"
+  );
+  const [outputDialogOpen, changeOutputOpen] = useState(false);
   const [currentJSONValue, changeCurrentJSONValue] = useState(
     JSON.stringify(examples[selectedExample](), null, "  ")
-  )
+  );
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -104,17 +133,18 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
                   value: s,
                 }))}
                 onChange={(selectedOption) => {
-                  changeSelectedExample(selectedOption.value)
+                  if (!selectedOption) return;
+                  changeSelectedExample(selectedOption.value);
 
                   changeCurrentJSONValue(
                     JSON.stringify(
-                      selectedOption.value === "Custom"
+                      selectedOption?.value === "Custom"
                         ? loadSavedInput()
                         : examples[selectedOption.value](),
                       null,
                       "  "
                     )
-                  )
+                  );
                 }}
               />
             </div>
@@ -134,7 +164,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
                   selectedExample === "Custom"
                     ? loadSavedInput()
                     : examples[selectedExample]
-                )
+                );
               }}
             >
               Open Annotator
@@ -158,12 +188,12 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
                   window.localStorage.setItem(
                     "customInput",
                     JSON.stringify(JSON.parse(code))
-                  )
-                  changeCurrentError(null)
+                  );
+                  changeCurrentError(null);
                 } catch (e) {
-                  changeCurrentError(e.toString())
+                  changeCurrentError(e.toString());
                 }
-                changeCurrentJSONValue(code)
+                changeCurrentJSONValue(code);
               }}
               width="100%"
               height="550px"
@@ -229,7 +259,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
         </Dialog>
       </div>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;

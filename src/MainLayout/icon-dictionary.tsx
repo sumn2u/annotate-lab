@@ -1,39 +1,52 @@
 // @flow
 
-import React from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import FullscreenIcon from "@mui/icons-material/Fullscreen"
-import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChartLine,
+  faCrosshairs,
+  faDrawPolygon,
+  faEdit,
+  faExpand,
+  faGripLines,
+  faHandPaper,
+  faHandPointer,
+  faMask,
+  faMousePointer,
+  faSearch,
+  faTag,
+  faVectorSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { ReactElement } from "react";
 
-const faStyle = { marginTop: 4, width: 16, height: 16, marginBottom: 4 }
+const faStyle = { marginTop: 4, width: 16, height: 16, marginBottom: 4 };
 
-export const iconDictionary = {
+export const iconDictionary: Record<string, () => ReactElement> = {
   select: () => (
     <FontAwesomeIcon
       style={faStyle}
       size="xs"
       fixedWidth
-      icon={{iconName: "mouse-pointer", prefix: "fas"}}
+      icon={faMousePointer}
     />
   ),
   pan: () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'hand-paper', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faHandPaper} />
   ),
   zoom: () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'search', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faSearch} />
   ),
   "show-tags": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'tag', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faTag} />
   ),
   "create-point": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'crosshairs', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faCrosshairs} />
   ),
   "create-box": () => (
     <FontAwesomeIcon
       style={faStyle}
       size="xs"
       fixedWidth
-      icon={{iconName: 'vector-square', prefix: 'fas'}}
+      icon={faVectorSquare}
     />
   ),
   "create-polygon": () => (
@@ -41,23 +54,32 @@ export const iconDictionary = {
       style={faStyle}
       size="xs"
       fixedWidth
-      icon={{iconName: 'draw-polygon', prefix: 'fas'}}
+      icon={faDrawPolygon}
     />
   ),
   "create-expanding-line": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'grip-lines', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faGripLines} />
   ),
   "create-line": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'chart-line', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faChartLine} />
   ),
   "show-mask": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'mask', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faMask} />
   ),
   "modify-allowed-area": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={{iconName: 'edit', prefix: 'fas'}} />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faEdit} />
   ),
-  "create-keypoints": AccessibilityNewIcon,
-  window: FullscreenIcon,
-}
+  "create-keypoints": () => (
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faExpand} />
+  ),
+  "full-screen": () => (
+    <FontAwesomeIcon
+      style={faStyle}
+      size="xs"
+      fixedWidth
+      icon={faHandPointer}
+    />
+  ),
+};
 
-export default iconDictionary
+export default iconDictionary;

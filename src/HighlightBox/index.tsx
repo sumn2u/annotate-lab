@@ -1,12 +1,13 @@
 // @flow
 
-import React from "react"
-import classnames from "classnames"
-import { makeStyles } from "@mui/styles"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import classnames from "classnames";
+import { makeStyles } from "@mui/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import type { Point, Region } from "../ImageCanvas/region-tools.tsx";
+import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 
-const theme = createTheme()
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+const useStyles = makeStyles(() => ({
   "@keyframes borderDance": {
     from: { strokeDashoffset: 0 },
     to: { strokeDashoffset: 100 },
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
       animationPlayState: "running",
     },
   },
-}))
+}));
 
 export const HighlightBox = ({
   mouseEvents,
@@ -48,19 +49,19 @@ export const HighlightBox = ({
   region: r,
   pbox,
 }: {
-  mouseEvents: any,
-  dragWithPrimary: boolean,
-  zoomWithPrimary: boolean,
-  createWithPrimary: boolean,
-  onBeginMovePoint: Function,
-  onSelectRegion: Function,
-  region: any,
-  pbox: { x: number, y: number, w: number, h: number },
+  mouseEvents: MouseEvents;
+  dragWithPrimary?: boolean;
+  zoomWithPrimary?: boolean;
+  createWithPrimary?: boolean;
+  onBeginMovePoint: (point: Point) => void;
+  onSelectRegion: (r: Region) => void;
+  region: Region;
+  pbox: { x: number; y: number; w: number; h: number };
 }) => {
-  const classes = useStyles()
-  if (!pbox.w || pbox.w === Infinity) return null
-  if (!pbox.h || pbox.h === Infinity) return null
-  if (r.unfinished) return null
+  const classes = useStyles();
+  if (!pbox.w || pbox.w === Infinity) return null;
+  if (!pbox.h || pbox.h === Infinity) return null;
+  if (r.type === "expanding-line" && r.unfinished) return null;
 
   const styleCoords =
     r.type === "point"
@@ -75,14 +76,14 @@ export const HighlightBox = ({
           top: pbox.y - 5,
           width: pbox.w + 10,
           height: pbox.h + 10,
-        }
+        };
 
   const pathD =
     r.type === "point"
       ? `M5,5 L${styleCoords.width - 5} 5L${styleCoords.width - 5} ${
           styleCoords.height - 5
         }L5 ${styleCoords.height - 5}Z`
-      : `M5,5 L${pbox.w + 5},5 L${pbox.w + 5},${pbox.h + 5} L5,${pbox.h + 5} Z`
+      : `M5,5 L${pbox.w + 5},5 L${pbox.w + 5},${pbox.h + 5} L5,${pbox.h + 5} Z`;
 
   return (
     <ThemeProvider theme={theme}>
@@ -101,11 +102,11 @@ export const HighlightBox = ({
                   r.highlighted &&
                   e.button === 0
                 ) {
-                  return onBeginMovePoint(r)
+                  return onBeginMovePoint(r);
                 }
                 if (e.button === 0 && !createWithPrimary)
-                  return onSelectRegion(r)
-                mouseEvents.onMouseDown(e)
+                  return onSelectRegion(r);
+                mouseEvents.onMouseDown(e);
               },
             }
           : {})}
@@ -137,7 +138,7 @@ export const HighlightBox = ({
         <path d={pathD} />
       </svg>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default HighlightBox
+export default HighlightBox;

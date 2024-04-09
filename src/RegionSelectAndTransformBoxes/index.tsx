@@ -1,33 +1,64 @@
-import React, { Fragment, memo } from "react"
-import HighlightBox from "../HighlightBox"
-import { styled } from "@mui/material/styles"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
-import PreventScrollToParents from "../PreventScrollToParents"
-import Tooltip from "@mui/material/Tooltip"
+import { Fragment, memo, MutableRefObject } from "react";
+import HighlightBox from "../HighlightBox";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import PreventScrollToParents from "../PreventScrollToParents";
+import Tooltip from "@mui/material/Tooltip";
+import {
+  type Box,
+  type Keypoints,
+  type Point,
+  type Polygon,
+  Region,
+} from "../ImageCanvas/region-tools.tsx";
+import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
+import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
+import { CanvasLayoutParams } from "../ImageCanvas";
+import { IMatrix } from "transformation-matrix-js";
 
-const theme = createTheme()
-const TransformGrabber = styled("div")(({ theme }) => ({
+const theme = createTheme();
+const TransformGrabber = styled("div")(() => ({
   width: 8,
   height: 8,
   zIndex: 2,
   border: "2px solid #FFF",
   position: "absolute",
-}))
+}));
 
 const boxCursorMap = [
   ["nw-resize", "n-resize", "ne-resize"],
   ["w-resize", "grab", "e-resize"],
   ["sw-resize", "s-resize", "se-resize"],
-]
+];
 
-const arePropsEqual = (prev, next) => {
+const arePropsEqual = (
+  prev: RegionSelectAndTransformBoxProps,
+  next: RegionSelectAndTransformBoxProps
+) => {
   return (
     prev.region === next.region &&
     prev.dragWithPrimary === next.dragWithPrimary &&
     prev.createWithPrimary === next.createWithPrimary &&
     prev.zoomWithPrimary === next.zoomWithPrimary &&
     prev.mat === next.mat
-  )
+  );
+};
+
+interface RegionSelectAndTransformBoxProps {
+  region: Region;
+  mouseEvents: MouseEvents;
+  projectRegionBox: ProjectBoxFn;
+  dragWithPrimary?: boolean;
+  createWithPrimary?: boolean;
+  zoomWithPrimary?: boolean;
+  onBeginMovePoint: (point: Point) => void;
+  onSelectRegion: (r: Region) => void;
+  layoutParams: MutableRefObject<CanvasLayoutParams | null>;
+  mat: IMatrix;
+  onBeginBoxTransform: (r: Box, corner: [number, number]) => void;
+  onBeginMovePolygonPoint: (r: Polygon, pointIndex: number) => void;
+  onBeginMoveKeypoint: (r: Keypoints, keypointId: string) => void;
+  onAddPolygonPoint: (r: Polygon, pa: [number, number], i: number) => void;
+  showHighlightBox: boolean;
 }
 
 export const RegionSelectAndTransformBox = memo(
@@ -41,16 +72,15 @@ export const RegionSelectAndTransformBox = memo(
     onBeginMovePoint,
     onSelectRegion,
     layoutParams,
-    fullImageSegmentationMode = false,
     mat,
     onBeginBoxTransform,
     onBeginMovePolygonPoint,
     onBeginMoveKeypoint,
     onAddPolygonPoint,
     showHighlightBox,
-  }) => {
-    const pbox = projectRegionBox(r)
-    const { iw, ih } = layoutParams.current
+  }: RegionSelectAndTransformBoxProps) => {
+    const pbox: ProjectBox = projectRegionBox(r);
+    const { iw, ih } = layoutParams.current ?? { iw: 0, ih: 0 };
     return (
       <ThemeProvider theme={theme}>
         <Fragment>
@@ -89,8 +119,8 @@ export const RegionSelectAndTransformBox = memo(
                   {...mouseEvents}
                   onMouseDown={(e) => {
                     if (e.button === 0)
-                      return onBeginBoxTransform(r, [px * 2 - 1, py * 2 - 1])
-                    mouseEvents.onMouseDown(e)
+                      return onBeginBoxTransform(r, [px * 2 - 1, py * 2 - 1]);
+                    mouseEvents.onMouseDown(e);
                   }}
                   style={{
                     left: pbox.x - 4 - 2 + pbox.w * px,
@@ -109,15 +139,15 @@ export const RegionSelectAndTransformBox = memo(
                 const proj = mat
                   .clone()
                   .inverse()
-                  .applyToPoint(px * iw, py * ih)
+                  .applyToPoint(px * iw, py * ih);
                 return (
                   <TransformGrabber
                     key={i}
                     {...mouseEvents}
                     onMouseDown={(e) => {
                       if (e.button === 0 && (!r.open || i === 0))
-                        return onBeginMovePolygonPoint(r, i)
-                      mouseEvents.onMouseDown(e)
+                        return onBeginMovePolygonPoint(r, i);
+                      mouseEvents.onMouseDown(e);
                     }}
                     style={{
                       cursor: !r.open
@@ -134,7 +164,7 @@ export const RegionSelectAndTransformBox = memo(
                       top: proj.y - 4,
                     }}
                   />
-                )
+                );
               })}
             {r.type === "polygon" &&
               r.highlighted &&
@@ -150,15 +180,19 @@ export const RegionSelectAndTransformBox = memo(
                   const proj = mat
                     .clone()
                     .inverse()
-                    .applyToPoint(pa[0] * iw, pa[1] * ih)
+                    .applyToPoint(pa[0] * iw, pa[1] * ih);
                   return (
                     <TransformGrabber
                       key={i}
                       {...mouseEvents}
                       onMouseDown={(e) => {
                         if (e.button === 0)
-                          return onAddPolygonPoint(r, pa, i + 1)
-                        mouseEvents.onMouseDown(e)
+                          return onAddPolygonPoint(
+                            r,
+                            pa as [number, number],
+                            i + 1
+                          );
+                        mouseEvents.onMouseDown(e);
                       }}
                       style={{
                         cursor: "copy",
@@ -169,7 +203,7 @@ export const RegionSelectAndTransformBox = memo(
                         opacity: 0.5,
                       }}
                     />
-                  )
+                  );
                 })}
             {r.type === "keypoints" &&
               !dragWithPrimary &&
@@ -181,7 +215,7 @@ export const RegionSelectAndTransformBox = memo(
                   const proj = mat
                     .clone()
                     .inverse()
-                    .applyToPoint(px * iw, py * ih)
+                    .applyToPoint(px * iw, py * ih);
                   return (
                     <Tooltip title={keypointId} key={i}>
                       <TransformGrabber
@@ -189,8 +223,8 @@ export const RegionSelectAndTransformBox = memo(
                         {...mouseEvents}
                         onMouseDown={(e) => {
                           if (e.button === 0 && (!r.open || i === 0))
-                            return onBeginMoveKeypoint(r, keypointId)
-                          mouseEvents.onMouseDown(e)
+                            return onBeginMoveKeypoint(r, keypointId);
+                          mouseEvents.onMouseDown(e);
                         }}
                         style={{
                           cursor: !r.open
@@ -200,7 +234,8 @@ export const RegionSelectAndTransformBox = memo(
                             : undefined,
                           zIndex: 10,
                           pointerEvents:
-                            r.open && i === r.points.length - 1
+                            r.open &&
+                            i === Array.from(Object.keys(r.points)).length - 1
                               ? "none"
                               : undefined,
                           left: proj.x - 4,
@@ -208,27 +243,31 @@ export const RegionSelectAndTransformBox = memo(
                         }}
                       />
                     </Tooltip>
-                  )
+                  );
                 }
               )}
           </PreventScrollToParents>
         </Fragment>
       </ThemeProvider>
-    )
+    );
   },
   arePropsEqual
-)
+);
 
 export const RegionSelectAndTransformBoxes = memo(
-  (props) => {
+  (
+    props: Omit<RegionSelectAndTransformBoxProps, "region"> & {
+      regions: Region[];
+    }
+  ) => {
     return props.regions
       .filter((r) => r.visible || r.visible === undefined)
       .filter((r) => !r.locked)
-      .map((r, i) => {
-        return <RegionSelectAndTransformBox key={r.id} {...props} region={r} />
-      })
+      .map((r) => {
+        return <RegionSelectAndTransformBox key={r.id} {...props} region={r} />;
+      });
   },
   (n, p) => n.regions === p.regions && n.mat === p.mat
-)
+);
 
-export default RegionSelectAndTransformBoxes
+export default RegionSelectAndTransformBoxes;

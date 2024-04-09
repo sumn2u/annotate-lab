@@ -1,40 +1,43 @@
 // @flow
-import React, { useState } from "react"
-import Editor, { examples } from "./Editor"
-import Annotator from "../Annotator"
-import ErrorBoundaryDialog from "./ErrorBoundaryDialog"
+import { useState } from "react";
+import Editor, { examples } from "./Editor";
+import Annotator, { AnnotatorProps } from "../Annotator";
+import ErrorBoundaryDialog from "./ErrorBoundaryDialog";
+import { MainLayoutState } from "../MainLayout/types.ts";
 
 export default () => {
-  const [annotatorOpen, changeAnnotatorOpen] = useState(false)
-  const [annotatorProps, changeAnnotatorProps] = useState(examples["Custom"]())
-  const [lastOutput, changeLastOutput] = useState()
+  const [annotatorOpen, changeAnnotatorOpen] = useState(false);
+  const [annotatorProps, changeAnnotatorProps] = useState<
+    Omit<AnnotatorProps, "onExit">
+  >(examples["FULL"]());
+  const [lastOutput, changeLastOutput] = useState<MainLayoutState | null>(null);
 
   return (
     <div>
       {annotatorOpen ? (
         <ErrorBoundaryDialog
           onClose={() => {
-            changeAnnotatorOpen(false)
+            changeAnnotatorOpen(false);
           }}
         >
           <Annotator
-            {...(annotatorProps)}
+            {...annotatorProps}
             onExit={(output) => {
-              delete (output)["lastAction"]
-              changeLastOutput(output)
-              changeAnnotatorOpen(false)
+              delete output["lastAction"];
+              changeLastOutput(output);
+              changeAnnotatorOpen(false);
             }}
           />
         </ErrorBoundaryDialog>
       ) : (
         <Editor
           lastOutput={lastOutput}
-          onOpenAnnotator={(props) => {
-            changeAnnotatorProps(props)
-            changeAnnotatorOpen(true)
+          onOpenAnnotator={(props: AnnotatorProps) => {
+            changeAnnotatorProps(props);
+            changeAnnotatorOpen(true);
           }}
         />
       )}
     </div>
-  )
-}
+  );
+};

@@ -1,12 +1,13 @@
 // @flow
 
-import React, { useState, useEffect, useMemo, useRef } from "react"
-import { colorInts } from "../colors"
-import { useDebounce } from "react-use"
-import loadImage from "./load-image"
-import autoseg from "autoseg/webworker"
+import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { useDebounce } from "react-use";
+import loadImage from "./load-image";
+import autoseg, { AutosegConfig } from "autoseg/webworker";
+import { Region } from "../ImageCanvas/region-tools.tsx";
+import { ImagePosition } from "../types/common.ts";
 
-function convertToUDTRegions(regions) {
+function convertToUDTRegions(regions: Region[]) {
   return regions
     .map((r) => {
       switch (r.type) {
@@ -16,14 +17,14 @@ function convertToUDTRegions(regions) {
             classification: r.cls,
             x: r.x,
             y: r.y,
-          }
+          };
         }
         case "polygon": {
           return {
             regionType: "polygon",
             classification: r.cls,
             points: r.points.map(([x, y]) => ({ x, y })),
-          }
+          };
         }
         case "box": {
           return {
@@ -33,66 +34,76 @@ function convertToUDTRegions(regions) {
             centerY: r.y + r.h / 2,
             width: r.w,
             height: r.h,
-          }
+          };
         }
         default: {
-          return null
+          return null;
         }
       }
     })
-    .filter(Boolean)
+    .filter(Boolean);
 }
+
+type ImageMaskProp = {
+  regions: Region[];
+  regionClsList?: string[];
+  imageSrc: string | null;
+  imagePosition: ImagePosition;
+  zIndex?: number;
+  hide?: boolean;
+  autoSegmentationOptions?: Omit<AutosegConfig, "classNames">;
+};
 
 export const ImageMask = ({
   regions,
   regionClsList,
   imageSrc,
   imagePosition,
-  zIndex = 1,
+  zIndex = 5,
   hide = false,
   autoSegmentationOptions = { type: "simple" },
-}) => {
-  // if (!window.mmgc) window.mmgc = MMGC_INIT()
-  // const mmgc = window.mmgc
-  const [canvasRef, setCanvasRef] = useState(null)
+}: ImageMaskProp) => {
+  const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
 
-  const [sampleImageData, setSampleImageData] = useState()
-
+  const [sampleImageData, setSampleImageData] = useState<ImageData | null>(
+    null
+  );
   useEffect(() => {
-    if (!imageSrc) return
-
+    if (!imageSrc) return;
     loadImage(imageSrc).then((imageData) => {
       autoseg.setConfig({
-        classNames: regionClsList,
+        classNames: regionClsList ?? [],
         ...autoSegmentationOptions,
-      })
-      autoseg.loadImage(imageData)
-      setSampleImageData(imageData)
-    })
-  }, [imageSrc])
+      });
+      autoseg.loadImage(imageData);
+      setSampleImageData(imageData);
+    });
+  }, [imageSrc]);
 
   useDebounce(
     () => {
-      if (hide) return
-      if (!canvasRef) return
-      if (!sampleImageData) return
-      if (regions.filter((cp) => cp.cls).length < 2) return
+      if (hide) return;
+      if (!canvasRef) return;
+      if (!sampleImageData) return;
+      if (regions.filter((cp) => cp.cls).length < 2) return;
 
-      const udtRegions = convertToUDTRegions(regions)
+      const udtRegions = convertToUDTRegions(regions);
 
       autoseg.getMask(udtRegions).then((maskImageData) => {
-        const context = canvasRef.getContext("2d")
-        context.clearRect(0, 0, maskImageData.width, maskImageData.height)
-        context.putImageData(maskImageData, 0, 0)
-      })
+        const context = canvasRef.getContext("2d");
+        if (context) {
+          context.clearRect(0, 0, maskImageData.width, maskImageData.height);
+          context.putImageData(maskImageData, 0, 0);
+        }
+      });
     },
     1000,
     [canvasRef, sampleImageData, regions, hide]
-  )
+  );
 
-  const style = useMemo(() => {
-    let width = imagePosition.bottomRight.x - imagePosition.topLeft.x
-    let height = imagePosition.bottomRight.y - imagePosition.topLeft.y
+  const style: CSSProperties = useMemo(() => {
+    let width = imagePosition.bottomRight.x - imagePosition.topLeft.x;
+    let height = imagePosition.bottomRight.y - imagePosition.topLeft.y;
     return {
       display: hide ? "none" : undefined,
       imageRendering: "pixelated",
@@ -104,7 +115,7 @@ export const ImageMask = ({
       zIndex,
       position: "absolute",
       pointerEvents: "none",
-    }
+    };
   }, [
     imagePosition.topLeft.x,
     imagePosition.topLeft.y,
@@ -112,16 +123,17 @@ export const ImageMask = ({
     imagePosition.bottomRight.y,
     zIndex,
     hide,
-  ])
+  ]);
 
   return (
     <canvas
+      id="autoseg"
       style={style}
       width={sampleImageData ? sampleImageData.width : 0}
       height={sampleImageData ? sampleImageData.height : 0}
       ref={setCanvasRef}
     />
-  )
-}
+  );
+};
 
-export default ImageMask
+export default ImageMask;

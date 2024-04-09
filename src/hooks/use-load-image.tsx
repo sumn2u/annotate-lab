@@ -1,21 +1,24 @@
 // @flow weak
 
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
 
-export default (imageSrc, onImageLoaded) => {
-  const [imageLoaded, changeImageLoaded] = useState(false)
-  const image = useRef(null)
+export default (
+  imageSrc: string,
+  onImageLoaded: (metadata: { width: number; height: number }) => void
+) => {
+  const [imageLoaded, changeImageLoaded] = useState(false);
+  const image = useRef<HTMLImageElement | null>(null);
   if (image.current === null) {
-    image.current = new Image()
+    image.current = new Image();
     image.current.onload = () => {
-      changeImageLoaded(true)
-      if (onImageLoaded)
+      changeImageLoaded(true);
+      if (onImageLoaded && image.current)
         onImageLoaded({
           width: image.current.naturalWidth,
           height: image.current.naturalHeight,
-        })
-    }
-    image.current.src = imageSrc
+        });
+    };
+    image.current.src = imageSrc;
   }
-  return [image.current, imageLoaded]
-}
+  return [image.current, imageLoaded];
+};

@@ -1,6 +1,7 @@
-import { grey } from "@mui/material/colors"
+import { DefaultTheme } from "@mui/styles";
+import { Styles } from "@mui/styles/withStyles";
 
-export default {
+const styles: Styles<DefaultTheme, {}> = {
   canvas: { width: "100%", height: "100%", position: "relative", zIndex: 1 },
   zoomIndicator: {
     position: "absolute",
@@ -24,4 +25,5 @@ export default {
       opacity: 1,
     },
   },
-}
+};
+export default styles;

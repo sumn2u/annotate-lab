@@ -1,45 +1,59 @@
 // @flow
 
-import React, { createContext, useContext, useState } from "react"
+import { createContext, ReactNode, useContext, useState } from "react";
 
-const defaultSettings = {
+interface SettingsValue {
+  showCrosshairs: boolean;
+  showHighlightBox: boolean;
+  wasdMode: boolean;
+  videoPlaybackSpeed?: string;
+  changeSetting: (setting: string, value: any) => void;
+}
+
+const defaultSettings: SettingsValue = {
   showCrosshairs: false,
   showHighlightBox: true,
   wasdMode: true,
-}
+  changeSetting: () => {},
+};
 
-export const SettingsContext = createContext(defaultSettings)
+export const SettingsContext =
+  createContext<Partial<SettingsValue>>(defaultSettings);
 
-const pullSettingsFromLocalStorage = () => {
-  if (!window || !window.localStorage) return {}
-  let settings = {}
+const pullSettingsFromLocalStorage = (): Partial<SettingsValue> => {
+  if (!window || !window.localStorage) return {};
+  let settings: Record<string, any> = {};
   for (let i = 0; i < window.localStorage.length; i++) {
-    const key = window.localStorage.key(i)
-    if (key.startsWith("settings_")) {
+    const key = window.localStorage.key(i);
+    if (key && key?.startsWith("settings_")) {
       try {
-        settings[key.replace("settings_", "")] = JSON.parse(
-          window.localStorage.getItem(key)
-        )
+        const value = window.localStorage.getItem(key);
+        if (value) {
+          settings[key.replace("settings_", "")] = JSON.parse(value);
+        }
       } catch (e) {}
     }
   }
-  return settings
-}
+  return settings;
+};
 
-export const useSettings = () => useContext(SettingsContext)
+export const useSettings = () => useContext(SettingsContext);
 
-export const SettingsProvider = ({ children }) => {
-  const [state, changeState] = useState(() => pullSettingsFromLocalStorage())
+export const SettingsProvider = ({ children }: { children: ReactNode }) => {
+  const [state, changeState] = useState<Partial<SettingsValue>>(() =>
+    pullSettingsFromLocalStorage()
+  );
+
   const changeSetting = (setting: string, value: any) => {
-    changeState({ ...state, [setting]: value })
-    window.localStorage.setItem(`settings_${setting}`, JSON.stringify(value))
-  }
+    changeState({ ...state, [setting]: value });
+    window.localStorage.setItem(`settings_${setting}`, JSON.stringify(value));
+  };
 
   return (
     <SettingsContext.Provider value={{ ...state, changeSetting }}>
       {children}
     </SettingsContext.Provider>
-  )
-}
+  );
+};
 
-export default SettingsProvider
+export default SettingsProvider;

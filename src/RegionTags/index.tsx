@@ -1,18 +1,38 @@
 // @flow weak
 
-import React from "react"
-import Paper from "@mui/material/Paper"
-import DefaultRegionLabel from "../RegionLabel"
-import LockIcon from "@mui/icons-material/Lock"
+import Paper from "@mui/material/Paper";
+import DefaultRegionLabel from "../RegionLabel";
+import LockIcon from "@mui/icons-material/Lock";
+import { Region } from "../ImageCanvas/region-tools.tsx";
+import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
+import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
+import { ComponentType, FunctionComponent } from "react";
 
-const copyWithout = (obj, ...args) => {
-  const newObj = { ...obj }
+const copyWithout = <T extends object, K extends keyof T>(
+  obj: T,
+  ...args: K[]
+) => {
+  const newObj = { ...obj };
   for (const arg of args) {
-    delete newObj[arg]
+    delete newObj[arg];
   }
-  return newObj
-}
+  return newObj;
+};
 
+type RegionTagsProps = {
+  regions: Region[];
+  projectRegionBox: ProjectBoxFn;
+  mouseEvents: MouseEvents;
+  regionClsList?: string[];
+  regionTagList?: string[];
+  onBeginRegionEdit: (r: Region) => void;
+  onChangeRegion: (r: Region) => void;
+  onCloseRegionEdit: (r: Region) => void;
+  onDeleteRegion: (r: Region) => void;
+  RegionEditLabel: ComponentType<any> | FunctionComponent<any> | null;
+  onRegionClassAdded: (cls: string) => void;
+  allowComments?: boolean;
+};
 export const RegionTags = ({
   regions,
   projectRegionBox,
@@ -23,31 +43,28 @@ export const RegionTags = ({
   onChangeRegion,
   onCloseRegionEdit,
   onDeleteRegion,
-  layoutParams,
-  imageSrc,
   RegionEditLabel,
   onRegionClassAdded,
   allowComments,
-}) => {
+}: RegionTagsProps) => {
   const RegionLabel =
-    RegionEditLabel != null ? RegionEditLabel : DefaultRegionLabel
+    RegionEditLabel != null ? RegionEditLabel : DefaultRegionLabel;
   return regions
     .filter((r) => r.visible || r.visible === undefined)
     .map((region) => {
-      const pbox = projectRegionBox(region)
-      const { iw, ih } = layoutParams.current
-      let margin = 8
-      if (region.highlighted && region.type === "box") margin += 6
+      const pbox: ProjectBox = projectRegionBox(region);
+      let margin = 8;
+      if (region.highlighted && region.type === "box") margin += 6;
       const labelBoxHeight =
-        region.editingLabels && !region.locked ? 170 : region.tags ? 60 : 50
-      const displayOnTop = pbox.y > labelBoxHeight
+        region.editingLabels && !region.locked ? 170 : region.tags ? 60 : 50;
+      const displayOnTop = pbox.y > labelBoxHeight;
 
       const coords = displayOnTop
         ? {
             left: pbox.x,
             top: pbox.y - margin / 2,
           }
-        : { left: pbox.x, top: pbox.y + pbox.h + margin / 2 }
+        : { left: pbox.x, top: pbox.y + pbox.h + margin / 2 };
       if (region.locked) {
         return (
           <div
@@ -75,7 +92,7 @@ export const RegionTags = ({
               <LockIcon style={{ width: 16, height: 16, color: "#333" }} />
             </Paper>
           </div>
-        )
+        );
       }
       return (
         <div
@@ -90,9 +107,9 @@ export const RegionTags = ({
           onMouseUp={(e) => e.preventDefault()}
           onMouseEnter={(e) => {
             if (region.editingLabels) {
-              mouseEvents.onMouseUp(e)
-              e.button = 1
-              mouseEvents.onMouseUp(e)
+              mouseEvents.onMouseUp(e);
+              e.button = 1;
+              mouseEvents.onMouseUp(e);
             }
           }}
         >
@@ -116,15 +133,13 @@ export const RegionTags = ({
               onDelete={onDeleteRegion}
               editing={region.editingLabels}
               region={region}
-              regions={regions}
-              imageSrc={imageSrc}
               onRegionClassAdded={onRegionClassAdded}
               allowComments={allowComments}
             />
           </div>
         </div>
-      )
-    })
-}
+      );
+    });
+};
 
-export default RegionTags
+export default RegionTags;

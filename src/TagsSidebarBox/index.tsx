@@ -1,56 +1,58 @@
 // @flow
 
-import React, { memo, useMemo } from "react"
-import SidebarBoxContainer from "../SidebarBoxContainer"
-import StyleIcon from "@mui/icons-material/Style"
-import { grey } from "@mui/material/colors"
-import useEventCallback from "use-event-callback"
-import Immutable from "seamless-immutable"
-import Select from "react-select"
+import { memo, useMemo } from "react";
+import SidebarBoxContainer from "../SidebarBoxContainer";
+import StyleIcon from "@mui/icons-material/Style";
+import { grey } from "@mui/material/colors";
+import useEventCallback from "use-event-callback";
+import Immutable from "seamless-immutable";
+import Select, { MultiValue } from "react-select";
 
 type Props = {
-  tags: Array<string>,
-  currentImage: { cls?: string, tags?: Array<string> },
-  imageClsList?: Array<string>,
-  imageTagList?: Array<string>,
-  onChangeImage: (value: Record<string, any>) => void,
-}
+  tags: Array<string>;
+  currentImage: { cls?: string; tags?: Array<string> };
+  imageClsList?: Array<string>;
+  imageTagList?: Array<string>;
+  onChangeImage: (image: { cls?: string; tags?: Array<string> }) => void;
+};
 
-const emptyArr = []
-const noop = () => {
-}
+const emptyArr: string[] = [];
+const noop = ({}) => {};
 
 export const TagsSidebarBox = ({
-                                 currentImage,
-                                 imageClsList = emptyArr,
-                                 imageTagList = emptyArr,
-                                 onChangeImage = noop
-                               }: Props) => {
-  const { tags = [], cls = null } = currentImage || {}
+  currentImage,
+  imageClsList = emptyArr,
+  imageTagList = emptyArr,
+  onChangeImage = noop,
+}: Props) => {
+  const { tags = [], cls = null } = currentImage || {};
   const onChangeClassification = useEventCallback((o) =>
     onChangeImage({ cls: o.value })
-  )
-  const onChangeTags = useEventCallback((o) =>
-    onChangeImage({ tags: o.map((a) => a.value) })
-  )
+  );
+  const onChangeTags = useEventCallback(
+    (o: MultiValue<{ value: string; label: string }>) =>
+      onChangeImage({ tags: o.map((a) => a.value) })
+  );
   const selectValue = useMemo(
     () => (cls ? { value: cls, label: cls } : null),
     [cls]
-  )
+  );
   const memoImgClsList = useMemo(
-    () => Immutable.asMutable(imageClsList.map((c) => ({ value: c, label: c }))),
+    () =>
+      Immutable.asMutable(imageClsList.map((c) => ({ value: c, label: c }))),
     [imageClsList]
-  )
+  );
   const memoImgTagList = useMemo(
-    () => Immutable.asMutable(imageTagList.map((c) => ({ value: c, label: c }))),
+    () =>
+      Immutable.asMutable(imageTagList.map((c) => ({ value: c, label: c }))),
     [imageTagList]
-  )
+  );
   const memoCurrentTags = useMemo(
     () => tags.map((r) => ({ value: r, label: r })),
     [tags]
-  )
+  );
 
-  if (!currentImage) return null
+  if (!currentImage) return null;
 
   return (
     <SidebarBoxContainer
@@ -81,8 +83,8 @@ export const TagsSidebarBox = ({
         </div>
       )}
     </SidebarBoxContainer>
-  )
-}
+  );
+};
 
 export default memo(
   TagsSidebarBox,
@@ -91,4 +93,4 @@ export default memo(
     prevProps.currentImage.tags === nextProps.currentImage.tags &&
     prevProps.imageClsList === nextProps.imageClsList &&
     prevProps.imageTagList === nextProps.imageTagList
-)
+);

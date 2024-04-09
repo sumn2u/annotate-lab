@@ -8,7 +8,7 @@ import { grey } from "@mui/material/colors";
 import Markdown from "react-markdown";
 
 const theme = createTheme();
-const MarkdownContainer = styled("div")(({ theme }) => ({
+const MarkdownContainer = styled("div")(() => ({
   paddingLeft: 16,
   paddingRight: 16,
   fontSize: 12,
@@ -23,13 +23,17 @@ const MarkdownContainer = styled("div")(({ theme }) => ({
   "& img": { width: "100%" },
 }));
 
-export const TaskDescriptionSidebarBox = ({ description }) => {
+export const TaskDescriptionSidebarBox = ({
+  description,
+}: {
+  description?: string;
+}) => {
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Task Description"
         icon={<DescriptionIcon style={{ color: grey[700] }} />}
-        expandedByDefault={description && description !== "" ? false : true}
+        expandedByDefault={!(description && description !== "")}
       >
         <MarkdownContainer>
           <Markdown children={description} />

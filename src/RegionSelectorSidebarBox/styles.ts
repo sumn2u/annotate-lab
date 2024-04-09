@@ -1,6 +1,8 @@
-import { grey, blue, orange, purple } from "@mui/material/colors"
+import { blue, grey } from "@mui/material/colors";
+import { Styles } from "@mui/styles/withStyles";
+import { DefaultTheme } from "@mui/styles";
 
-export default {
+const styles: Styles<DefaultTheme, {}> = {
   container: {
     fontSize: 11,
     fontWeight: "bold",
@@ -51,4 +53,6 @@ export default {
     },
     "& .text": {},
   },
-}
+};
+
+export default styles;

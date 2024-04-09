@@ -1,6 +1,6 @@
-export default (key, val) => {
+export default (key: string, val: any) => {
   window.localStorage.setItem(
     `__REACT_IMAGE_ANNOTATE_${key}`,
     JSON.stringify(val)
-  )
-}
+  );
+};

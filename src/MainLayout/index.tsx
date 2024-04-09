@@ -1,129 +1,156 @@
 // @flow
 
-import { MainLayoutState } from "./types"
-import { FullScreen, useFullScreenHandle } from "react-full-screen"
-import React, { useCallback, useRef } from "react"
-import { makeStyles } from "@mui/styles"
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
+import { Action, MainLayoutState } from "./types";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import {
+  ComponentType,
+  FunctionComponent,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
+import { makeStyles } from "@mui/styles";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 
-import ClassSelectionMenu from "../ClassSelectionMenu"
-import DebugBox from "../DebugSidebarBox"
-import HistorySidebarBox from "../HistorySidebarBox"
-import ImageCanvas from "../ImageCanvas"
-import KeyframeTimeline from "../KeyframeTimeline"
-import KeyframesSelector from "../KeyframesSelectorSidebarBox"
-import RegionSelector from "../RegionSelectorSidebarBox"
-import SettingsDialog from "../SettingsDialog"
-import TagsSidebarBox from "../TagsSidebarBox"
-import TaskDescription from "../TaskDescriptionSidebarBox"
-import Workspace from "react-material-workspace-layout/Workspace"
-import classnames from "classnames"
-import getActiveImage from "../Annotator/reducers/get-active-image"
-import getHotkeyHelpText from "../utils/get-hotkey-help-text"
-import iconDictionary from "./icon-dictionary"
-import styles from "./styles"
-import { useDispatchHotkeyHandlers } from "../ShortcutsManager"
-import useEventCallback from "use-event-callback"
-import useImpliedVideoRegions from "./use-implied-video-regions"
-import useKey from "use-key-hook"
-import { useSettings } from "../SettingsProvider"
-import { withHotKeys } from "react-hotkeys"
+import ClassSelectionMenu from "../ClassSelectionMenu";
+import DebugBox from "../DebugSidebarBox";
+import HistorySidebarBox from "../HistorySidebarBox";
+import ImageCanvas from "../ImageCanvas";
+import KeyframeTimeline from "../KeyframeTimeline";
+import KeyframesSelector from "../KeyframesSelectorSidebarBox";
+import RegionSelector from "../RegionSelectorSidebarBox";
+import SettingsDialog from "../SettingsDialog";
+import TagsSidebarBox from "../TagsSidebarBox";
+import TaskDescription from "../TaskDescriptionSidebarBox";
+import Workspace from "react-material-workspace-layout/Workspace";
+import classnames from "classnames";
+import getActiveImage from "../Annotator/reducers/get-active-image";
+import iconDictionary from "./icon-dictionary";
+import { useDispatchHotkeyHandlers } from "../ShortcutsManager";
+import useEventCallback from "use-event-callback";
+import useImpliedVideoRegions from "./use-implied-video-regions";
+import useKey from "use-key-hook";
+import { useSettings } from "../SettingsProvider";
+import { HotKeys } from "react-hotkeys";
+import { grey } from "@mui/material/colors";
+import { notEmpty } from "../utils/not-empty.ts";
+import { ALL_TOOLS } from "./all-tools-list.ts";
 
 // import Fullscreen from "../Fullscreen"
 
-const emptyArr = []
-const theme = createTheme()
-const useStyles = makeStyles((theme) => styles)
+const emptyArr: string[] = [];
+const theme = createTheme();
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    flexGrow: 1,
+    flexDirection: "column",
+    height: "100%",
+    maxHeight: "100vh",
+    backgroundColor: "#fff",
+    overflow: "hidden",
+    "&.fullscreen": {
+      position: "absolute",
+      zIndex: 99999,
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+  },
+  headerTitle: {
+    fontWeight: "bold",
+    color: grey[700],
+    paddingLeft: 16,
+  },
+});
 
-const HotkeyDiv = withHotKeys(({ hotKeys, children, divRef, ...props }) => (
-  <div {...{ ...hotKeys, ...props }} ref={divRef}>
-    {children}
-  </div>
-))
-
-const FullScreenContainer = styled("div")(({ theme }) => ({
+const FullScreenContainer = styled("div")(() => ({
   width: "100%",
   height: "100%",
   "& .fullscreen": {
     width: "100%",
-    height: "100%"
-  }
-}))
+    height: "100%",
+  },
+}));
 
 type Props = {
-  state: MainLayoutState,
-  RegionEditLabel?: Node,
-  dispatch: (Action) => any,
-  alwaysShowNextButton?: boolean,
-  alwaysShowPrevButton?: boolean,
-  onRegionClassAdded: () => {},
-  hideHeader?: boolean,
-  hideHeaderText?: boolean,
-}
+  state: MainLayoutState;
+  RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
+  dispatch: (action: Action) => void;
+  alwaysShowNextButton?: boolean;
+  alwaysShowPrevButton?: boolean;
+  onRegionClassAdded: (cls: string) => void;
+  hideHeader?: boolean;
+  hideHeaderText?: boolean;
+  hideNext?: boolean;
+  hidePrev?: boolean;
+  hideClone?: boolean;
+  hideSettings?: boolean;
+  hideFullScreen?: boolean;
+  hideSave?: boolean;
+};
 
 export const MainLayout = ({
-                             state,
-                             dispatch,
-                             alwaysShowNextButton = false,
-                             alwaysShowPrevButton = false,
-                             RegionEditLabel,
-                             onRegionClassAdded,
-                             hideHeader,
-                             hideHeaderText,
-                             hideNext = false,
-                             hidePrev = false,
-                             hideClone = false,
-                             hideSettings = false,
-                             hideFullScreen = false,
-                             hideSave = false
-                           }: Props) => {
-  const classes = useStyles()
-  const settings = useSettings()
-  const fullScreenHandle = useFullScreenHandle()
+  state,
+  dispatch,
+  RegionEditLabel,
+  onRegionClassAdded,
+  hideHeader,
+  hideHeaderText,
+  hideNext = false,
+  hidePrev = false,
+  hideClone = false,
+  hideSettings = false,
+  hideFullScreen = false,
+  hideSave = false,
+}: Props) => {
+  const classes = useStyles();
+  const settings = useSettings();
+  const fullScreenHandle = useFullScreenHandle();
 
-  const memoizedActionFns = useRef({})
-  const action = (type: string, ...params: Array<string>) => {
-    const fnKey = `${type}(${params.join(",")})`
+  const memoizedActionFns = useRef<Record<string, any>>({});
+  const action = (type: Action["type"], ...params: Array<any>) => {
+    const fnKey = `${type}(${params.join(",")})`;
     if (memoizedActionFns.current[fnKey])
-      return memoizedActionFns.current[fnKey]
+      return memoizedActionFns.current[fnKey];
 
     const fn = (...args: any) =>
       params.length > 0
-        ? dispatch(
-          ({
+        ? dispatch({
             type,
-            ...params.reduce((acc, p, i) => ((acc[p] = args[i]), acc), {})
+            ...params.reduce((acc, p, i) => ((acc[p] = args[i]), acc), {}),
           })
-        )
-        : dispatch({ type, ...args[0] })
-    memoizedActionFns.current[fnKey] = fn
-    return fn
-  }
+        : dispatch({ type, ...args[0] });
+    memoizedActionFns.current[fnKey] = fn;
+    return fn;
+  };
 
-  const { currentImageIndex, activeImage } = getActiveImage(state)
-  let nextImage
-  if (currentImageIndex !== null) {
-    nextImage = state.images[currentImageIndex + 1]
+  const { currentImageIndex, activeImage } = getActiveImage(state);
+  let nextImage;
+  if (currentImageIndex !== null && "images" in state) {
+    nextImage = state.images[+currentImageIndex + 1];
   }
 
   useKey(() => dispatch({ type: "CANCEL" }), {
-    detectKeys: [27]
-  })
+    detectKeys: [27],
+  });
 
-  const isAVideoFrame = activeImage && activeImage.frameTime !== undefined
-  const innerContainerRef = useRef()
-  const hotkeyHandlers = useDispatchHotkeyHandlers({ dispatch })
+  // const isAVideoFrame = activeImage && activeImage.frameTime !== undefined
+  const innerContainerRef = useRef<HTMLElement | null>(null);
+  const hotkeyHandlers = useDispatchHotkeyHandlers({ dispatch });
 
-  let impliedVideoRegions = useImpliedVideoRegions(state)
+  let impliedVideoRegions = useImpliedVideoRegions(state);
 
   const refocusOnMouseEvent = useCallback((e) => {
-    if (!innerContainerRef.current) return
-    if (innerContainerRef.current.contains(document.activeElement)) return
+    if (!innerContainerRef.current) return;
+    if (innerContainerRef.current.contains(document.activeElement)) return;
     if (innerContainerRef.current.contains(e.target)) {
-      innerContainerRef.current.focus()
-      e.target.focus()
+      innerContainerRef.current.focus();
+      e.target.focus();
     }
-  }, [])
+  }, []);
 
   const canvas = (
     <ImageCanvas
@@ -143,12 +170,20 @@ export const MainLayout = ({
       regionTagList={state.regionTagList}
       regions={
         state.annotationType === "image"
-          ? activeImage.regions || []
+          ? activeImage?.regions || []
           : impliedVideoRegions
       }
-      realSize={activeImage ? activeImage.realSize : undefined}
-      videoPlaying={state.videoPlaying}
-      imageSrc={state.annotationType === "image" ? activeImage.src : null}
+      realSize={
+        activeImage && "realSize" in activeImage
+          ? activeImage.realSize
+          : undefined
+      }
+      videoPlaying={"videoPlaying" in state ? state.videoPlaying : false}
+      imageSrc={
+        state.annotationType === "image" && activeImage && "src" in activeImage
+          ? activeImage.src
+          : null
+      }
       videoSrc={state.annotationType === "video" ? state.videoSrc : null}
       pointDistancePrecision={state.pointDistancePrecision}
       createWithPrimary={state.selectedTool.includes("create")}
@@ -187,7 +222,6 @@ export const MainLayout = ({
       )}
       onSelectRegion={action("SELECT_REGION", "region")}
       onBeginMovePoint={action("BEGIN_MOVE_POINT", "point")}
-      onImageLoaded={action("IMAGE_LOADED", "image")}
       RegionEditLabel={RegionEditLabel}
       onImageOrVideoLoaded={action("IMAGE_OR_VIDEO_LOADED", "metadata")}
       onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
@@ -195,24 +229,83 @@ export const MainLayout = ({
       onRegionClassAdded={onRegionClassAdded}
       allowComments={state.allowComments}
     />
-  )
+  );
 
   const onClickIconSidebarItem = useEventCallback((item) => {
-    dispatch({ type: "SELECT_TOOL", selectedTool: item.name })
-  })
+    dispatch({ type: "SELECT_TOOL", selectedTool: item.name });
+  });
 
   const onClickHeaderItem = useEventCallback((item) => {
     if (item.name === "Fullscreen") {
-      fullScreenHandle.enter()
+      fullScreenHandle.enter();
     } else if (item.name === "Window") {
-      fullScreenHandle.exit()
+      fullScreenHandle.exit();
     }
-    dispatch({ type: "HEADER_BUTTON_CLICKED", buttonName: item.name })
-  })
+    dispatch({ type: "HEADER_BUTTON_CLICKED", buttonName: item.name });
+  });
 
-  const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)
+  const debugModeOn = Boolean(
+    window.localStorage.$ANNOTATE_DEBUG_MODE && state
+  );
   const nextImageHasRegions =
-    !nextImage || (nextImage.regions && nextImage.regions.length > 0)
+    !nextImage || (nextImage.regions && nextImage.regions.length > 0);
+
+  const headerItems = useMemo(
+    () =>
+      [
+        !hidePrev && { name: "Prev" },
+        !hideNext && { name: "Next" },
+        state.annotationType !== "video"
+          ? null
+          : !state.videoPlaying
+          ? { name: "Play" }
+          : { name: "Pause" },
+        !hideClone &&
+          !nextImageHasRegions &&
+          activeImage?.regions && { name: "Clone" },
+        !hideSettings && { name: "Settings" },
+        !hideFullScreen &&
+          (state.fullScreen ? { name: "Window" } : { name: "Fullscreen" }),
+        !hideSave && { name: "Save" },
+      ].reduce((acc: { name: string }[], curr) => {
+        if (curr) {
+          acc.push(curr);
+        }
+        return acc;
+      }, []),
+    [
+      state.fullScreen,
+      state.annotationType,
+      hidePrev,
+      hideNext,
+      hideClone,
+      hideSettings,
+      hideFullScreen,
+      hideSave,
+    ]
+  );
+
+  const allSidebarIcons = ALL_TOOLS.filter((a) => {
+    if (a.name === "show-mask") {
+      return state.fullImageSegmentationMode;
+    }
+    return "alwaysShowing" in a || state.enabledTools.includes(a.name);
+  });
+
+  const headerLeftSide: ReactElement[] = [
+    state.annotationType === "video" ? (
+      <KeyframeTimeline
+        currentTime={state.currentVideoTime}
+        duration={state.videoDuration}
+        onChangeCurrentTime={action("CHANGE_VIDEO_TIME", "newTime")}
+        keyframes={state.keyframes}
+      />
+    ) : activeImage ? (
+      <div className={classes.headerTitle}>
+        {"name" in activeImage ? activeImage.name : ""}
+      </div>
+    ) : null,
+  ].filter(notEmpty);
 
   return (
     <ThemeProvider theme={theme}>
@@ -221,14 +314,14 @@ export const MainLayout = ({
           handle={fullScreenHandle}
           onChange={(open) => {
             if (!open) {
-              fullScreenHandle.exit()
-              action("HEADER_BUTTON_CLICKED", "buttonName")("Window")
+              fullScreenHandle.exit();
+              action("HEADER_BUTTON_CLICKED", "buttonName")("Window");
             }
           }}
         >
-          <HotkeyDiv
+          <HotKeys
             tabIndex={-1}
-            divRef={innerContainerRef}
+            innerRef={innerContainerRef}
             onMouseDown={refocusOnMouseEvent}
             onMouseOver={refocusOnMouseEvent}
             allowChanges
@@ -243,108 +336,18 @@ export const MainLayout = ({
               iconDictionary={iconDictionary}
               hideHeader={hideHeader}
               hideHeaderText={hideHeaderText}
-              headerLeftSide={[
-                state.annotationType === "video" ? (
-                  <KeyframeTimeline
-                    currentTime={state.currentVideoTime}
-                    duration={state.videoDuration}
-                    onChangeCurrentTime={action("CHANGE_VIDEO_TIME", "newTime")}
-                    keyframes={state.keyframes}
-                  />
-                ) : activeImage ? (
-                  <div className={classes.headerTitle}>{activeImage.name}</div>
-                ) : null
-              ].filter(Boolean)}
-              headerItems={[
-                !hidePrev && { name: "Prev" },
-                !hideNext && { name: "Next" },
-                state.annotationType !== "video"
-                  ? null
-                  : !state.videoPlaying
-                    ? { name: "Play" }
-                    : { name: "Pause" },
-                !hideClone &&
-                !nextImageHasRegions &&
-                activeImage.regions && { name: "Clone" },
-                !hideSettings && { name: "Settings" },
-                !hideFullScreen &&
-                (state.fullScreen
-                  ? { name: "Window" }
-                  : { name: "Fullscreen" }),
-                !hideSave && { name: "Save" }
-              ].filter(Boolean)}
+              headerLeftSide={headerLeftSide}
+              headerItems={headerItems}
               onClickHeaderItem={onClickHeaderItem}
               onClickIconSidebarItem={onClickIconSidebarItem}
-              selectedTools={[
-                state.selectedTool,
-                state.showTags && "show-tags",
-                state.showMask && "show-mask"
-              ].filter(Boolean)}
-              iconSidebarItems={[
-                {
-                  name: "select",
-                  helperText: "Select" + getHotkeyHelpText("select_tool"),
-                  alwaysShowing: true
-                },
-                {
-                  name: "pan",
-                  helperText:
-                    "Drag/Pan (right or middle click)" +
-                    getHotkeyHelpText("pan_tool"),
-                  alwaysShowing: true
-                },
-                {
-                  name: "zoom",
-                  helperText:
-                    "Zoom In/Out (scroll)" + getHotkeyHelpText("zoom_tool"),
-                  alwaysShowing: true
-                },
-                {
-                  name: "show-tags",
-                  helperText: "Show / Hide Tags",
-                  alwaysShowing: true
-                },
-                {
-                  name: "create-point",
-                  helperText: "Add Point" + getHotkeyHelpText("create_point")
-                },
-                {
-                  name: "create-box",
-                  helperText:
-                    "Add Bounding Box" +
-                    getHotkeyHelpText("create_bounding_box")
-                },
-                {
-                  name: "create-polygon",
-                  helperText:
-                    "Add Polygon" + getHotkeyHelpText("create_polygon")
-                },
-                {
-                  name: "create-line",
-                  helperText: "Add Line"
-                },
-                {
-                  name: "create-expanding-line",
-                  helperText: "Add Expanding Line"
-                },
-                {
-                  name: "create-keypoints",
-                  helperText: "Add Keypoints (Pose)"
-                },
-                state.fullImageSegmentationMode && {
-                  name: "show-mask",
-                  alwaysShowing: true,
-                  helperText: "Show / Hide Mask"
-                },
-                {
-                  name: "modify-allowed-area",
-                  helperText: "Modify Allowed Area"
-                }
-              ]
-                .filter(Boolean)
-                .filter(
-                  (a) => a.alwaysShowing || state.enabledTools.includes(a.name)
-                )}
+              selectedTools={
+                [
+                  state.selectedTool,
+                  state.showTags && "show-tags",
+                  state.showMask && "show-mask",
+                ].filter(Boolean) as string[]
+              }
+              iconSidebarItems={allSidebarIcons}
               rightSidebarItems={[
                 debugModeOn && (
                   <DebugBox state={debugModeOn} lastAction={state.lastAction} />
@@ -393,7 +396,7 @@ export const MainLayout = ({
                 <HistorySidebarBox
                   history={state.history}
                   onRestoreHistory={action("RESTORE_HISTORY")}
-                />
+                />,
               ].filter(Boolean)}
             >
               {canvas}
@@ -403,15 +406,15 @@ export const MainLayout = ({
               onClose={() =>
                 dispatch({
                   type: "HEADER_BUTTON_CLICKED",
-                  buttonName: "Settings"
+                  buttonName: "Settings",
                 })
               }
             />
-          </HotkeyDiv>
+          </HotKeys>
         </FullScreen>
       </FullScreenContainer>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;

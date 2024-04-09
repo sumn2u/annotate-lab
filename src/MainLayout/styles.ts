@@ -1,4 +1,4 @@
-import { grey } from "@mui/material/colors"
+import { grey } from "@mui/material/colors";
 
 export default {
   container: {
@@ -23,4 +23,4 @@ export default {
     color: grey[700],
     paddingLeft: 16,
   },
-}
+};

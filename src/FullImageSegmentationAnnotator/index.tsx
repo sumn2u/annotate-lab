@@ -1,7 +1,7 @@
 // @flow
-import React from "react"
-import Annotator from "../Annotator"
 
-export default (props) => {
-  return <Annotator {...props} fullImageSegmentationMode={true} />
-}
+import Annotator, { AnnotatorProps } from "../Annotator";
+
+export default (props: AnnotatorProps) => {
+  return <Annotator {...props} fullImageSegmentationMode={true} />;
+};

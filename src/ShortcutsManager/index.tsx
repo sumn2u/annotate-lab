@@ -1,5 +1,6 @@
-import React, { useMemo } from "react"
-import { HotKeys } from "react-hotkeys"
+import { ReactNode, useMemo } from "react";
+import { HotKeys } from "react-hotkeys";
+import { Action } from "../MainLayout/types.ts";
 
 export const defaultHotkeys = [
   {
@@ -63,82 +64,88 @@ export const defaultHotkeys = [
     description: "Undo latest change",
     binding: "Ctrl+z",
   },
-]
-export const defaultKeyMap = {}
-for (const { id, binding } of defaultHotkeys) defaultKeyMap[id] = binding
+];
 
-export const useDispatchHotkeyHandlers = ({ dispatch }) => {
-  const handlers = useMemo(
+export const defaultKeyMap: Record<string, any> = {};
+
+for (const { id, binding } of defaultHotkeys) defaultKeyMap[id] = binding;
+
+export const useDispatchHotkeyHandlers = ({
+  dispatch,
+}: {
+  dispatch: (action: Action) => void;
+}) => {
+  return useMemo(
     () => ({
       select_tool: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "select",
-        })
+        });
       },
       zoom_tool: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "zoom",
-        })
+        });
       },
       create_point: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "create-point",
-        })
+        });
       },
       create_bounding_box: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "create-box",
-        })
+        });
       },
       pan_tool: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "pan",
-        })
+        });
       },
       create_polygon: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "create-polygon",
-        })
+        });
       },
       create_pixel: () => {
         dispatch({
           type: "SELECT_TOOL",
           selectedTool: "create-pixel",
-        })
+        });
       },
       save_and_previous_sample: () => {
         dispatch({
           type: "HEADER_BUTTON_CLICKED",
           buttonName: "Prev",
-        })
+        });
       },
       save_and_next_sample: () => {
         dispatch({
           type: "HEADER_BUTTON_CLICKED",
           buttonName: "Next",
-        })
+        });
       },
       save_and_exit_sample: () => {
         dispatch({
           type: "HEADER_BUTTON_CLICKED",
           buttonName: "Save",
-        })
+        });
       },
       delete_region: () => {
         dispatch({
           type: "DELETE_SELECTED_REGION",
-        })
+        });
       },
       undo: () => {
         dispatch({
           type: "RESTORE_HISTORY",
-        })
+        });
       },
       // TODO
       // exit_sample: () => {
@@ -148,15 +155,20 @@ export const useDispatchHotkeyHandlers = ({ dispatch }) => {
       // }
     }),
     [dispatch]
-  )
-  return handlers
-}
+  );
+};
 
-export default ({ children, dispatch }) => {
-  const handlers = useDispatchHotkeyHandlers({ dispatch })
+export default ({
+  children,
+  dispatch,
+}: {
+  children: ReactNode;
+  dispatch: (action: Action) => void;
+}) => {
+  const handlers = useDispatchHotkeyHandlers({ dispatch });
   return (
     <HotKeys allowChanges handlers={handlers}>
       {children}
     </HotKeys>
-  )
-}
+  );
+};

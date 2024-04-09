@@ -1,54 +1,59 @@
 // @flow
 
 import type {
-  MainLayoutVideoAnnotationState,
   Action,
-} from "../../MainLayout/types"
-import Immutable from "seamless-immutable"
-import getImpliedVideoRegions from "./get-implied-video-regions"
-import { saveToHistory } from "./history-handler"
+  MainLayoutVideoAnnotationState,
+} from "../../MainLayout/types";
+import Immutable from "seamless-immutable";
+import getImpliedVideoRegions from "./get-implied-video-regions";
+import { saveToHistory } from "./history-handler";
 
 export default (state: MainLayoutVideoAnnotationState, action: Action) => {
   const copyImpliedRegions = () => {
-    return Immutable(saveToHistory(state, "Add Keyframe"))
-      .setIn(["keyframes", state.currentVideoTime || 0],     {
-      regions: getImpliedVideoRegions(
-        state.keyframes,
-        state.currentVideoTime
-      ),
-    })
-  }
+    return Immutable(saveToHistory(state, "Add Keyframe")).setIn(
+      ["keyframes", state.currentVideoTime || 0],
+      {
+        regions: getImpliedVideoRegions(
+          state.keyframes,
+          state.currentVideoTime
+        ),
+      }
+    );
+  };
 
   switch (action.type) {
     case "IMAGE_OR_VIDEO_LOADED": {
-      const { duration } = action.metadata
+      const { duration } = action.metadata;
       if (typeof duration === "number") {
-        return setIn(state, ["videoDuration"], duration * 1000)
+        return Immutable(state).setIn(["videoDuration"], duration * 1000);
       }
-      break
+      break;
     }
     case "HEADER_BUTTON_CLICKED": {
-      if('buttonName' in action) {
+      if ("buttonName" in action) {
         switch (action.buttonName.toLowerCase()) {
           case "play":
-            return setIn(state, ["videoPlaying"], true)
+            return Immutable(state).setIn(["videoPlaying"], true);
           case "pause":
-            return setIn(state, ["videoPlaying"], false)
+            return Immutable(state).setIn(["videoPlaying"], false);
         }
       }
-      break
+      break;
     }
     case "CHANGE_VIDEO_TIME": {
-      return setIn(state, ["currentVideoTime"], action.newTime)
+      return Immutable(state).setIn(["currentVideoTime"], action.newTime);
     }
     case "CHANGE_VIDEO_PLAYING": {
-      return setIn(state, ["videoPlaying"], action.isPlaying)
+      return Immutable(state).setIn(["videoPlaying"], action.isPlaying);
     }
     case "DELETE_KEYFRAME": {
-      return setIn(state, ["keyframes"], without(state.keyframes, action.time))
+      return Immutable(state).setIn(
+        ["keyframes"],
+        Immutable(state.keyframes).without(action.time)
+      );
     }
     default:
-      break
+      break;
   }
 
   // Before the user modifies regions, copy the interpolated regions over to a
@@ -64,23 +69,23 @@ export default (state: MainLayoutVideoAnnotationState, action: Action) => {
       case "CHANGE_REGION":
       case "DELETE_REGION":
       case "OPEN_REGION_EDITOR":
-        return copyImpliedRegions()
+        return copyImpliedRegions();
       case "MOUSE_DOWN": {
         switch (state.selectedTool) {
           case "create-point":
           case "create-polygon":
           case "create-box":
           case "create-keypoints":
-            return copyImpliedRegions()
+            return copyImpliedRegions();
           default:
-            break
+            break;
         }
-        break
+        break;
       }
       default:
-        break
+        break;
     }
   }
 
-  return state
-}
+  return state;
+};
