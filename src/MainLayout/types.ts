@@ -35,6 +35,15 @@ export type Image = {
   pixelSize?: { w: number; h: number };
   realSize?: { w: number; h: number; unitName: string };
   frameTime?: number;
+  cls?: string;
+  tags?: Array<string>;
+};
+
+export type VideoImage = {
+  time: number;
+  regions: Array<Region>;
+  cls?: string;
+  tags?: Array<string>;
 };
 
 export type Mode =
@@ -61,7 +70,6 @@ export type Mode =
       regionId: string;
       isNew: boolean;
     }
-  // TODO: new types, unknown interface
   | {
       mode: "DRAW_LINE";
       regionId: string;
@@ -125,7 +133,7 @@ export interface MainLayoutVideoAnnotationState extends MainLayoutStateBase {
   currentVideoTime: number;
   videoName?: string;
   videoPlaying: boolean;
-  videoDuration?: number;
+  videoDuration: number;
   keyframes: {
     [time: number]: {
       time: number;
@@ -163,7 +171,7 @@ export type Action =
   | {
       type: "ADD_POLYGON_POINT";
       polygon: Polygon;
-      point: { x: number; y: number };
+      point: [number, number];
       pointIndex: number;
     }
   | { type: "MOUSE_MOVE"; x: number; y: number }
@@ -179,9 +187,12 @@ export type Action =
   | { type: "CANCEL" }
   | { type: "SELECT_CLASSIFICATION"; cls: string }
   | { type: "ON_CLS_ADDED"; cls: string }
-  // TODO: unknown type delta
-  | { type: "CHANGE_IMAGE"; delta: Record<string, any> }
-  | { type: "CHANGE_VIDEO_TIME"; currentVideoTime: number }
-  | { type: "CHANGE_VIDEO_PLAYING"; videoPlaying: boolean }
-  | { type: "DELETE_KEYFRAME"; keyframes: any }
+  | { type: "CHANGE_IMAGE"; delta: { cls?: string; tags?: string[] } }
+  | { type: "CHANGE_VIDEO_TIME"; currentVideoTime: number; newTime: number }
+  | { type: "CHANGE_VIDEO_PLAYING"; videoPlaying: boolean; isPlaying: boolean }
+  | {
+      type: "DELETE_KEYFRAME";
+      keyframes: MainLayoutVideoAnnotationState["keyframes"];
+      time: number;
+    }
   | { type: "IMAGE_LOADED" };

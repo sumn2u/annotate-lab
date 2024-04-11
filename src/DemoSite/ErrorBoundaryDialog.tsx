@@ -1,20 +1,27 @@
 // @flow
 
-import React, { Component } from "react"
-import Dialog from "@mui/material/Dialog"
-import Button from "@mui/material/Button"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
+import { Component, ErrorInfo, ReactNode } from "react";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 
-export default class ErrorBoundaryDialog extends Component {
-  state = { hasError: false, err: "" }
-  componentDidCatch(err, info) {
+interface ErrorBoundaryDialogProps {
+  children: ReactNode;
+  onClose: () => void;
+}
+
+export default class ErrorBoundaryDialog extends Component<ErrorBoundaryDialogProps> {
+  state = { hasError: false, err: "" };
+
+  componentDidCatch(err: Error, info: ErrorInfo) {
     this.setState({
       hasError: true,
       err: err.toString() + "\n\n" + info.componentStack,
-    })
+    });
   }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -27,8 +34,8 @@ export default class ErrorBoundaryDialog extends Component {
             <Button onClick={this.props.onClose}>Close</Button>
           </DialogActions>
         </Dialog>
-      )
+      );
     }
-    return this.props.children
+    return this.props.children;
   }
 }

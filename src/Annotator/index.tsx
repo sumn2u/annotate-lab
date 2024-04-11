@@ -1,8 +1,8 @@
 // @flow
 
 import type { Action, Image, MainLayoutState } from "../MainLayout/types";
-import { useEffect, useReducer } from "react";
-import Immutable from "seamless-immutable";
+import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
+import Immutable, { ImmutableObject } from "seamless-immutable";
 
 import type { KeypointsDefinition } from "../ImageCanvas/region-tools";
 import MainLayout from "../MainLayout";
@@ -30,8 +30,8 @@ export type AnnotatorProps = {
   images?: Array<Image>;
   showPointDistances?: boolean;
   pointDistancePrecision?: number;
-  RegionEditLabel?: Node;
-  onExit: (state: MainLayoutState) => any;
+  RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
+  onExit: (state: MainLayoutState) => void;
   videoTime?: number;
   videoSrc?: string;
   keyframes?: Object;
@@ -102,58 +102,71 @@ export const Annotator = ({
     if (selectedImage === -1) selectedImage = undefined;
   }
   const annotationType = images ? "image" : "video";
-  const [state, dispatchToReducer] = useReducer(
-    historyHandler(
-      combineReducers(
-        annotationType === "image" ? imageReducer : videoReducer,
-        generalReducer
-      )
-    ),
-    Immutable({
-      annotationType,
-      showTags,
-      allowedArea,
-      showPointDistances,
-      pointDistancePrecision,
-      selectedTool,
-      fullImageSegmentationMode: fullImageSegmentationMode,
-      autoSegmentationOptions,
-      mode: null,
-      taskDescription,
-      showMask: true,
-      labelImages: imageClsList.length > 0 || imageTagList.length > 0,
-      regionClsList,
-      regionTagList,
-      imageClsList,
-      imageTagList,
-      currentVideoTime: videoTime,
-      enabledTools,
-      history: [],
-      videoName,
-      keypointDefinitions,
-      allowComments,
-      ...(annotationType === "image"
-        ? {
-            selectedImage,
-            images,
-            selectedImageFrameTime:
-              images && images.length > 0 ? images[0].frameTime : undefined,
-          }
-        : {
-            videoSrc,
-            keyframes,
-          }),
-    })
+  const combinedReducers = (
+    annotationType === "image"
+      ? combineReducers(imageReducer, generalReducer)
+      : combineReducers(videoReducer, generalReducer)
+  ) as (
+    state: ImmutableObject<MainLayoutState>,
+    action: Action
+  ) => ImmutableObject<MainLayoutState>;
+
+  const immutableState = Immutable({
+    annotationType,
+    showTags,
+    allowedArea,
+    showPointDistances,
+    pointDistancePrecision,
+    selectedTool,
+    fullImageSegmentationMode: fullImageSegmentationMode,
+    autoSegmentationOptions,
+    mode: null,
+    taskDescription,
+    showMask: true,
+    labelImages: imageClsList.length > 0 || imageTagList.length > 0,
+    regionClsList,
+    regionTagList,
+    imageClsList,
+    imageTagList,
+    currentVideoTime: videoTime,
+    enabledTools,
+    history: [],
+    videoName,
+    keypointDefinitions,
+    allowComments,
+    ...(annotationType === "image"
+      ? {
+          selectedImage,
+          images,
+          selectedImageFrameTime:
+            images && images.length > 0 ? images[0].frameTime : undefined,
+        }
+      : {
+          videoSrc,
+          keyframes,
+        }),
+  });
+  const [state, dispatchToReducer] = useReducer<
+    (state: MainLayoutState, action: Action) => MainLayoutState
+  >(
+    historyHandler(combinedReducers) as unknown as (
+      state: MainLayoutState,
+      action: Action
+    ) => MainLayoutState,
+    immutableState as unknown as MainLayoutState
   );
 
   const dispatch = useEventCallback((action: Action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {
+      const value = (Immutable(state) as ImmutableObject<MainLayoutState>)
+        .without("history")
+        .asMutable({ deep: true });
       if (["Exit", "Done", "Save", "Complete"].includes(action.buttonName)) {
-        return onExit(Immutable(state).without("history"));
+        return onExit(value);
       } else if (action.buttonName === "Next" && onNextImage) {
-        return onNextImage(Immutable(state).without("history"));
+        return onNextImage(value);
       } else if (action.buttonName === "Prev" && onPrevImage) {
-        return onPrevImage(Immutable(state).without("history"));
+        return onPrevImage(value);
       }
     }
     dispatchToReducer(action);
@@ -167,13 +180,15 @@ export const Annotator = ({
   });
 
   useEffect(() => {
-    if (selectedImage === undefined) return;
+    if (selectedImage === undefined || state.annotationType !== "image") return;
+    const image = state.images[selectedImage];
     dispatchToReducer({
       type: "SELECT_IMAGE",
       imageIndex: +selectedImage,
-      image: state.images[selectedImage],
+      image,
     });
-  }, [selectedImage, state.images]);
+    // @ts-ignore
+  }, [selectedImage, state.annotationType, state.images]);
 
   if (!images && !videoSrc)
     return 'Missing required prop "images" or "videoSrc"';

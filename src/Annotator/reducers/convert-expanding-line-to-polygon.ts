@@ -1,8 +1,10 @@
 // @flow
 
 import { clamp } from "../../utils/clamp";
+import { ExpandingLine } from "../../ImageCanvas/region-tools.tsx";
+import Immutable from "seamless-immutable";
 
-export default (expandingLine) => {
+export default (expandingLine: ExpandingLine) => {
   const expandingWidth = expandingLine.expandingWidth || 0.005;
   const pointPairs = expandingLine.points.map(({ x, y, angle, width }, i) => {
     if (!angle) {
@@ -19,8 +21,8 @@ export default (expandingLine) => {
       { x: x - dx, y: y - dy },
     ];
   });
-  const firstSection = pointPairs.map(([p1, p2]) => p1);
-  const secondSection = pointPairs.map(([p1, p2]) => p2).asMutable();
+  const firstSection = pointPairs.map(([p1]) => p1);
+  const secondSection = Immutable.asMutable(pointPairs.map(([_, p2]) => p2));
   secondSection.reverse();
 
   const newPoints = firstSection

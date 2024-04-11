@@ -2,6 +2,11 @@
   "name": "react-image-annotate",
   "version": "2.0.0",
   "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
@@ -11,11 +16,9 @@
     "@mui/icons-material": "^5.2.1",
     "@mui/material": "^5.2.3",
     "@mui/styles": "^5.2.3",
-    "@semantic-release/git": "^9.0.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoseg": "^0.0.12",
     "color-alpha": "^2.0.0",
-    "get-image-data": "^5.0.0",
     "lodash": "^4.17.21",
     "material-survey": "^2.1.0",
     "moment": "^2.30.0",
@@ -24,7 +27,6 @@
     "react-dom": "^18.0.2",
     "react-full-screen": "^1.1.1",
     "react-hotkeys": "^2.0.0",
-    "react-json-view": "^1.19.1",
     "react-markdown": "^9.0.0",
     "react-material-workspace-layout": "^1.0.10",
     "react-monaco-editor": "^0.55.0",
@@ -53,9 +55,9 @@
     "gh-pages": "^2.0.1",
     "prettier": "^2.5.1",
     "react-github-btn": "^1.1.1",
-    "shx": "^0.3.4",
     "typescript": "^5.2.2",
     "vite": "^5.2.7",
+    "vite-plugin-dts": "^3.8.1",
     "vite-plugin-node-polyfills": "^0.21.0",
     "vite-raw-plugin": "^1.0.2",
     "vite-tsconfig-paths": "^4.3.2"
@@ -72,7 +74,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "dist": "npm run build && cd dist && npm publish",
+    "publish": "npm run build && cd dist && npm publish",
     "prettier": "prettier --write \"src/**/*.js\"",
     "prettier:test": "prettier --check \"src/**/*.js\""
   },

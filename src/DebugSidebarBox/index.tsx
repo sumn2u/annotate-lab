@@ -1,13 +1,24 @@
 // @flow
 
-import React from "react"
-import SidebarBoxContainer from "../SidebarBoxContainer"
+import SidebarBoxContainer from "../SidebarBoxContainer";
+import { Action, MainLayoutState } from "../MainLayout/types.ts";
 
-export const DebugSidebarBox = ({ state, lastAction }: any) => {
-  const image = (state.images || [])[state.selectedImage]
+interface DebugSidebarBoxProps {
+  state: MainLayoutState;
+  lastAction: Action | undefined;
+}
+
+export const DebugSidebarBox = ({
+  state,
+  lastAction,
+}: DebugSidebarBoxProps) => {
+  const image =
+    state.annotationType === "image" && state.selectedImage
+      ? (state.images || [])[state.selectedImage]
+      : null;
   const region = image
     ? (image.regions || []).filter((r) => r.highlighted)
-    : null
+    : null;
 
   return (
     <SidebarBoxContainer title="Debug" icon={<span />} expandedByDefault>
@@ -27,10 +38,14 @@ export const DebugSidebarBox = ({ state, lastAction }: any) => {
         <div>
           <b>frame:</b>
         </div>
-        <pre>{JSON.stringify(state.selectedImageFrameTime, null, "  ")}</pre>
+        <pre>
+          {"selectedImageFrameTime" in state
+            ? JSON.stringify(state.selectedImageFrameTime, null, "  ")
+            : null}
+        </pre>
       </div>
     </SidebarBoxContainer>
-  )
-}
+  );
+};
 
-export default DebugSidebarBox
+export default DebugSidebarBox;

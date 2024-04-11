@@ -8,7 +8,7 @@ declare module "react-material-workspace-layout/Workspace" {
     headerItems?: Array<{ name: string }>;
     iconDictionary: Record<string, () => ReactElement>;
     headerLeftSide: Array<ReactElement>;
-    rightSidebarItems: Array<() => ReactElement>;
+    rightSidebarItems: Array<ReactElement>;
     onClickHeaderItem: (name: string) => void;
     onClickIconSidebarItem: (name: string) => void;
     selectedTools: Array<string>;
@@ -17,6 +17,7 @@ declare module "react-material-workspace-layout/Workspace" {
       helperText: string;
       alwaysShowing?: boolean;
     }>;
+    children: ReactElement;
   }
 
   const Workspace: ComponentType<WorkspaceProps>;

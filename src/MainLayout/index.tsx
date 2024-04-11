@@ -5,6 +5,8 @@ import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import {
   ComponentType,
   FunctionComponent,
+  MouseEvent,
+  MouseEventHandler,
   ReactElement,
   useCallback,
   useMemo,
@@ -36,10 +38,10 @@ import { HotKeys } from "react-hotkeys";
 import { grey } from "@mui/material/colors";
 import { notEmpty } from "../utils/not-empty.ts";
 import { ALL_TOOLS } from "./all-tools-list.ts";
+import Immutable from "seamless-immutable";
 
 // import Fullscreen from "../Fullscreen"
 
-const emptyArr: string[] = [];
 const theme = createTheme();
 const useStyles = makeStyles({
   container: {
@@ -110,7 +112,9 @@ export const MainLayout = ({
   const settings = useSettings();
   const fullScreenHandle = useFullScreenHandle();
 
-  const memoizedActionFns = useRef<Record<string, any>>({});
+  const memoizedActionFns = useRef<Record<string, (...args: any[]) => void>>(
+    {}
+  );
   const action = (type: Action["type"], ...params: Array<any>) => {
     const fnKey = `${type}(${params.join(",")})`;
     if (memoizedActionFns.current[fnKey])
@@ -127,7 +131,7 @@ export const MainLayout = ({
     return fn;
   };
 
-  const { currentImageIndex, activeImage } = getActiveImage(state);
+  const { currentImageIndex, activeImage } = getActiveImage(Immutable(state));
   let nextImage;
   if (currentImageIndex !== null && "images" in state) {
     nextImage = state.images[+currentImageIndex + 1];
@@ -143,14 +147,18 @@ export const MainLayout = ({
 
   let impliedVideoRegions = useImpliedVideoRegions(state);
 
-  const refocusOnMouseEvent = useCallback((e) => {
-    if (!innerContainerRef.current) return;
-    if (innerContainerRef.current.contains(document.activeElement)) return;
-    if (innerContainerRef.current.contains(e.target)) {
-      innerContainerRef.current.focus();
-      e.target.focus();
-    }
-  }, []);
+  const refocusOnMouseEvent: MouseEventHandler<HotKeys> = useCallback(
+    (e: MouseEvent<HotKeys>) => {
+      const target = e.target as HTMLElement;
+      if (!innerContainerRef.current) return;
+      if (innerContainerRef.current.contains(document.activeElement)) return;
+      if (innerContainerRef.current.contains(target)) {
+        innerContainerRef.current.focus();
+        target.focus();
+      }
+    },
+    []
+  );
 
   const canvas = (
     <ImageCanvas
@@ -159,7 +167,9 @@ export const MainLayout = ({
         settings.showCrosshairs &&
         !["select", "pan", "zoom"].includes(state.selectedTool)
       }
-      key={state.selectedImage}
+      key={
+        state.annotationType === "image" ? state.selectedImage : state.videoSrc
+      }
       showMask={state.showMask}
       fullImageSegmentationMode={state.fullImageSegmentationMode}
       autoSegmentationOptions={state.autoSegmentationOptions}
@@ -307,6 +317,52 @@ export const MainLayout = ({
     ) : null,
   ].filter(notEmpty);
 
+  const rightSidebarItems = [
+    debugModeOn && <DebugBox state={state} lastAction={state.lastAction} />,
+    state.taskDescription && (
+      <TaskDescription description={state.taskDescription} />
+    ),
+    state.regionClsList && (
+      <ClassSelectionMenu
+        selectedCls={state.selectedCls}
+        regionClsList={state.regionClsList}
+        onSelectCls={action("SELECT_CLASSIFICATION", "cls")}
+      />
+    ),
+    state.annotationType === "image" && state.labelImages && (
+      <TagsSidebarBox
+        currentImage={activeImage}
+        imageClsList={state.imageClsList}
+        imageTagList={state.imageTagList}
+        onChangeImage={action("CHANGE_IMAGE", "delta")}
+        expandedByDefault
+      />
+    ),
+    <RegionSelector
+      regions={activeImage ? activeImage.regions : []}
+      onSelectRegion={action("SELECT_REGION", "region")}
+      onDeleteRegion={action("DELETE_REGION", "region")}
+      onChangeRegion={action("CHANGE_REGION", "region")}
+    />,
+    state.annotationType === "video" && state.keyframes && (
+      <KeyframesSelector
+        onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
+        onDeleteKeyframe={action("DELETE_KEYFRAME", "time")}
+        currentVideoTime={state.currentVideoTime}
+        keyframes={state.keyframes}
+      />
+    ),
+    <HistorySidebarBox
+      history={state.history}
+      onRestoreHistory={action("RESTORE_HISTORY")}
+    />,
+  ].reduce((acc: ReactElement[], curr) => {
+    if (curr) {
+      acc.push(curr);
+    }
+    return acc;
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <FullScreenContainer>
@@ -348,61 +404,12 @@ export const MainLayout = ({
                 ].filter(Boolean) as string[]
               }
               iconSidebarItems={allSidebarIcons}
-              rightSidebarItems={[
-                debugModeOn && (
-                  <DebugBox state={debugModeOn} lastAction={state.lastAction} />
-                ),
-                state.taskDescription && (
-                  <TaskDescription description={state.taskDescription} />
-                ),
-                state.regionClsList && (
-                  <ClassSelectionMenu
-                    selectedCls={state.selectedCls}
-                    regionClsList={state.regionClsList}
-                    onSelectCls={action("SELECT_CLASSIFICATION", "cls")}
-                  />
-                ),
-                state.labelImages && (
-                  <TagsSidebarBox
-                    currentImage={activeImage}
-                    imageClsList={state.imageClsList}
-                    imageTagList={state.imageTagList}
-                    onChangeImage={action("CHANGE_IMAGE", "delta")}
-                    expandedByDefault
-                  />
-                ),
-                // (state.images?.length || 0) > 1 && (
-                //   <ImageSelector
-                //     onSelect={action("SELECT_REGION", "region")}
-                //     images={state.images}
-                //   />
-                // ),
-                <RegionSelector
-                  regions={activeImage ? activeImage.regions : emptyArr}
-                  onSelectRegion={action("SELECT_REGION", "region")}
-                  onDeleteRegion={action("DELETE_REGION", "region")}
-                  onChangeRegion={action("CHANGE_REGION", "region")}
-                />,
-                state.keyframes && (
-                  <KeyframesSelector
-                    onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
-                    onDeleteKeyframe={action("DELETE_KEYFRAME", "time")}
-                    onChangeCurrentTime={action("CHANGE_VIDEO_TIME", "newTime")}
-                    currentTime={state.currentVideoTime}
-                    duration={state.videoDuration}
-                    keyframes={state.keyframes}
-                  />
-                ),
-                <HistorySidebarBox
-                  history={state.history}
-                  onRestoreHistory={action("RESTORE_HISTORY")}
-                />,
-              ].filter(Boolean)}
+              rightSidebarItems={rightSidebarItems}
             >
               {canvas}
             </Workspace>
             <SettingsDialog
-              open={state.settingsOpen}
+              open={state.settingsOpen || false}
               onClose={() =>
                 dispatch({
                   type: "HEADER_BUTTON_CLICKED",

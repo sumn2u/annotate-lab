@@ -79,7 +79,7 @@ export type KeypointsDefinition = {
   [id: string]: {
     connections: Array<[KeypointId, KeypointId]>;
     landmarks: {
-      [key in keyof KeypointId]: KeypointDefinition;
+      [key: KeypointId]: KeypointDefinition;
     };
   };
 };
