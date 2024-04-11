@@ -1,16 +1,15 @@
-import React, { useEffect } from "react"
-import { styled } from "@mui/material/styles"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
-import Box from "@mui/material/Box"
-import * as muiColors from "@mui/material/colors"
-import SidebarBoxContainer from "../SidebarBoxContainer"
-import colors from "../colors"
-import BallotIcon from "@mui/icons-material/Ballot"
-import capitalize from "lodash/capitalize"
-import classnames from "classnames"
+import { useEffect } from "react";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import * as muiColors from "@mui/material/colors";
+import SidebarBoxContainer from "../SidebarBoxContainer";
+import colors from "../colors";
+import BallotIcon from "@mui/icons-material/Ballot";
+import capitalize from "lodash/capitalize";
+import classnames from "classnames";
 
-const theme = createTheme()
-const LabelContainer = styled("div")(({ theme }) => ({
+const theme = createTheme();
+const LabelContainer = styled("div")(() => ({
   display: "flex",
   paddingTop: 4,
   paddingBottom: 4,
@@ -27,23 +26,23 @@ const LabelContainer = styled("div")(({ theme }) => ({
     opacity: 1,
     fontWeight: "bold",
   },
-}))
-const Circle = styled("div")(({ theme }) => ({
+}));
+const Circle = styled("div")(() => ({
   width: 12,
   height: 12,
   borderRadius: 12,
   marginRight: 8,
-}))
-const Label = styled("div")(({ theme }) => ({
+}));
+const Label = styled("div")(() => ({
   fontSize: 11,
-}))
-const DashSep = styled("div")(({ theme }) => ({
+}));
+const DashSep = styled("div")(() => ({
   flexGrow: 1,
   borderBottom: `2px dotted ${muiColors.grey[300]}`,
   marginLeft: 8,
   marginRight: 8,
-}))
-const Number = styled("div")(({ theme }) => ({
+}));
+const Number = styled("div")(() => ({
   fontSize: 11,
   textAlign: "center",
   minWidth: 14,
@@ -51,34 +50,39 @@ const Number = styled("div")(({ theme }) => ({
   paddingBottom: 2,
   fontWeight: "bold",
   color: muiColors.grey[700],
-}))
+}));
+
+interface ClassSelectionMenuProps {
+  selectedCls?: string;
+  regionClsList: string[];
+  onSelectCls: (label?: string) => void;
+}
 
 export const ClassSelectionMenu = ({
   selectedCls,
   regionClsList,
   onSelectCls,
-}) => {
+}: ClassSelectionMenuProps) => {
   useEffect(() => {
-    const keyMapping = {}
+    const keyMapping: Record<string, (label?: string) => void> = {};
     for (let i = 0; i < 9 && i < regionClsList.length; i++) {
-      keyMapping[i + 1] = () => onSelectCls(regionClsList[i])
+      keyMapping[i + 1] = () => onSelectCls(regionClsList[i]);
     }
-    const onKeyDown = (e) => {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (keyMapping[e.key]) {
-        keyMapping[e.key]()
-        e.preventDefault()
-        e.stopPropagation()
+        keyMapping[e.key]();
+        e.preventDefault();
+        e.stopPropagation();
       }
-    }
-    window.addEventListener("keydown", onKeyDown)
-    return () => window.removeEventListener("keydown", onKeyDown)
-  }, [regionClsList, selectedCls])
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [regionClsList, selectedCls]);
 
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Classifications"
-        subTitle=""
         icon={<BallotIcon style={{ color: muiColors.grey[700] }} />}
         expandedByDefault
       >
@@ -102,7 +106,7 @@ export const ClassSelectionMenu = ({
         <Box pb={2} />
       </SidebarBoxContainer>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default ClassSelectionMenu
+export default ClassSelectionMenu;

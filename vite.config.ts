@@ -1,11 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-import { createRequire } from "module";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import markdownRawPlugin from "vite-raw-plugin";
+import { resolve } from "path";
+import dts from "vite-plugin-dts";
 
-const require = createRequire(import.meta.url);
 const process = {
   env: {},
   versions: {
@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
     // @ts-ignore
     plugins: [
       react(),
+      dts(),
       viteTsconfigPaths(),
       nodePolyfills(),
       markdownRawPlugin({
@@ -46,14 +47,14 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    // build: {
-    //   lib: {
-    //     entry: resolve(__dirname, 'src/lib.js'),
-    //     formats: ['es'],
-    //   },
-    //   rollupOptions: {
-    //     external: [ 'react', 'react-dom' ]
-    //   }
-    // }
+    build: {
+      lib: {
+        entry: resolve(__dirname, "src/lib.tsx"),
+        formats: ["es"],
+      },
+      rollupOptions: {
+        external: ["react", "react-dom"],
+      },
+    },
   };
 });

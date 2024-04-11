@@ -4,21 +4,25 @@ import type {
   Action,
   MainLayoutVideoAnnotationState,
 } from "../../MainLayout/types";
-import Immutable from "seamless-immutable";
+import Immutable, { ImmutableObject } from "seamless-immutable";
 import getImpliedVideoRegions from "./get-implied-video-regions";
 import { saveToHistory } from "./history-handler";
 
-export default (state: MainLayoutVideoAnnotationState, action: Action) => {
+export default (
+  state: ImmutableObject<MainLayoutVideoAnnotationState>,
+  action: Action
+): ImmutableObject<MainLayoutVideoAnnotationState> => {
   const copyImpliedRegions = () => {
-    return Immutable(saveToHistory(state, "Add Keyframe")).setIn(
-      ["keyframes", state.currentVideoTime || 0],
-      {
-        regions: getImpliedVideoRegions(
-          state.keyframes,
-          state.currentVideoTime
-        ),
-      }
-    );
+    const newState = Immutable(
+      saveToHistory(Immutable(state), "Add Keyframe")
+    ) as ImmutableObject<MainLayoutVideoAnnotationState>;
+
+    return newState.setIn(["keyframes", `${state.currentVideoTime || 0}`], {
+      regions: getImpliedVideoRegions(
+        newState.keyframes.asMutable({ deep: true }),
+        state.currentVideoTime
+      ),
+    });
   };
 
   switch (action.type) {
@@ -34,6 +38,7 @@ export default (state: MainLayoutVideoAnnotationState, action: Action) => {
         switch (action.buttonName.toLowerCase()) {
           case "play":
             return Immutable(state).setIn(["videoPlaying"], true);
+
           case "pause":
             return Immutable(state).setIn(["videoPlaying"], false);
         }

@@ -54,8 +54,28 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
       "create-line",
       "create-expanding-line",
       "show-mask",
+      "create-keypoints",
     ],
     showTags: true,
+    keypointDefinitions: {
+      "1": {
+        landmarks: {
+          "1": {
+            id: 1,
+            color: "0000FF",
+            label: "nose",
+            defaultPosition: [0.5, 0.5],
+          },
+          "2": {
+            id: 1,
+            color: "00FFFF",
+            label: "left-eye",
+            defaultPosition: [0.4, 0.4],
+          },
+        },
+        connections: [["1", "2"]],
+      },
+    },
     images: [
       {
         src: "https://images.unsplash.com/photo-1496905583330-eb54c7e5915a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
@@ -66,6 +86,7 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
         name: "bianchi-oltre-xr4",
       },
     ],
+    imageClsList: ["test", "test2"],
     showPointDistances: true,
     allowComments: true,
     fullImageSegmentationMode: true,
@@ -191,7 +212,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
                   );
                   changeCurrentError(null);
                 } catch (e) {
-                  changeCurrentError(e.toString());
+                  changeCurrentError(e?.toString() || null);
                 }
                 changeCurrentJSONValue(code);
               }}

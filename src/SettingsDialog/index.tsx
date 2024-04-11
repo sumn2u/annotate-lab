@@ -1,16 +1,20 @@
 // @flow
 
-import React from "react"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
-import Button from "@mui/material/Button"
-import Survey from "material-survey/components/Survey"
-import { useSettings } from "../SettingsProvider"
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import Survey from "material-survey/components/Survey";
+import { useSettings } from "../SettingsProvider";
 
-export const SettingsDialog = ({ open, onClose }) => {
-  const settings = useSettings()
+interface SettingsDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export const SettingsDialog = ({ open, onClose }: SettingsDialogProps) => {
+  const settings = useSettings();
   return (
     <Dialog open={open || false} onClose={onClose}>
       <DialogTitle>Settings</DialogTitle>
@@ -19,7 +23,11 @@ export const SettingsDialog = ({ open, onClose }) => {
           variant="flat"
           noActions
           defaultAnswers={settings}
-          onQuestionChange={(q, a, answers) => settings.changeSetting(q, a)}
+          onQuestionChange={(q, a) => {
+            if (settings.changeSetting) {
+              settings.changeSetting(q, a);
+            }
+          }}
           form={{
             questions: [
               {
@@ -52,7 +60,7 @@ export const SettingsDialog = ({ open, onClose }) => {
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default SettingsDialog
+export default SettingsDialog;

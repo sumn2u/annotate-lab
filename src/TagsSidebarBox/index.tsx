@@ -9,11 +9,11 @@ import Immutable from "seamless-immutable";
 import Select, { MultiValue } from "react-select";
 
 type Props = {
-  tags: Array<string>;
-  currentImage: { cls?: string; tags?: Array<string> };
+  currentImage: { cls?: string; tags?: Array<string> } | null;
   imageClsList?: Array<string>;
   imageTagList?: Array<string>;
   onChangeImage: (image: { cls?: string; tags?: Array<string> }) => void;
+  expandedByDefault?: boolean;
 };
 
 const emptyArr: string[] = [];
@@ -25,6 +25,7 @@ export const TagsSidebarBox = ({
   imageTagList = emptyArr,
   onChangeImage = noop,
 }: Props) => {
+  console.log(currentImage);
   const { tags = [], cls = null } = currentImage || {};
   const onChangeClassification = useEventCallback((o) =>
     onChangeImage({ cls: o.value })
@@ -89,8 +90,8 @@ export const TagsSidebarBox = ({
 export default memo(
   TagsSidebarBox,
   (prevProps, nextProps) =>
-    prevProps.currentImage.cls === nextProps.currentImage.cls &&
-    prevProps.currentImage.tags === nextProps.currentImage.tags &&
+    prevProps.currentImage?.cls === nextProps.currentImage?.cls &&
+    prevProps.currentImage?.tags === nextProps.currentImage?.tags &&
     prevProps.imageClsList === nextProps.imageClsList &&
     prevProps.imageTagList === nextProps.imageTagList
 );

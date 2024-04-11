@@ -1,17 +1,10 @@
 import Immutable, { ImmutableObject } from "seamless-immutable";
-import { Image, MainLayoutState } from "../../MainLayout/types";
-import type { Region } from "../../ImageCanvas/region-tools";
+import { Image, MainLayoutState, VideoImage } from "../../MainLayout/types";
 
 export default (state: ImmutableObject<MainLayoutState>) => {
   let currentImageIndex: number | null = null;
   let pathToActiveImage: string[] = [];
-  let activeImage:
-    | Image
-    | {
-        time: number;
-        regions: Array<Region>;
-      }
-    | null = null;
+  let activeImage: Image | VideoImage | null = null;
   if (state.annotationType === "image") {
     currentImageIndex = state.selectedImage ?? null;
     if (currentImageIndex === -1 || currentImageIndex === null) {

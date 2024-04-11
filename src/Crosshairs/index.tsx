@@ -1,35 +1,35 @@
 // @flow
 
-import React, { Fragment, useEffect, useState } from "react"
+import { Fragment } from "react";
 
 export const Crosshairs = ({
   mousePosition,
   x,
   y,
 }: {
-  mousePosition: { current: { x: number, y: number } },
-  x?: number,
-  y?: number,
+  mousePosition: { current: { x: number; y: number } };
+  x?: number;
+  y?: number;
 }) => {
-  const [forceRenderState, changeForceRenderState] = useState()
+  // const [forceRenderState, changeForceRenderState] = useState()
 
   if (mousePosition) {
-    x = mousePosition.current.x
-    y = mousePosition.current.y
+    x = mousePosition.current.x;
+    y = mousePosition.current.y;
   }
 
-  useEffect(() => {
-    if (!mousePosition) return
-    const interval = setInterval(() => {
-      if (x !== mousePosition.current.x || y !== mousePosition.current.y) {
-        changeForceRenderState([
-          mousePosition.current.x,
-          mousePosition.current.y,
-        ])
-      }
-    }, 10)
-    return () => clearInterval(interval)
-  })
+  // useEffect(() => {
+  //   if (!mousePosition) return
+  //   const interval = setInterval(() => {
+  //     if (x !== mousePosition.current.x || y !== mousePosition.current.y) {
+  //       changeForceRenderState([
+  //         mousePosition.current.x,
+  //         mousePosition.current.y,
+  //       ])
+  //     }
+  //   }, 10)
+  //   return () => clearInterval(interval)
+  // })
 
   return (
     <Fragment>
@@ -58,7 +58,7 @@ export const Crosshairs = ({
         }}
       />
     </Fragment>
-  )
-}
+  );
+};
 
-export default Crosshairs
+export default Crosshairs;

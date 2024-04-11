@@ -1,22 +1,23 @@
 // @flow weak
 
-import React from "react"
-import AddLocationIcon from "@mui/icons-material/AddLocation"
-import SidebarBoxContainer from "../SidebarBoxContainer"
-import * as colors from "@mui/material/colors"
-import getTimeString from "../KeyframeTimeline/get-time-string"
-import TrashIcon from "@mui/icons-material/Delete"
-import { styled } from "@mui/material/styles"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import AddLocationIcon from "@mui/icons-material/AddLocation";
+import SidebarBoxContainer from "../SidebarBoxContainer";
+import * as colors from "@mui/material/colors";
+import getTimeString from "../KeyframeTimeline/get-time-string";
+import TrashIcon from "@mui/icons-material/Delete";
+import { styled } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { MainLayoutVideoAnnotationState } from "../MainLayout/types.ts";
 
-const theme = createTheme()
-const KeyframeRow = styled("div")(({ theme }) => ({
+const theme = createTheme();
+const KeyframeRow = styled("div")(() => ({
   cursor: "pointer",
   display: "flex",
   alignItems: "center",
   padding: 8,
   fontSize: 14,
   color: colors.grey[700],
+  width: "100%",
   "&.current": {
     backgroundColor: colors.blue[100],
   },
@@ -43,27 +44,31 @@ const KeyframeRow = styled("div")(({ theme }) => ({
       },
     },
   },
-}))
+}));
 
+interface KeyframesSelectorSidebarBoxProps {
+  currentVideoTime?: number;
+  keyframes: MainLayoutVideoAnnotationState["keyframes"];
+  onChangeVideoTime: (time: number) => void;
+  onDeleteKeyframe: (time: number) => void;
+}
 const KeyframesSelectorSidebarBox = ({
   currentVideoTime,
   keyframes,
   onChangeVideoTime,
   onDeleteKeyframe,
-}) => {
-  const keyframeTimes = Object.keys(keyframes).map((t) => parseInt(t))
+}: KeyframesSelectorSidebarBoxProps) => {
+  const keyframeTimes = Object.keys(keyframes).map((t) => parseInt(t));
 
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Keyframes"
-        subTitle=""
         icon={<AddLocationIcon style={{ color: colors.grey[700] }} />}
         expandedByDefault
       >
         {keyframeTimes.map((t) => (
           <KeyframeRow
-            fullWidth
             key={t}
             className={currentVideoTime === t ? "current" : ""}
             onClick={() => onChangeVideoTime(t)}
@@ -77,8 +82,8 @@ const KeyframesSelectorSidebarBox = ({
             <div className="trash">
               <TrashIcon
                 onClick={(e) => {
-                  onDeleteKeyframe(t)
-                  e.stopPropagation()
+                  onDeleteKeyframe(t);
+                  e.stopPropagation();
                 }}
                 className="icon"
               />
@@ -87,7 +92,7 @@ const KeyframesSelectorSidebarBox = ({
         ))}
       </SidebarBoxContainer>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default KeyframesSelectorSidebarBox
+export default KeyframesSelectorSidebarBox;
