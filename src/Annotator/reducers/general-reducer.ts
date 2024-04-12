@@ -35,9 +35,13 @@ export default <T extends ImmutableObject<MainLayoutState>>(
 
   if (action.type === "ON_CLS_ADDED" && !!action.cls) {
     const oldRegionClsList = state.regionClsList;
+    const isStringRegionClsList = oldRegionClsList?.every(
+      (cls) => typeof cls === "string"
+    );
+    if (!isStringRegionClsList) return state;
     return {
       ...state,
-      regionClsList: oldRegionClsList?.concat(action.cls),
+      regionClsList: ((oldRegionClsList || []) as string[]).concat(action.cls),
     };
   }
 
@@ -148,7 +152,11 @@ export default <T extends ImmutableObject<MainLayoutState>>(
       if (oldRegion?.cls !== action.region.cls) {
         state = saveToHistory(state, "Change Region Classification") as T;
         const clsIndex = action.region.cls
-          ? state.regionClsList?.indexOf(action.region.cls)
+          ? state.regionClsList?.findIndex((cls) =>
+              typeof cls === "string"
+                ? cls === action.region.cls
+                : cls.id === action.region.cls
+            )
           : undefined;
         if (clsIndex !== undefined && clsIndex !== -1) {
           state = Immutable(state).setIn(
@@ -631,10 +639,13 @@ export default <T extends ImmutableObject<MainLayoutState>>(
       let newRegion;
       let defaultRegionCls = state.selectedCls,
         defaultRegionColor = "#ff0000";
-
       const clsIndex =
         defaultRegionCls && state.regionClsList
-          ? state.regionClsList.indexOf(defaultRegionCls)
+          ? state.regionClsList.findIndex((cls) =>
+              typeof cls === "string"
+                ? cls === defaultRegionCls
+                : cls.id === defaultRegionCls
+            )
           : -1;
       if (clsIndex !== -1) {
         defaultRegionColor = colors[clsIndex % colors.length];
@@ -745,7 +756,6 @@ export default <T extends ImmutableObject<MainLayoutState>>(
             return state;
           }
           state = saveToHistory(state, "Create Keypoints") as T;
-          console.log(state.keypointDefinitions);
           const [[keypointsDefinitionId, { landmarks }]] = Object.entries(
             state.keypointDefinitions
           );

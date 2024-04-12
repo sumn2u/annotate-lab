@@ -115,6 +115,7 @@ const MemoRowHeader = memo(RowHeader);
 
 interface RowProps {
   region: Region;
+  regionClsList?: Array<{ id: string; label: string }> | string[];
   highlighted?: boolean;
   onSelectRegion: (r: Region) => void;
   onDeleteRegion: (r: Region) => void;
@@ -129,6 +130,7 @@ interface RowProps {
 
 const Row = ({
   region: r,
+  regionClsList,
   highlighted,
   onSelectRegion,
   onDeleteRegion,
@@ -137,13 +139,18 @@ const Row = ({
   cls,
   index,
 }: RowProps) => {
+  const selectedCls = regionClsList?.find(
+    (c) => typeof c === "object" && c.id === cls
+  );
+  const clsLabel =
+    selectedCls && typeof selectedCls === "object" ? selectedCls.label : cls;
   return (
     <RowLayout
       header={false}
       highlighted={highlighted || false}
       onClick={() => onSelectRegion(r)}
       order={`#${index + 1}`}
-      classification={<Chip text={cls || ""} color={color || "#ddd"} />}
+      classification={<Chip text={clsLabel || ""} color={color || "#ddd"} />}
       area=""
       trash={<TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" />}
       lock={
@@ -192,6 +199,7 @@ const emptyArr: Region[] = [];
 
 interface RegionSelectorSidebarBoxProps {
   regions?: Region[];
+  regionClsList?: Array<{ id: string; label: string }> | string[];
   onDeleteRegion: (r: Region) => void;
   onChangeRegion: (r: Region) => void;
   onSelectRegion: (r: Region) => void;
@@ -199,6 +207,7 @@ interface RegionSelectorSidebarBoxProps {
 
 export const RegionSelectorSidebarBox = ({
   regions = emptyArr,
+  regionClsList,
   onDeleteRegion,
   onChangeRegion,
   onSelectRegion,
@@ -219,6 +228,7 @@ export const RegionSelectorSidebarBox = ({
               key={r.id}
               rId={r.id}
               {...r}
+              regionClsList={regionClsList}
               region={r}
               index={i}
               onSelectRegion={onSelectRegion}

@@ -45,7 +45,10 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
     taskDescription:
       "Annotate each image according to this _markdown_ specification.",
     regionTagList: ["has-bun"],
-    regionClsList: ["hotdog", "not-hotdog"],
+    regionClsList: [
+      { id: "1", label: "hotdog" },
+      { id: "2", label: "not-hotdog" },
+    ],
     enabledTools: [
       "select",
       "create-point",

@@ -101,7 +101,7 @@ export type MainLayoutStateBase = {
   mode: Mode;
   taskDescription: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
-  regionClsList?: Array<string>;
+  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
   imageClsList?: Array<string>;
   imageTagList?: Array<string>;

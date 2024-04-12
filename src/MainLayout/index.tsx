@@ -339,6 +339,7 @@ export const MainLayout = ({
       />
     ),
     <RegionSelector
+      regionClsList={state.regionClsList}
       regions={activeImage ? activeImage.regions : []}
       onSelectRegion={action("SELECT_REGION", "region")}
       onDeleteRegion={action("DELETE_REGION", "region")}

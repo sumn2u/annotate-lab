@@ -62,7 +62,7 @@ type Props = {
   showHighlightBox?: boolean;
   showPointDistances?: boolean;
   pointDistancePrecision?: number;
-  regionClsList?: Array<string>;
+  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
   allowedArea?: { x: number; y: number; w: number; h: number };
   RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
@@ -72,10 +72,10 @@ type Props = {
   autoSegmentationOptions?: AutosegOptions;
   modifyingAllowedArea?: boolean;
   allowComments?: boolean;
-  onChangeRegion: (region: Region) => any;
-  onBeginRegionEdit: (region: Region) => any;
-  onCloseRegionEdit: (region: Region) => any;
-  onDeleteRegion: (region: Region) => any;
+  onChangeRegion: (region: Region) => void;
+  onBeginRegionEdit: (region: Region) => void;
+  onCloseRegionEdit: (region: Region) => void;
+  onDeleteRegion: (region: Region) => void;
   onBeginBoxTransform: (region: Box, point: [number, number]) => void;
   onBeginMovePolygonPoint: (region: Polygon, index: number) => void;
   onBeginMoveKeypoint: (region: Keypoints, keypointId: string) => void;
@@ -481,7 +481,9 @@ export const ImageCanvas = ({
               hide={!showMask}
               autoSegmentationOptions={autoSegmentationOptions}
               imagePosition={imagePosition}
-              regionClsList={regionClsList}
+              regionClsList={regionClsList?.map((c) =>
+                typeof c === "string" ? c : c.id
+              )}
               imageSrc={imageSrc}
               regions={regions}
             />

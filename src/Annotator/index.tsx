@@ -20,7 +20,7 @@ export type AnnotatorProps = {
   taskDescription?: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
   regionTagList?: Array<string>;
-  regionClsList?: Array<string>;
+  regionClsList?: Array<string | { id: string; label: string }>;
   imageTagList?: Array<string>;
   imageClsList?: Array<string>;
   enabledTools?: Array<string>;
