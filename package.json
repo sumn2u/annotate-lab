@@ -2,8 +2,8 @@
   "name": "react-image-annotate",
   "version": "2.0.0",
   "type": "module",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "dist/react-image-annotate.js",
+  "types": "dist/lib.d.ts",
   "files": [
     "dist"
   ],
@@ -23,8 +23,8 @@
     "material-survey": "^2.1.0",
     "moment": "^2.30.0",
     "monaco-editor": "^0.47.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-full-screen": "^1.1.1",
     "react-hotkeys": "^2.0.0",
     "react-markdown": "^9.0.0",
@@ -63,10 +63,9 @@
     "vite-tsconfig-paths": "^4.3.2"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
-  "homepage": "/react-image-annotate",
   "repository": {
     "type": "git",
     "url": "https://github.com/UniversalDataTool/react-image-annotate.git"

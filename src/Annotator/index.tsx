@@ -1,6 +1,6 @@
 // @flow
 
-import type { Action, Image, MainLayoutState } from "../MainLayout/types";
+import { Action, Image, MainLayoutState, ToolEnum } from "../MainLayout/types";
 import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
 import Immutable, { ImmutableObject } from "seamless-immutable";
 
@@ -23,7 +23,7 @@ export type AnnotatorProps = {
   regionClsList?: Array<string | { id: string; label: string }>;
   imageTagList?: Array<string>;
   imageClsList?: Array<string>;
-  enabledTools?: Array<string>;
+  enabledTools?: Array<ToolEnum>;
   selectedTool?: String;
   showTags?: boolean;
   selectedImage?: string | number;
@@ -191,7 +191,7 @@ export const Annotator = ({
   }, [selectedImage, state.annotationType, state.images]);
 
   if (!images && !videoSrc)
-    return 'Missing required prop "images" or "videoSrc"';
+    return <div>Missing required prop "images" or "videoSrc"</div>;
 
   return (
     <SettingsProvider>
