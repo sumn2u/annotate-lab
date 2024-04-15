@@ -1,6 +1,6 @@
 // @flow
 
-import { Action, MainLayoutState } from "./types";
+import { Action, MainLayoutState, ToolEnum } from "./types";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import {
   ComponentType,
@@ -12,7 +12,6 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { makeStyles } from "@mui/styles";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 
 import ClassSelectionMenu from "../ClassSelectionMenu";
@@ -22,28 +21,28 @@ import ImageCanvas from "../ImageCanvas";
 import KeyframeTimeline from "../KeyframeTimeline";
 import KeyframesSelector from "../KeyframesSelectorSidebarBox";
 import RegionSelector from "../RegionSelectorSidebarBox";
-import SettingsDialog from "../SettingsDialog";
 import TagsSidebarBox from "../TagsSidebarBox";
 import TaskDescription from "../TaskDescriptionSidebarBox";
-import Workspace from "react-material-workspace-layout/Workspace";
 import classnames from "classnames";
 import getActiveImage from "../Annotator/reducers/get-active-image";
 import iconDictionary from "./icon-dictionary";
 import { useDispatchHotkeyHandlers } from "../ShortcutsManager";
 import useEventCallback from "use-event-callback";
 import useImpliedVideoRegions from "./use-implied-video-regions";
-import useKey from "use-key-hook";
+import { useKey } from "../utils/use-key-hook";
 import { useSettings } from "../SettingsProvider";
 import { HotKeys } from "react-hotkeys";
 import { grey } from "@mui/material/colors";
 import { notEmpty } from "../utils/not-empty.ts";
 import { ALL_TOOLS } from "./all-tools-list.ts";
 import Immutable from "seamless-immutable";
+import Workspace from "../workspace/Workspace";
+import { tss } from "tss-react/mui";
 
 // import Fullscreen from "../Fullscreen"
 
 const theme = createTheme();
-const useStyles = makeStyles({
+const useStyles = tss.create({
   container: {
     display: "flex",
     flexGrow: 1,
@@ -108,7 +107,7 @@ export const MainLayout = ({
   hideFullScreen = false,
   hideSave = false,
 }: Props) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const settings = useSettings();
   const fullScreenHandle = useFullScreenHandle();
 
@@ -299,7 +298,9 @@ export const MainLayout = ({
     if (a.name === "show-mask") {
       return state.fullImageSegmentationMode;
     }
-    return "alwaysShowing" in a || state.enabledTools.includes(a.name);
+    return (
+      "alwaysShowing" in a || state.enabledTools.includes(a.name as ToolEnum)
+    );
   });
 
   const headerLeftSide: ReactElement[] = [
@@ -402,22 +403,23 @@ export const MainLayout = ({
                   state.selectedTool,
                   state.showTags && "show-tags",
                   state.showMask && "show-mask",
-                ].filter(Boolean) as string[]
+                ].filter(Boolean) as ToolEnum[]
               }
               iconSidebarItems={allSidebarIcons}
               rightSidebarItems={rightSidebarItems}
             >
               {canvas}
             </Workspace>
-            <SettingsDialog
-              open={state.settingsOpen || false}
-              onClose={() =>
-                dispatch({
-                  type: "HEADER_BUTTON_CLICKED",
-                  buttonName: "Settings",
-                })
-              }
-            />
+            {/*TODO: rewrite to new version*/}
+            {/*<SettingsDialog*/}
+            {/*  open={state.settingsOpen || false}*/}
+            {/*  onClose={() =>*/}
+            {/*    dispatch({*/}
+            {/*      type: "HEADER_BUTTON_CLICKED",*/}
+            {/*      buttonName: "Settings",*/}
+            {/*    })*/}
+            {/*  }*/}
+            {/*/>*/}
           </HotKeys>
         </FullScreen>
       </FullScreenContainer>

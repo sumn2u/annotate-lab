@@ -17,6 +17,7 @@ declare module "material-survey/components/Survey" {
     name: string;
     defaultValue?: any;
     choices?: string[];
+
     [key: string]: any;
   }
 
@@ -29,6 +30,7 @@ declare module "material-survey/components/Survey" {
       questions: SurveyQuestion[];
     };
   }
+
   const Survey: ComponentType<SurveyProps>;
   export default Survey;
 }

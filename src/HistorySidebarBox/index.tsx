@@ -1,7 +1,6 @@
 // @flow
 
 import { memo } from "react";
-import { makeStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SidebarBoxContainer from "../SidebarBoxContainer";
 import HistoryIcon from "@mui/icons-material/History";
@@ -14,9 +13,10 @@ import UndoIcon from "@mui/icons-material/Undo";
 import moment from "moment";
 import { grey } from "@mui/material/colors";
 import isEqual from "lodash/isEqual";
+import { tss } from "tss-react/mui";
 
 const theme = createTheme();
-const useStyles = makeStyles(() => ({
+const useStyles = tss.create({
   emptyText: {
     fontSize: 14,
     fontWeight: "bold",
@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
     textAlign: "center",
     padding: 20,
   },
-}));
+});
 
 const listItemTextStyle = { paddingLeft: 16 };
 
@@ -35,7 +35,7 @@ export const HistorySidebarBox = ({
   history: Array<{ name: string; time: Date }>;
   onRestoreHistory: () => void;
 }) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <ThemeProvider theme={theme}>

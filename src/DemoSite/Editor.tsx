@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import { makeStyles } from "@mui/styles";
+import { tss } from "tss-react/mui";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Select from "react-select";
 import Code from "react-syntax-highlighter";
@@ -14,7 +14,7 @@ import MonacoEditor from "react-monaco-editor";
 import { AnnotatorProps } from "../Annotator";
 
 const theme = createTheme();
-const useStyles = makeStyles(() => ({
+const useStyles = tss.create(() => ({
   editBar: {
     padding: 10,
     borderBottom: "1px solid #ccc",
@@ -132,7 +132,7 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
 };
 
 const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
-  const c = useStyles();
+  const { classes } = useStyles();
   const [currentError, changeCurrentError] = useState<string | null>(null);
   const [selectedExample, changeSelectedExample] = useState(
     window.localStorage.getItem("customInput") ? "Custom" : "FULL"
@@ -144,13 +144,13 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <div className={c.editBar}>
+        <div className={classes.editBar}>
           <h3>React Image Annotate</h3>
           <div style={{ flexGrow: 1 }} />
           <div>
             <div style={{ display: "inline-flex" }}>
               <Select
-                className={c.select}
+                className={classes.select}
                 value={{ label: selectedExample, value: selectedExample }}
                 options={Object.keys(examples).map((s) => ({
                   label: s,
@@ -196,7 +196,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
           </div>
         </div>
         <div
-          className={c.contentArea}
+          className={classes.contentArea}
           style={
             currentError
               ? { border: "2px solid #f00" }
@@ -224,7 +224,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
             />
           </div>
         </div>
-        <div className={c.specificationArea}>
+        <div className={classes.specificationArea}>
           <h2>React Image Annotate Format</h2>
           <Code language="javascript">{`
 {

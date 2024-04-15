@@ -1,11 +1,7 @@
 import getHotkeyHelpText from "../utils/get-hotkey-help-text.ts";
-import { ToolEnum } from "./types.ts";
+import { IconSidebarItem } from "../types/common.ts";
 
-export const ALL_TOOLS: {
-  name: ToolEnum;
-  helperText: string;
-  alwaysShowing?: boolean;
-}[] = [
+export const ALL_TOOLS: IconSidebarItem[] = [
   {
     name: "select",
     helperText: "Select" + getHotkeyHelpText("select_tool"),
