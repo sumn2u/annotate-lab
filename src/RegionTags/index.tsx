@@ -23,7 +23,7 @@ type RegionTagsProps = {
   regions: Region[];
   projectRegionBox: ProjectBoxFn;
   mouseEvents: MouseEvents;
-  regionClsList?: string[];
+  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: string[];
   onBeginRegionEdit: (r: Region) => void;
   onChangeRegion: (r: Region) => void;

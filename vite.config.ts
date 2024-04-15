@@ -47,13 +47,24 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    resolve: {
+      alias: {
+        react: resolve("./node_modules/react"),
+        "react-dom": resolve("./node_modules/react-dom"),
+      },
+    },
     build: {
       lib: {
         entry: resolve(__dirname, "src/lib.tsx"),
         formats: ["es"],
       },
-      rollupOptions: {
-        external: ["react", "react-dom"],
+      external: ["react", "react-dom", "styled-components"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+          "styled-components": "styled",
+        },
       },
     },
   };

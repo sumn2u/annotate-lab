@@ -23,7 +23,7 @@ const useStyles = makeStyles(styles);
 type Props = {
   region: Region;
   editing?: boolean;
-  allowedClasses?: Array<string>;
+  allowedClasses?: Array<string> | Array<{ id: string; label: string }>;
   allowedTags?: Array<string>;
   cls?: string;
   tags?: Array<string>;
@@ -57,6 +57,21 @@ export const RegionLabel = ({
     if (commentInput) return commentInput.focus();
   };
 
+  const isCreatableAllowedClasses = typeof allowedClasses?.[0] === "string";
+  const selectedRegionClass =
+    allowedClasses?.find((c) => typeof c === "object" && c.id === region.cls) ||
+    region.cls;
+  const selectedLabel =
+    selectedRegionClass && typeof selectedRegionClass === "object"
+      ? selectedRegionClass.label
+      : region.cls;
+  const selectedValue =
+    selectedRegionClass && typeof selectedRegionClass === "object"
+      ? { label: selectedRegionClass.label, value: selectedRegionClass.id }
+      : region.cls
+      ? { label: region.cls, value: region.cls }
+      : null;
+
   return (
     <ThemeProvider theme={theme}>
       <Paper
@@ -73,7 +88,7 @@ export const RegionLabel = ({
                   className="circle"
                   style={{ backgroundColor: region.color }}
                 />
-                {region.cls}
+                {selectedLabel}
               </div>
             )}
             {region.tags && (
@@ -116,36 +131,59 @@ export const RegionLabel = ({
             </div>
             {(allowedClasses || []).length > 0 && (
               <div style={{ marginTop: 6 }}>
-                <CreatableSelect
-                  placeholder="Classification"
-                  onChange={(o, actionMeta) => {
-                    if (!o) return;
-                    if (
-                      actionMeta.action == "create-option" &&
-                      onRegionClassAdded
-                    ) {
-                      onRegionClassAdded(o.value);
-                    }
-                    // TODO: check if this is correct after update source
-                    onChange({
-                      ...region,
-                      cls: o.value,
-                    });
-                  }}
-                  value={
-                    region.cls ? { label: region.cls, value: region.cls } : null
-                  }
-                  options={asMutable(
-                    allowedClasses?.map((c) => ({ value: c, label: c }))
-                  )}
-                />
+                {isCreatableAllowedClasses ? (
+                  <CreatableSelect
+                    placeholder="Classification"
+                    onChange={(o, actionMeta) => {
+                      if (!o) return;
+                      if (
+                        actionMeta.action == "create-option" &&
+                        onRegionClassAdded
+                      ) {
+                        onRegionClassAdded(o.value);
+                      }
+                      onChange({
+                        ...region,
+                        cls: o.value,
+                      });
+                    }}
+                    value={selectedValue}
+                    options={asMutable(
+                      allowedClasses?.map((c) => {
+                        if (typeof c === "string") {
+                          return { value: c, label: c };
+                        }
+                        return { value: c.id, label: c.label };
+                      })
+                    )}
+                  />
+                ) : (
+                  <Select
+                    placeholder="Classification"
+                    onChange={(o) => {
+                      if (!o) return;
+                      onChange({
+                        ...region,
+                        cls: o.value,
+                      });
+                    }}
+                    value={selectedValue}
+                    options={asMutable(
+                      allowedClasses?.map((c) => {
+                        if (typeof c === "string") {
+                          return { value: c, label: c };
+                        }
+                        return { value: c.id, label: c.label };
+                      })
+                    )}
+                  />
+                )}
               </div>
             )}
             {(allowedTags || []).length > 0 && (
               <div style={{ marginTop: 4 }}>
                 <Select
                   onChange={(newTags) =>
-                    // TODO: check if this is correct after update source
                     onChange({
                       ...region,
                       tags: newTags.map((t) => t.value),

@@ -52,10 +52,14 @@ const Number = styled("div")(() => ({
   color: muiColors.grey[700],
 }));
 
+const getRegionValue = (item: string | { id: string; label: string }) => {
+  return typeof item === "string" ? item : item.id;
+};
+
 interface ClassSelectionMenuProps {
   selectedCls?: string;
-  regionClsList: string[];
-  onSelectCls: (label?: string) => void;
+  regionClsList: (string | { id: string; label: string })[];
+  onSelectCls: (value: string) => void;
 }
 
 export const ClassSelectionMenu = ({
@@ -64,9 +68,15 @@ export const ClassSelectionMenu = ({
   onSelectCls,
 }: ClassSelectionMenuProps) => {
   useEffect(() => {
-    const keyMapping: Record<string, (label?: string) => void> = {};
+    const keyMapping: Record<
+      string,
+      (item?: string | { id: string; label: string }) => void
+    > = {};
     for (let i = 0; i < 9 && i < regionClsList.length; i++) {
-      keyMapping[i + 1] = () => onSelectCls(regionClsList[i]);
+      keyMapping[i + 1] = () => {
+        const item = regionClsList[i];
+        onSelectCls(getRegionValue(item));
+      };
     }
     const onKeyDown = (e: KeyboardEvent) => {
       if (keyMapping[e.key]) {
@@ -86,19 +96,29 @@ export const ClassSelectionMenu = ({
         icon={<BallotIcon style={{ color: muiColors.grey[700] }} />}
         expandedByDefault
       >
-        {regionClsList.map((label, index) => (
+        {regionClsList.map((item, index) => (
           <LabelContainer
-            className={classnames({ selected: label === selectedCls })}
-            onClick={() => onSelectCls(label)}
+            className={classnames({
+              selected: getRegionValue(item) === selectedCls,
+            })}
+            onClick={() => onSelectCls(getRegionValue(item))}
           >
             <Circle
               style={{ backgroundColor: colors[index % colors.length] }}
             />
-            <Label className={classnames({ selected: label === selectedCls })}>
-              {capitalize(label)}
+            <Label
+              className={classnames({
+                selected: getRegionValue(item) === selectedCls,
+              })}
+            >
+              {capitalize(typeof item === "string" ? item : item.label)}
             </Label>
             <DashSep />
-            <Number className={classnames({ selected: label === selectedCls })}>
+            <Number
+              className={classnames({
+                selected: getRegionValue(item) === selectedCls,
+              })}
+            >
               {index < 9 ? `Key [${index + 1}]` : ""}
             </Number>
           </LabelContainer>

@@ -21,7 +21,6 @@ export type ToolEnum =
   | "create-pixel"
   | "create-expanding-line"
   | "create-keypoints"
-  // TODO: check, added new types
   | "modify-allowed-area"
   | "create-line"
   | "show-tags"
@@ -101,11 +100,11 @@ export type MainLayoutStateBase = {
   mode: Mode;
   taskDescription: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
-  regionClsList?: Array<string>;
+  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
   imageClsList?: Array<string>;
   imageTagList?: Array<string>;
-  enabledTools: Array<string>;
+  enabledTools: Array<ToolEnum>;
   history: Array<{ time: Date; state: MainLayoutState; name: string }>;
   keypointDefinitions: KeypointsDefinition;
   allowComments?: boolean;
