@@ -2,9 +2,7 @@
 
 import { memo, useRef } from "react";
 import Paper from "@mui/material/Paper";
-import { makeStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import styles from "./styles";
 import classnames from "classnames";
 import type { Region } from "../ImageCanvas/region-tools";
 import IconButton from "@mui/material/IconButton";
@@ -16,9 +14,57 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 import { asMutable } from "seamless-immutable";
+import { tss } from "tss-react/mui";
+import { grey } from "@mui/material/colors";
 
 const theme = createTheme();
-const useStyles = makeStyles(styles);
+const useStyles = tss.create({
+  regionInfo: {
+    fontSize: 12,
+    cursor: "default",
+    transition: "opacity 200ms",
+    opacity: 0.5,
+    "&:hover": {
+      opacity: 0.9,
+      cursor: "pointer",
+    },
+    "&.highlighted": {
+      opacity: 0.9,
+      "&:hover": {
+        opacity: 1,
+      },
+    },
+    // pointerEvents: "none",
+    fontWeight: 600,
+    color: grey[900],
+    padding: 8,
+    "& .name": {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      "& .circle": {
+        marginRight: 4,
+        boxShadow: "0px 0px 2px rgba(0,0,0,0.4)",
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+      },
+    },
+    "& .tags": {
+      "& .tag": {
+        color: grey[700],
+        display: "inline-block",
+        margin: 1,
+        fontSize: 10,
+        textDecoration: "underline",
+      },
+    },
+  },
+  commentBox: {
+    fontWeight: 400,
+    fontSize: 13,
+  },
+});
 
 type Props = {
   region: Region;
@@ -47,7 +93,7 @@ export const RegionLabel = ({
   onRegionClassAdded,
   allowComments,
 }: Props) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const commentInputRef = useRef<HTMLDivElement | null>(null);
   const onCommentInputClick = () => {
     // The TextField wraps the <input> tag with two divs

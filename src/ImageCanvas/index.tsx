@@ -19,9 +19,7 @@ import type {
   Polygon,
   Region,
 } from "./region-tools";
-import { makeStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import styles from "./styles";
 import PreventScrollToParents from "../PreventScrollToParents";
 import useWindowSize from "../hooks/use-window-size.tsx";
 import useMouse from "./use-mouse";
@@ -39,9 +37,34 @@ import RegionShapes from "../RegionShapes";
 import useWasdMode from "./use-wasd-mode";
 import { ImagePosition } from "../types/common.ts";
 import { AutosegOptions } from "autoseg/webworker";
+import { tss } from "tss-react/mui";
 
 const theme = createTheme();
-const useStyles = makeStyles(styles);
+const useStyles = tss.create({
+  canvas: { width: "100%", height: "100%", position: "relative", zIndex: 1 },
+  zoomIndicator: {
+    position: "absolute",
+    bottom: 16,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    color: "#fff",
+    opacity: 0.5,
+    fontWeight: "bolder",
+    fontSize: 14,
+    padding: 4,
+  },
+  fixedRegionLabel: {
+    position: "absolute",
+    zIndex: 10,
+    top: 10,
+    left: 10,
+    opacity: 0.5,
+    transition: "opacity 500ms",
+    "&:hover": {
+      opacity: 1,
+    },
+  },
+});
 
 type Props = {
   regions: Array<Region>;
@@ -163,7 +186,7 @@ export const ImageCanvas = ({
   keypointDefinitions,
   allowComments,
 }: Props) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const canvasEl = useRef<HTMLCanvasElement | null>(null);
   const layoutParams = useRef<CanvasLayoutParams | null>(null);
   const [dragging, changeDragging] = useRafState(false);

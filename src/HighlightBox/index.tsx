@@ -1,13 +1,13 @@
 // @flow
 
 import classnames from "classnames";
-import { makeStyles } from "@mui/styles";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import type { Point, Region } from "../ImageCanvas/region-tools.tsx";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
+import { tss } from "tss-react/mui";
 
 const theme = createTheme();
-const useStyles = makeStyles(() => ({
+const useStyles = tss.create(() => ({
   "@keyframes borderDance": {
     from: { strokeDashoffset: 0 },
     to: { strokeDashoffset: 100 },
@@ -58,7 +58,7 @@ export const HighlightBox = ({
   region: Region;
   pbox: { x: number; y: number; w: number; h: number };
 }) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   if (!pbox.w || pbox.w === Infinity) return null;
   if (!pbox.h || pbox.h === Infinity) return null;
   if (r.type === "expanding-line" && r.unfinished) return null;

@@ -2,9 +2,8 @@
 
 import { memo, ReactNode } from "react";
 import SidebarBoxContainer from "../SidebarBoxContainer";
-import { makeStyles } from "@mui/styles";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
+import { blue, grey } from "@mui/material/colors";
 import RegionIcon from "@mui/icons-material/PictureInPicture";
 import Grid from "@mui/material/Grid";
 import ReorderIcon from "@mui/icons-material/SwapVert";
@@ -14,13 +13,64 @@ import LockIcon from "@mui/icons-material/Lock";
 import UnlockIcon from "@mui/icons-material/LockOpen";
 import VisibleIcon from "@mui/icons-material/Visibility";
 import VisibleOffIcon from "@mui/icons-material/VisibilityOff";
-import styles from "./styles";
 import classnames from "classnames";
 import isEqual from "lodash/isEqual";
 import { Region } from "../ImageCanvas/region-tools.tsx";
+import { tss } from "tss-react/mui";
 
 const theme = createTheme();
-const useStyles = makeStyles(styles);
+const useStyles = tss.create({
+  container: {
+    fontSize: 11,
+    fontWeight: "bold",
+    color: grey[700],
+    "& .icon": {
+      marginTop: 4,
+      width: 16,
+      height: 16,
+    },
+    "& .icon2": {
+      opacity: 0.5,
+      width: 16,
+      height: 16,
+      transition: "200ms opacity",
+      "&:hover": {
+        cursor: "pointer",
+        opacity: 1,
+      },
+    },
+  },
+  row: {
+    padding: 4,
+    cursor: "pointer",
+    "&.header:hover": {
+      backgroundColor: "#fff",
+    },
+    "&.highlighted": {
+      backgroundColor: blue[100],
+    },
+    "&:hover": {
+      backgroundColor: blue[50],
+      color: grey[800],
+    },
+  },
+  chip: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 2,
+    borderRadius: 2,
+    paddingLeft: 4,
+    paddingRight: 4,
+    alignItems: "center",
+    "& .color": {
+      borderRadius: 5,
+      width: 10,
+      height: 10,
+      marginRight: 4,
+    },
+    "& .text": {},
+  },
+});
 
 const HeaderSep = styled("div")(() => ({
   borderTop: `1px solid ${grey[200]}`,
@@ -34,7 +84,7 @@ interface ChipProps {
 }
 
 const Chip = ({ color, text }: ChipProps) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <span className={classes.chip}>
       <div className="color" style={{ backgroundColor: color }} />
@@ -66,7 +116,7 @@ const RowLayout = ({
   visible,
   onClick,
 }: RowLayoutProps) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <div
       onClick={onClick}
@@ -212,7 +262,7 @@ export const RegionSelectorSidebarBox = ({
   onChangeRegion,
   onSelectRegion,
 }: RegionSelectorSidebarBoxProps) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
