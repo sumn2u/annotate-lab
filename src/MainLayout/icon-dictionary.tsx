@@ -3,13 +3,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartLine,
+  faCompress,
   faCrosshairs,
   faDrawPolygon,
   faEdit,
   faExpand,
   faGripLines,
   faHandPaper,
-  faHandPointer,
   faMask,
   faMousePointer,
   faSearch,
@@ -77,12 +77,10 @@ export const iconDictionary: Record<
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faExpand} />
   ),
   "full-screen": () => (
-    <FontAwesomeIcon
-      style={faStyle}
-      size="xs"
-      fixedWidth
-      icon={faHandPointer}
-    />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faExpand} />
+  ),
+  window: () => (
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faCompress} />
   ),
 };
 

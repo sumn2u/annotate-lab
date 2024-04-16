@@ -72,7 +72,7 @@ export const HeaderButton = ({
 }: HeaderButtonProps) => {
   const customIconMapping = useIconDictionary();
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider key={name} theme={theme}>
       <StyledButton onClick={onClick} disabled={disabled}>
         <ButtonInnerContent>
           <IconContainer textHidden={hideText}>

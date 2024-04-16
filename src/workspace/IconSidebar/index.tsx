@@ -3,7 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import { iconMapping } from "../icon-mapping.ts";
 import { useIconDictionary } from "../icon-dictionary.ts";
 import Tooltip from "@mui/material/Tooltip";
-import { ToolEnum } from "../../MainLayout/types.ts";
+import { AnnotatorToolEnum } from "../../MainLayout/types.ts";
 import { IconSidebarItem } from "../../types/common.ts";
 
 const theme = createTheme();
@@ -19,7 +19,7 @@ const Container = styled("div")(() => ({
 interface IconSidebarProps {
   items?: Array<IconSidebarItem>;
   onClickItem: (item: { name: string }) => void;
-  selectedTools?: Array<ToolEnum>;
+  selectedTools?: Array<AnnotatorToolEnum>;
 }
 
 export const IconSidebar = ({
@@ -42,7 +42,9 @@ export const IconSidebar = ({
               key={item.name}
               color={
                 item.selected ||
-                selectedTools.includes(item.name.toLowerCase() as ToolEnum)
+                selectedTools.includes(
+                  item.name.toLowerCase() as AnnotatorToolEnum
+                )
                   ? "primary"
                   : "default"
               }

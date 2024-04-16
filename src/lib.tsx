@@ -1,7 +1,11 @@
 // @flow
 
-import Annotator from "./Annotator"
+import Annotator from "./Annotator";
 
-export { Annotator }
+// re-export types
+export type { AnnotatorProps } from "./Annotator";
+export type { MainLayoutState, AnnotatorToolEnum } from "./MainLayout/types.ts";
 
-export default Annotator
+export { Annotator };
+
+export default Annotator;

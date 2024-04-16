@@ -98,6 +98,7 @@ export const ClassSelectionMenu = ({
       >
         {regionClsList.map((item, index) => (
           <LabelContainer
+            key={typeof item === "object" ? item.id : item}
             className={classnames({
               selected: getRegionValue(item) === selectedCls,
             })}

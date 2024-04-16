@@ -11,7 +11,7 @@ import type {
 } from "../ImageCanvas/region-tools.tsx";
 import { AutosegOptions } from "autoseg/webworker";
 
-export type ToolEnum =
+export type AnnotatorToolEnum =
   | "select"
   | "pan"
   | "zoom"
@@ -95,16 +95,17 @@ export type MainLayoutStateBase = {
   showMask: boolean;
   showPointDistances?: boolean;
   pointDistancePrecision?: number;
-  selectedTool: ToolEnum;
+  selectedTool: AnnotatorToolEnum;
   selectedCls?: string;
   mode: Mode;
   taskDescription: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
   regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
+  regionTagSingleSelection?: boolean;
   imageClsList?: Array<string>;
   imageTagList?: Array<string>;
-  enabledTools: Array<ToolEnum>;
+  enabledTools: Array<AnnotatorToolEnum>;
   history: Array<{ time: Date; state: MainLayoutState; name: string }>;
   keypointDefinitions: KeypointsDefinition;
   allowComments?: boolean;
@@ -182,7 +183,7 @@ export type Action =
   | { type: "DELETE_REGION"; region: Region }
   | { type: "DELETE_SELECTED_REGION" }
   | { type: "HEADER_BUTTON_CLICKED"; buttonName: string }
-  | { type: "SELECT_TOOL"; selectedTool: ToolEnum }
+  | { type: "SELECT_TOOL"; selectedTool: AnnotatorToolEnum }
   | { type: "CANCEL" }
   | { type: "SELECT_CLASSIFICATION"; cls: string }
   | { type: "ON_CLS_ADDED"; cls: string }

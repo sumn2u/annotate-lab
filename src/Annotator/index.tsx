@@ -1,6 +1,11 @@
 // @flow
 
-import { Action, Image, MainLayoutState, ToolEnum } from "../MainLayout/types";
+import {
+  Action,
+  AnnotatorToolEnum,
+  Image,
+  MainLayoutState,
+} from "../MainLayout/types";
 import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
 import Immutable, { ImmutableObject } from "seamless-immutable";
 
@@ -20,10 +25,11 @@ export type AnnotatorProps = {
   taskDescription?: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
   regionTagList?: Array<string>;
+  regionTagSingleSelection?: boolean;
   regionClsList?: Array<string | { id: string; label: string }>;
   imageTagList?: Array<string>;
   imageClsList?: Array<string>;
-  enabledTools?: Array<ToolEnum>;
+  enabledTools?: Array<AnnotatorToolEnum>;
   selectedTool?: String;
   showTags?: boolean;
   selectedImage?: string | number;
@@ -69,6 +75,7 @@ export const Annotator = ({
     "show-mask",
   ],
   selectedTool = "select",
+  regionTagSingleSelection = false,
   regionTagList = [],
   regionClsList = [],
   imageTagList = [],
@@ -126,6 +133,7 @@ export const Annotator = ({
     labelImages: imageClsList.length > 0 || imageTagList.length > 0,
     regionClsList,
     regionTagList,
+    regionTagSingleSelection,
     imageClsList,
     imageTagList,
     currentVideoTime: videoTime,

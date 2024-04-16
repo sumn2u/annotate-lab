@@ -986,7 +986,7 @@ export default <T extends ImmutableObject<MainLayoutState>>(
         case "help": {
           return state;
         }
-        case "fullscreen": {
+        case "full-screen": {
           return Immutable(state).setIn(["fullScreen"], true) as T;
         }
         case "exit fullscreen":

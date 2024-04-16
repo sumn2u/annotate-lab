@@ -6,7 +6,7 @@ import WorkContainer from "../WorkContainer";
 import { IconDictionaryContext } from "../icon-dictionary.ts";
 import { useMeasure } from "react-use";
 import IconSidebar from "../IconSidebar";
-import { ToolEnum } from "../../MainLayout/types.ts";
+import { AnnotatorToolEnum } from "../../MainLayout/types.ts";
 import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 
@@ -40,7 +40,7 @@ export interface WorkspaceProps {
   rightSidebarItems: Array<ReactElement>;
   onClickHeaderItem: (item: { name: string }) => void;
   onClickIconSidebarItem: (item: { name: string }) => void;
-  selectedTools: Array<ToolEnum>;
+  selectedTools: Array<AnnotatorToolEnum>;
   iconSidebarItems: Array<{
     name: string;
     helperText: string;

@@ -5,6 +5,7 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
 import markdownRawPlugin from "vite-raw-plugin";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
 const process = {
   env: {},
@@ -13,7 +14,7 @@ const process = {
   },
 };
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   // process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
   return {
     // depending on your application, base can also be "/"
@@ -24,6 +25,7 @@ export default defineConfig(({ mode }) => {
       dts(),
       viteTsconfigPaths(),
       nodePolyfills(),
+      peerDepsExternal(),
       markdownRawPlugin({
         fileRegex: /\.md$/,
       }),
@@ -46,25 +48,24 @@ export default defineConfig(({ mode }) => {
           global: "globalThis",
         },
       },
+      exclude: ["react", "react-dom"],
     },
-    // resolve: {
-    //   alias: {
-    //     react: resolve("./node_modules/react"),
-    //     "react-dom": resolve("./node_modules/react-dom"),
-    //   },
-    // },
     build: {
       lib: {
         entry: resolve(__dirname, "src/lib.tsx"),
         formats: ["es"],
       },
-      external: ["react", "react-dom"],
-      // output: {
-      //   globals: {
-      //     react: "React",
-      //     "react-dom": "ReactDOM",
-      //   },
-      // },
+      rollupOptions: {
+        external: ["react", "react-dom", "react/jsx-runtime"],
+        output: {
+          // Provide global variables to use in the UMD build
+          // for externalized deps
+          globals: {
+            react: "React",
+            "react-dom": "ReactDOM",
+          },
+        },
+      },
     },
   };
 });

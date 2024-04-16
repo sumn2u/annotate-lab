@@ -1,6 +1,6 @@
 // @flow
 
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import Theme from "./Theme";
 import DemoSite from "./DemoSite";
 import "./site.css";
@@ -13,4 +13,6 @@ const Site = () => {
   );
 };
 
-ReactDOM.render(<Site />, document.getElementById("root"));
+const container = document.getElementById("root")!;
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<Site />);

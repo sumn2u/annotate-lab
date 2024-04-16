@@ -1,7 +1,7 @@
 // @flow weak
 
 import Paper from "@mui/material/Paper";
-import DefaultRegionLabel from "../RegionLabel";
+import DefaultRegionLabel, { RegionLabelProps } from "../RegionLabel";
 import LockIcon from "@mui/icons-material/Lock";
 import { Region } from "../ImageCanvas/region-tools.tsx";
 import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
@@ -25,11 +25,15 @@ type RegionTagsProps = {
   mouseEvents: MouseEvents;
   regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: string[];
+  regionTagSingleSelection?: boolean;
   onBeginRegionEdit: (r: Region) => void;
   onChangeRegion: (r: Region) => void;
   onCloseRegionEdit: (r: Region) => void;
   onDeleteRegion: (r: Region) => void;
-  RegionEditLabel: ComponentType<any> | FunctionComponent<any> | null;
+  RegionEditLabel:
+    | ComponentType<RegionLabelProps>
+    | FunctionComponent<RegionLabelProps>
+    | null;
   onRegionClassAdded: (cls: string) => void;
   allowComments?: boolean;
 };
@@ -39,6 +43,7 @@ export const RegionTags = ({
   mouseEvents,
   regionClsList,
   regionTagList,
+  regionTagSingleSelection,
   onBeginRegionEdit,
   onChangeRegion,
   onCloseRegionEdit,
@@ -127,6 +132,7 @@ export const RegionTags = ({
             <RegionLabel
               allowedClasses={regionClsList}
               allowedTags={regionTagList}
+              tagSingleSelection={regionTagSingleSelection}
               onOpen={onBeginRegionEdit}
               onChange={onChangeRegion}
               onClose={onCloseRegionEdit}

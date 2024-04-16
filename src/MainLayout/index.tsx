@@ -1,6 +1,6 @@
 // @flow
 
-import { Action, MainLayoutState, ToolEnum } from "./types";
+import { Action, AnnotatorToolEnum, MainLayoutState } from "./types";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import {
   ComponentType,
@@ -38,6 +38,8 @@ import { ALL_TOOLS } from "./all-tools-list.ts";
 import Immutable from "seamless-immutable";
 import Workspace from "../workspace/Workspace";
 import { tss } from "tss-react/mui";
+import { RegionLabelProps } from "../RegionLabel";
+import SettingsDialog from "../SettingsDialog";
 
 // import Fullscreen from "../Fullscreen"
 
@@ -78,7 +80,10 @@ const FullScreenContainer = styled("div")(() => ({
 
 type Props = {
   state: MainLayoutState;
-  RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
+  RegionEditLabel?:
+    | ComponentType<RegionLabelProps>
+    | FunctionComponent<RegionLabelProps>
+    | null;
   dispatch: (action: Action) => void;
   alwaysShowNextButton?: boolean;
   alwaysShowPrevButton?: boolean;
@@ -177,6 +182,7 @@ export const MainLayout = ({
       modifyingAllowedArea={state.selectedTool === "modify-allowed-area"}
       regionClsList={state.regionClsList}
       regionTagList={state.regionTagList}
+      regionTagSingleSelection={state.regionTagSingleSelection}
       regions={
         state.annotationType === "image"
           ? activeImage?.regions || []
@@ -245,9 +251,9 @@ export const MainLayout = ({
   });
 
   const onClickHeaderItem = useEventCallback((item) => {
-    if (item.name === "Fullscreen") {
+    if (item.name === "full-screen") {
       fullScreenHandle.enter();
-    } else if (item.name === "Window") {
+    } else if (item.name === "window") {
       fullScreenHandle.exit();
     }
     dispatch({ type: "HEADER_BUTTON_CLICKED", buttonName: item.name });
@@ -274,7 +280,7 @@ export const MainLayout = ({
           activeImage?.regions && { name: "Clone" },
         !hideSettings && { name: "Settings" },
         !hideFullScreen &&
-          (state.fullScreen ? { name: "Window" } : { name: "Fullscreen" }),
+          (state.fullScreen ? { name: "window" } : { name: "full-screen" }),
         !hideSave && { name: "Save" },
       ].reduce((acc: { name: string }[], curr) => {
         if (curr) {
@@ -299,32 +305,40 @@ export const MainLayout = ({
       return state.fullImageSegmentationMode;
     }
     return (
-      "alwaysShowing" in a || state.enabledTools.includes(a.name as ToolEnum)
+      "alwaysShowing" in a ||
+      state.enabledTools.includes(a.name as AnnotatorToolEnum)
     );
   });
 
   const headerLeftSide: ReactElement[] = [
     state.annotationType === "video" ? (
       <KeyframeTimeline
+        key="KeyframeTimeline"
         currentTime={state.currentVideoTime}
         duration={state.videoDuration}
         onChangeCurrentTime={action("CHANGE_VIDEO_TIME", "newTime")}
         keyframes={state.keyframes}
       />
     ) : activeImage ? (
-      <div className={classes.headerTitle}>
+      <div key="active-item-name" className={classes.headerTitle}>
         {"name" in activeImage ? activeImage.name : ""}
       </div>
     ) : null,
   ].filter(notEmpty);
 
   const rightSidebarItems = [
-    debugModeOn && <DebugBox state={state} lastAction={state.lastAction} />,
+    debugModeOn && (
+      <DebugBox key="debuxBox" state={state} lastAction={state.lastAction} />
+    ),
     state.taskDescription && (
-      <TaskDescription description={state.taskDescription} />
+      <TaskDescription
+        key="taskDescription"
+        description={state.taskDescription}
+      />
     ),
     state.regionClsList && (
       <ClassSelectionMenu
+        key="classSelectionMenu"
         selectedCls={state.selectedCls}
         regionClsList={state.regionClsList}
         onSelectCls={action("SELECT_CLASSIFICATION", "cls")}
@@ -332,6 +346,7 @@ export const MainLayout = ({
     ),
     state.annotationType === "image" && state.labelImages && (
       <TagsSidebarBox
+        key="tagsSidebarBox"
         currentImage={activeImage}
         imageClsList={state.imageClsList}
         imageTagList={state.imageTagList}
@@ -340,6 +355,7 @@ export const MainLayout = ({
       />
     ),
     <RegionSelector
+      key="regionSelector"
       regionClsList={state.regionClsList}
       regions={activeImage ? activeImage.regions : []}
       onSelectRegion={action("SELECT_REGION", "region")}
@@ -348,6 +364,7 @@ export const MainLayout = ({
     />,
     state.annotationType === "video" && state.keyframes && (
       <KeyframesSelector
+        key="keyframesSelector"
         onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
         onDeleteKeyframe={action("DELETE_KEYFRAME", "time")}
         currentVideoTime={state.currentVideoTime}
@@ -355,6 +372,7 @@ export const MainLayout = ({
       />
     ),
     <HistorySidebarBox
+      key="historySidebarBox"
       history={state.history}
       onRestoreHistory={action("RESTORE_HISTORY")}
     />,
@@ -373,7 +391,7 @@ export const MainLayout = ({
           onChange={(open) => {
             if (!open) {
               fullScreenHandle.exit();
-              action("HEADER_BUTTON_CLICKED", "buttonName")("Window");
+              action("HEADER_BUTTON_CLICKED", "buttonName")("window");
             }
           }}
         >
@@ -403,23 +421,22 @@ export const MainLayout = ({
                   state.selectedTool,
                   state.showTags && "show-tags",
                   state.showMask && "show-mask",
-                ].filter(Boolean) as ToolEnum[]
+                ].filter(Boolean) as AnnotatorToolEnum[]
               }
               iconSidebarItems={allSidebarIcons}
               rightSidebarItems={rightSidebarItems}
             >
               {canvas}
             </Workspace>
-            {/*TODO: rewrite to new version*/}
-            {/*<SettingsDialog*/}
-            {/*  open={state.settingsOpen || false}*/}
-            {/*  onClose={() =>*/}
-            {/*    dispatch({*/}
-            {/*      type: "HEADER_BUTTON_CLICKED",*/}
-            {/*      buttonName: "Settings",*/}
-            {/*    })*/}
-            {/*  }*/}
-            {/*/>*/}
+            <SettingsDialog
+              open={state.settingsOpen || false}
+              onClose={() =>
+                dispatch({
+                  type: "HEADER_BUTTON_CLICKED",
+                  buttonName: "Settings",
+                })
+              }
+            />
           </HotKeys>
         </FullScreen>
       </FullScreenContainer>

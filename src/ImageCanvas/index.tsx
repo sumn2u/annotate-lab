@@ -28,7 +28,7 @@ import useExcludePattern from "../hooks/use-exclude-pattern";
 import { useRafState } from "react-use";
 import PointDistances from "../PointDistances";
 import RegionTags from "../RegionTags";
-import RegionLabel from "../RegionLabel";
+import RegionLabel, { RegionLabelProps } from "../RegionLabel";
 import ImageMask from "../ImageMask";
 import RegionSelectAndTransformBoxes from "../RegionSelectAndTransformBoxes";
 import VideoOrImageCanvasBackground from "../VideoOrImageCanvasBackground";
@@ -87,8 +87,12 @@ type Props = {
   pointDistancePrecision?: number;
   regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
+  regionTagSingleSelection?: boolean;
   allowedArea?: { x: number; y: number; w: number; h: number };
-  RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
+  RegionEditLabel?:
+    | ComponentType<RegionLabelProps>
+    | FunctionComponent<RegionLabelProps>
+    | null;
   videoPlaying?: boolean;
   zoomOnAllowedArea?: boolean;
   fullImageSegmentationMode?: boolean;
@@ -158,6 +162,7 @@ export const ImageCanvas = ({
   pointDistancePrecision = 0,
   regionClsList,
   regionTagList,
+  regionTagSingleSelection,
   showCrosshairs,
   showHighlightBox = true,
   showPointDistances,
@@ -447,6 +452,7 @@ export const ImageCanvas = ({
               mouseEvents={mouseEvents}
               regionClsList={regionClsList}
               regionTagList={regionTagList}
+              regionTagSingleSelection={regionTagSingleSelection}
               onBeginRegionEdit={onBeginRegionEdit}
               onChangeRegion={onChangeRegion}
               onCloseRegionEdit={onCloseRegionEdit}

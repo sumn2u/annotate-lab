@@ -44,7 +44,8 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
   FULL: () => ({
     taskDescription:
       "Annotate each image according to this _markdown_ specification.",
-    regionTagList: ["has-bun"],
+    regionTagList: ["has-bun", "has-sausage"],
+    regionTagSingleSelection: true,
     regionClsList: [
       { id: "1", label: "hotdog" },
       { id: "2", label: "not-hotdog" },
@@ -231,6 +232,7 @@ const Editor = ({ onOpenAnnotator, lastOutput }: any) => {
   taskDescription?: string, // markdown
   regionTagList?: Array<string>,
   regionClsList?: Array<string>,
+  regionTagSingleSelection?: boolean,
   imageTagList?: Array<string>,
   imageClsList?: Array<string>,
   // all tools are enabled by default

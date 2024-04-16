@@ -7,7 +7,10 @@ interface SettingsValue {
   showHighlightBox: boolean;
   wasdMode: boolean;
   videoPlaybackSpeed?: string;
-  changeSetting: (setting: string, value: any) => void;
+  changeSetting: (
+    setting: keyof Omit<SettingsValue, "changeSetting">,
+    value: any
+  ) => void;
 }
 
 const defaultSettings: SettingsValue = {

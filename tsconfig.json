@@ -19,7 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["./src/types"]
+    "typeRoots": ["./src/types"],
   },
   "include": ["src", "src/types"],
   "references": [{ "path": "./tsconfig.node.json" }]

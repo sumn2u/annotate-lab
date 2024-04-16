@@ -66,11 +66,12 @@ const useStyles = tss.create({
   },
 });
 
-type Props = {
+export type RegionLabelProps = {
   region: Region;
   editing?: boolean;
   allowedClasses?: Array<string> | Array<{ id: string; label: string }>;
   allowedTags?: Array<string>;
+  tagSingleSelection?: boolean;
   cls?: string;
   tags?: Array<string>;
   onDelete: (r: Region) => void;
@@ -86,13 +87,14 @@ export const RegionLabel = ({
   editing,
   allowedClasses,
   allowedTags,
+  tagSingleSelection,
   onDelete,
   onChange,
   onClose,
   onOpen,
   onRegionClassAdded,
   allowComments,
-}: Props) => {
+}: RegionLabelProps) => {
   const { classes } = useStyles();
   const commentInputRef = useRef<HTMLDivElement | null>(null);
   const onCommentInputClick = () => {
@@ -229,18 +231,27 @@ export const RegionLabel = ({
             {(allowedTags || []).length > 0 && (
               <div style={{ marginTop: 4 }}>
                 <Select
-                  onChange={(newTags) =>
-                    onChange({
-                      ...region,
-                      tags: newTags.map((t) => t.value),
-                    })
-                  }
+                  onChange={(newTags) => {
+                    if (Array.isArray(newTags)) {
+                      onChange({
+                        ...region,
+                        tags: newTags.map((t) => t.value),
+                      });
+                      return;
+                    }
+                    if (newTags && "value" in newTags) {
+                      onChange({
+                        ...region,
+                        tags: [newTags.value],
+                      });
+                    }
+                  }}
                   placeholder="Tags"
                   value={(region.tags || []).map((c) => ({
                     label: c,
                     value: c,
                   }))}
-                  isMulti
+                  isMulti={!tagSingleSelection}
                   options={asMutable(
                     allowedTags?.map((c) => ({ value: c, label: c }))
                   )}
