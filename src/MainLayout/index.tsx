@@ -259,7 +259,7 @@ export const MainLayout = ({
     }
     dispatch({
       type: "HEADER_BUTTON_CLICKED",
-      buttonName: btnName,
+      buttonName: item.name,
     });
   });
 
