@@ -9,7 +9,7 @@ import {
 import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
 import Immutable, { ImmutableObject } from "seamless-immutable";
 
-import type { KeypointsDefinition } from "../ImageCanvas/region-tools";
+import type { KeypointsDefinition } from "../types/region-tools.ts";
 import MainLayout from "../MainLayout";
 import SettingsProvider from "../SettingsProvider";
 import combineReducers from "./reducers/combine-reducers";

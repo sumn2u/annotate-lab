@@ -2,7 +2,7 @@
 
 import classnames from "classnames";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import type { Point, Region } from "../ImageCanvas/region-tools.tsx";
+import type { Point, Region } from "../types/region-tools.ts";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 import { tss } from "tss-react/mui";
 

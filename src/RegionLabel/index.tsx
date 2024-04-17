@@ -4,7 +4,7 @@ import { memo, useRef } from "react";
 import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import classnames from "classnames";
-import type { Region } from "../ImageCanvas/region-tools";
+import type { Region } from "../types/region-tools.ts";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import TrashIcon from "@mui/icons-material/Delete";

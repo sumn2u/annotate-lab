@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
-import { Point, Region } from "../ImageCanvas/region-tools.tsx";
+import { Point, Region } from "../types/region-tools.ts";
 
 const theme = createTheme();
 const Svg = styled("svg")(() => ({

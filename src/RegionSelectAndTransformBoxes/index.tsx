@@ -9,7 +9,7 @@ import {
   type Point,
   type Polygon,
   Region,
-} from "../ImageCanvas/region-tools.tsx";
+} from "../types/region-tools.ts";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
 import { CanvasLayoutParams } from "../ImageCanvas";

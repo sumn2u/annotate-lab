@@ -1,10 +1,6 @@
 // @flow
 import { Action, Image, MainLayoutState } from "../../MainLayout/types";
-import {
-  ExpandingLine,
-  moveRegion,
-  Region,
-} from "../../ImageCanvas/region-tools";
+import { ExpandingLine, moveRegion, Region } from "../../types/region-tools.ts";
 import Immutable, { ImmutableObject } from "seamless-immutable";
 import isEqual from "lodash/isEqual";
 import getActiveImage from "./get-active-image";
@@ -986,7 +982,7 @@ export default <T extends ImmutableObject<MainLayoutState>>(
         case "help": {
           return state;
         }
-        case "full-screen": {
+        case "fullscreen": {
           return Immutable(state).setIn(["fullScreen"], true) as T;
         }
         case "exit fullscreen":

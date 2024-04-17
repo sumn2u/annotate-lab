@@ -250,13 +250,17 @@ export const MainLayout = ({
     dispatch({ type: "SELECT_TOOL", selectedTool: item.name });
   });
 
-  const onClickHeaderItem = useEventCallback((item) => {
-    if (item.name === "full-screen") {
+  const onClickHeaderItem = useEventCallback((item: { name: string }) => {
+    const btnName = item.name.toLowerCase();
+    if (btnName === "fullscreen") {
       fullScreenHandle.enter();
-    } else if (item.name === "window") {
+    } else if (btnName === "window") {
       fullScreenHandle.exit();
     }
-    dispatch({ type: "HEADER_BUTTON_CLICKED", buttonName: item.name });
+    dispatch({
+      type: "HEADER_BUTTON_CLICKED",
+      buttonName: btnName,
+    });
   });
 
   const debugModeOn = Boolean(
@@ -280,7 +284,7 @@ export const MainLayout = ({
           activeImage?.regions && { name: "Clone" },
         !hideSettings && { name: "Settings" },
         !hideFullScreen &&
-          (state.fullScreen ? { name: "window" } : { name: "full-screen" }),
+          (state.fullScreen ? { name: "Window" } : { name: "Fullscreen" }),
         !hideSave && { name: "Save" },
       ].reduce((acc: { name: string }[], curr) => {
         if (curr) {

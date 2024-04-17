@@ -76,7 +76,7 @@ export const iconDictionary: Record<
   "create-keypoints": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faExpand} />
   ),
-  "full-screen": () => (
+  fullscreen: () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faExpand} />
   ),
   window: () => (

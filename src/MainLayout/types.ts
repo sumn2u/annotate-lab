@@ -8,7 +8,7 @@ import type {
   Point,
   Polygon,
   Region,
-} from "../ImageCanvas/region-tools.tsx";
+} from "../types/region-tools.ts";
 import { AutosegOptions } from "autoseg/webworker";
 
 export type AnnotatorToolEnum =

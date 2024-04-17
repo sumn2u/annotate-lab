@@ -4,7 +4,7 @@ import { CSSProperties, useEffect, useMemo, useState } from "react";
 import { useDebounce } from "react-use";
 import loadImage from "./load-image";
 import autoseg, { AutosegConfig } from "autoseg/webworker";
-import { Region } from "../ImageCanvas/region-tools.tsx";
+import { Region } from "../types/region-tools.ts";
 import { ImagePosition } from "../types/common.ts";
 
 function convertToUDTRegions(regions: Region[]) {

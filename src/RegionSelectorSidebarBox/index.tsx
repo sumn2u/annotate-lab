@@ -15,7 +15,7 @@ import VisibleIcon from "@mui/icons-material/Visibility";
 import VisibleOffIcon from "@mui/icons-material/VisibilityOff";
 import classnames from "classnames";
 import isEqual from "lodash/isEqual";
-import { Region } from "../ImageCanvas/region-tools.tsx";
+import { Region } from "../types/region-tools.ts";
 import { tss } from "tss-react/mui";
 
 const theme = createTheme();

@@ -1,6 +1,6 @@
 // @flow weak
 import useEventCallback from "use-event-callback";
-import { getEnclosingBox, Region } from "./region-tools.tsx";
+import { getEnclosingBox, Region } from "../types/region-tools.ts";
 import { CanvasLayoutParams } from "./index.tsx";
 import { IMatrix } from "transformation-matrix-js";
 import { MutableRefObject } from "react";

@@ -1,7 +1,7 @@
 // @flow
 
 import { clamp } from "../../utils/clamp";
-import { ExpandingLine } from "../../ImageCanvas/region-tools.tsx";
+import { ExpandingLine } from "../../types/region-tools.ts";
 import Immutable from "seamless-immutable";
 
 export default (expandingLine: ExpandingLine) => {

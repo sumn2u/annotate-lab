@@ -3,11 +3,7 @@
 import { memo } from "react";
 import colorAlpha from "color-alpha";
 import { clamp } from "../utils/clamp.ts";
-import {
-  KeypointsDefinition,
-  Line,
-  Region,
-} from "../ImageCanvas/region-tools.tsx";
+import { KeypointsDefinition, Line, Region } from "../types/region-tools.ts";
 import Immutable from "seamless-immutable";
 import { ImagePosition } from "../types/common.ts";
 

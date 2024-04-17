@@ -1,5 +1,5 @@
 // @flow
-import type { KeypointDefinition } from "../ImageCanvas/region-tools";
+import type { KeypointDefinition } from "../types/region-tools.ts";
 
 type Parameters = {
   center: { x: number; y: number };

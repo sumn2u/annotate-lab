@@ -1,6 +1,6 @@
 // @flow
 
-import type { Region } from "../../ImageCanvas/region-tools";
+import type { Region } from "../../types/region-tools.ts";
 import { MainLayoutVideoAnnotationState } from "../../MainLayout/types.ts";
 
 const emptyArr: Region[] = [];

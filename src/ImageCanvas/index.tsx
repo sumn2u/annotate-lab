@@ -18,7 +18,7 @@ import type {
   Point,
   Polygon,
   Region,
-} from "./region-tools";
+} from "../types/region-tools.ts";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import PreventScrollToParents from "../PreventScrollToParents";
 import useWindowSize from "../hooks/use-window-size.tsx";

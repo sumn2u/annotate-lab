@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import getImpliedVideoRegions from "../Annotator/reducers/get-implied-video-regions";
 import { MainLayoutState } from "./types";
-import { Region } from "../ImageCanvas/region-tools.tsx";
+import { Region } from "../types/region-tools.ts";
 
 const emptyArr: Region[] = [];
 
