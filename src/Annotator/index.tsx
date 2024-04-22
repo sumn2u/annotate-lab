@@ -5,6 +5,7 @@ import {
   AnnotatorToolEnum,
   Image,
   MainLayoutState,
+  RegionAllowedActions,
 } from "../MainLayout/types";
 import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
 import Immutable, { ImmutableObject } from "seamless-immutable";
@@ -26,6 +27,7 @@ export type AnnotatorProps = {
   allowedArea?: { x: number; y: number; w: number; h: number };
   regionTagList?: Array<string>;
   regionTagSingleSelection?: boolean;
+  regionAllowedActions?: Partial<RegionAllowedActions>;
   regionClsList?: Array<string | { id: string; label: string }>;
   imageTagList?: Array<string>;
   imageClsList?: Array<string>;
@@ -78,6 +80,11 @@ export const Annotator = ({
   regionTagSingleSelection = false,
   regionTagList = [],
   regionClsList = [],
+  regionAllowedActions = {
+    remove: true,
+    lock: true,
+    visibility: true,
+  },
   imageTagList = [],
   imageClsList = [],
   keyframes = {},
@@ -142,6 +149,11 @@ export const Annotator = ({
     videoName,
     keypointDefinitions,
     allowComments,
+    regionAllowedActions: {
+      remove: regionAllowedActions?.remove ?? true,
+      lock: regionAllowedActions?.lock ?? true,
+      visibility: regionAllowedActions?.visibility ?? true,
+    },
     ...(annotationType === "image"
       ? {
           selectedImage,
@@ -163,6 +175,7 @@ export const Annotator = ({
     ) => MainLayoutState,
     immutableState as unknown as MainLayoutState
   );
+  console.log(state);
 
   const dispatch = useEventCallback((action: Action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {

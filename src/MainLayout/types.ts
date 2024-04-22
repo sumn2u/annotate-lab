@@ -84,6 +84,11 @@ export type Mode =
   | {
       mode: "CREATE_POINT_LINE";
     };
+export type RegionAllowedActions = {
+  remove: boolean;
+  lock: boolean;
+  visibility: boolean;
+};
 
 export type MainLayoutStateBase = {
   annotationType: "video" | "image";
@@ -103,6 +108,7 @@ export type MainLayoutStateBase = {
   regionClsList?: Array<string> | Array<{ id: string; label: string }>;
   regionTagList?: Array<string>;
   regionTagSingleSelection?: boolean;
+  regionAllowedActions: RegionAllowedActions;
   imageClsList?: Array<string>;
   imageTagList?: Array<string>;
   enabledTools: Array<AnnotatorToolEnum>;
