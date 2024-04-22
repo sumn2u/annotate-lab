@@ -175,7 +175,6 @@ export const Annotator = ({
     ) => MainLayoutState,
     immutableState as unknown as MainLayoutState
   );
-  console.log(state);
 
   const dispatch = useEventCallback((action: Action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {
