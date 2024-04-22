@@ -1,6 +1,6 @@
 {
   "name": "@idapgroup/react-image-annotate",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "type": "module",
   "main": "dist/react-image-annotate.js",
   "types": "dist/lib.d.ts",
@@ -58,7 +58,10 @@
     "vite-plugin-node-polyfills": "^0.21.0",
     "vite-tsconfig-paths": "^4.3.2"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/idapgroup/react-image-annotate.git"

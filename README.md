@@ -94,8 +94,8 @@ cloned repo.
 
 1. `yarn install`
 2. `yarn add react react-dom`
-3. For production build need remove `react` and `react-dom` from `peerDependencies` in `package.json` and
-   run `yarn install` again - it fix the issue with `react` and `react-dom` versions.
+3. For production build need remove `react` and `react-dom` packages and
+   run `yarn build` - it fix the issue with `react` and `react-dom` versions in your project.
 
 A browser tab will automatically open with the project components.
 
