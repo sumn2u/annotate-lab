@@ -47,15 +47,13 @@ export default (
         prevState !== nextState &&
         Object.keys(typesToSaveWithHistory).includes(action.type)
       ) {
-        const historyItem = [
-          {
-            time: moment().toDate(),
-            state: (
-              Immutable(prevState) as ImmutableObject<MainLayoutState>
-            ).without("history"),
-            name: typesToSaveWithHistory[action.type] || action.type,
-          },
-        ];
+        const historyItem = {
+          time: moment().toDate(),
+          state: (
+            Immutable(prevState) as ImmutableObject<MainLayoutState>
+          ).without("history"),
+          name: typesToSaveWithHistory[action.type] || action.type,
+        };
         const prevItems = nextState.history || [];
         const newValue = [historyItem, ...prevItems].slice(0, 9);
         const immutableNextState = Immutable(
