@@ -130,7 +130,6 @@ export default <T extends ImmutableObject<MainLayoutState>>(
       ) as ImmutableObject<MainLayoutState>
     ).setIn(["selectedImageFrameTime"], frameTime);
   };
-
   switch (action.type) {
     case "@@INIT": {
       return state;
@@ -272,7 +271,6 @@ export default <T extends ImmutableObject<MainLayoutState>>(
     }
     case "MOUSE_MOVE": {
       const { x, y } = action;
-
       if (!state.mode) return state;
       if (!activeImage) return state;
       switch (state.mode.mode) {
@@ -381,7 +379,6 @@ export default <T extends ImmutableObject<MainLayoutState>>(
           const regionIndex = getRegionIndex(regionId);
           if (regionIndex === null || !activeImage.regions) return state;
           const box = activeImage.regions[regionIndex];
-
           return Immutable(state).setIn(
             [...pathToActiveImage, "regions", regionIndex.toString()],
             {
@@ -822,7 +819,7 @@ export default <T extends ImmutableObject<MainLayoutState>>(
               mode: null,
             } as T;
           }
-          break;
+          return { ...state, mode: null };
         }
         case "MOVE_REGION":
         case "RESIZE_KEYPOINTS":
@@ -880,7 +877,6 @@ export default <T extends ImmutableObject<MainLayoutState>>(
         default:
           return state;
       }
-      break;
     }
     case "OPEN_REGION_EDITOR": {
       const regionIndex = getRegionIndex(action.region);

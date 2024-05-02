@@ -1,6 +1,6 @@
 {
   "name": "@idapgroup/react-image-annotate",
-  "version": "2.0.16",
+  "version": "2.1.0",
   "type": "module",
   "main": "dist/react-image-annotate.js",
   "types": "dist/lib.d.ts",

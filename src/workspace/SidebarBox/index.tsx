@@ -35,7 +35,7 @@ const HeaderDiv = styled("div")(() => ({
   },
 }));
 const ContentDiv = styled("div")(() => ({
-  maxHeight: 300,
+  maxHeight: 200,
   overflowY: "auto",
   "&.noScroll": {
     overflowY: "visible",
