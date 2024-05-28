@@ -27,7 +27,8 @@ storybook-static
 dist
 server/venv
 server/output/categories/*
-
+server/__pycache__/
+server/db/__pycache__/
 secret.*
 secret.story.*
 *.secret.*
