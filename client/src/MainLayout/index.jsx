@@ -22,8 +22,8 @@ import getHotkeyHelpText from "../utils/get-hotkey-help-text"
 import {useKey} from "react-use"
 import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
-import {Save} from "@mui/icons-material"
-
+import {Save, Download} from "@mui/icons-material"
+import html2canvas from 'html2canvas';
 
 const emptyArr = []
 const theme = createTheme()
@@ -45,6 +45,7 @@ export const MainLayout = ({
   hidePrev = false,
   hideClone = false,
   hideSettings = false,
+  downloadImage = false,
   hideSave = false,
   allImages = [],
   onSelectJump,
@@ -93,6 +94,23 @@ export const MainLayout = ({
       e.target.focus()
     }
   }, [])
+
+  const downloadAnnotatedImage = () => {
+    const divElement = document.getElementById('image-container');
+    const svgElement = document.getElementById('region-svg');
+    html2canvas(divElement, {
+      width: svgElement.getAttribute('width'),
+      height: svgElement.getAttribute('height'),
+    }).then(canvas => {
+      const dataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = 'downloaded-image.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
 
   const canvas = (
     <ImageCanvas
@@ -176,7 +194,11 @@ export const MainLayout = ({
   })
 
   const onClickHeaderItem = useEventCallback((item) => {
+    if (item.name === "Download") {
+      downloadAnnotatedImage()
+    } else {
     dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
+    }
   })
   const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)
   const nextImageHasRegions =
@@ -222,6 +244,7 @@ export const MainLayout = ({
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone"},
                 !hideSettings && {name: "Settings"},
+                !downloadImage && {name: "Download", icon: <Download/>},
                 !hideSave && {name: "Save", icon: <Save />},
               ].filter(Boolean)}
               onClickHeaderItem={onClickHeaderItem}

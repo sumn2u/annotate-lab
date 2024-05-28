@@ -220,6 +220,7 @@ export const RegionShapes = ({
         width: iw,
         height: ih,
       }}
+      id="region-svg"
     >
       <WrappedRegionList
         key="wrapped-region-list"

@@ -362,7 +362,7 @@ export const ImageCanvas = ({
           style={{width: "100%", height: "100%"}}
           {...mouseEvents}
         >
-          <>
+          <div id="image-container">
             <canvas
               style={{opacity: 0.25, ...styles.canvas}}
               ref={canvasEl}
@@ -386,7 +386,7 @@ export const ImageCanvas = ({
               onChangeVideoTime={onChangeVideoTime}
               onChangeVideoPlaying={onChangeVideoPlaying}
             />
-          </>
+          </div>
         </PreventScrollToParents>
         <div style={styles.zoomIndicator}>
           {((1 / mat.a) * 100).toFixed(0)}%
