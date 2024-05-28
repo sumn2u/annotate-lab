@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+client/node_modules
 /.pnp
 .pnp.js
 
@@ -24,8 +24,11 @@ yarn-error.log*
 storybook-static
 
 dist
+server/venv
+server/output/categories/*
 
 secret.*
 secret.story.*
 *.secret.*
 .idea
+.idea/*
