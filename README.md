@@ -117,6 +117,11 @@ The application should now be running on [http://localhost:5173](http://localhos
     ```
 The server should now be running on [http://localhost:5000](http://localhost:5000).
 
+### Running using Docker.
+Navigate to the root directory and run the following command to start the application:
+```sh
+docker-compose up --build
+```
 
 ## Usage
 
