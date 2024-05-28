@@ -243,9 +243,9 @@ export const MainLayout = ({
                 !hideClone &&
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone"},
-                !hideSettings && {name: "Settings"},
                 !downloadImage && {name: "Download", icon: <Download/>},
                 !hideSave && {name: "Save", icon: <Save />},
+                !hideSettings && {name: "Settings"},
               ].filter(Boolean)}
               onClickHeaderItem={onClickHeaderItem}
               onClickIconSidebarItem={onClickIconSidebarItem}
