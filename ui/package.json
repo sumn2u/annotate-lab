@@ -1,0 +1,65 @@
+{
+  "name": "@starwit/react-image-annotate",
+  "version": "5.0.7-0",
+  "private": false,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/react-image-annotate.js",
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.1",
+    "@mui/icons-material": "^5.15.18",
+    "@mui/material": "^5.15.18",
+    "cash-dom": "^8.1.5",
+    "classnames": "^2.3.2",
+    "color-alpha": "^2.0.0",
+    "i18next": "^23.11.4",
+    "i18next-browser-languagedetector": "^8.0.0",
+    "lodash.debounce": "^4.0.8",
+    "moment": "^2.29.4",
+    "prop-types": "^15.8.1",
+    "react-draggable": "^4.4.6",
+    "react-hotkeys": "^2.0.0",
+    "react-i18next": "^14.1.1",
+    "react-remove-scroll": "^2.5.10",
+    "react-select": "^5.7.7",
+    "react-use": "^17.4.0",
+    "seamless-immutable": "^7.1.4",
+    "transformation-matrix-js": "^2.7.6",
+    "use-event-callback": "^0.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/starwit/react-image-annotate"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "scripts": {
+    "start": "vite --force",
+    "build": "vite build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
+    "@vitejs/plugin-react": "^4.1.0",
+    "axios": "^1.7.2",
+    "gh-pages": "^6.1.1",
+    "prettier": "^3.2.5",
+    "react-github-btn": "^1.1.1",
+    "vite": "^5.2.11",
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vite-raw-plugin": "^1.0.2"
+  },
+  "prettier": {
+    "semi": false
+  }
+}
