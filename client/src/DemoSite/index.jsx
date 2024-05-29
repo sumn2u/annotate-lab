@@ -34,7 +34,6 @@ const preprocessDataBeforeSend = (output) => {
     imageData['regions'].push(splitRegionData(regions[regionNum]))
   }
 
-  // console.log(imageData, 'imageData')
   saveData(imageData)
   }
 
@@ -45,7 +44,7 @@ export default () => {
   const labels = ["Car", "Bicycle"]
   const enabledTools = ["create-point", "create-box", "create-polygon", "create-line", "create-expanding-line"]
   const [imageNames, setImageNames] = useState([])
-  // const [selectedImage, setSelectedImage] = useState(null)
+
   const [loading, setLoading] = useState(true); // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
 
@@ -54,7 +53,6 @@ export default () => {
     })[0]
 
     let selectedImageIndex = imageNames.indexOf(selectedImage)
-    // console.log(selectedImageIndex, 'selectedImageIndex')
     changeSelectedImageIndex(selectedImageIndex)
   }
 
