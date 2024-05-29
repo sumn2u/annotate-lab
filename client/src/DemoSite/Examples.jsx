@@ -5,10 +5,10 @@ const userReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_CLASSIFICATION": {
       switch (action.cls) {
-        case "Line-Crossing": {
-          return setIn(state, ["selectedTool"], "create-line");
+        case "Car": {
+          return setIn(state, ["selectedTool"], "create-box");
         }
-        case "Area-Occupancy": {
+        case "Bicycle": {
           return setIn(state, ["selectedTool"], "create-polygon");
         }
       }
@@ -54,7 +54,7 @@ export const examples = {
     taskDescription:
       "Annotate each image according to this _markdown_ specification.",
     regionTagList: [],
-    regionClsList: ["Line-Crossing", "Area-Occupancy"],
+    regionClsList: ["Car", "Bicycle"],
     preselectCls: "car",
     showTags: false,
     allowComments: false,

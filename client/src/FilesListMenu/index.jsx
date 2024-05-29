@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Box from "@mui/material/Box"
 import * as muiColors from "@mui/material/colors"
 import SidebarBoxContainer from "../SidebarBoxContainer"
-import ImageIcon from '@mui/icons-material/Image';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import capitalize from "lodash/capitalize"
 import classnames from "classnames"
 import Checkbox from "@mui/material/Checkbox"
@@ -78,9 +78,9 @@ export const FilesListMenu = ({
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
-        title="Files List"
+        title={`Images (${allImages.length > 0 ? allImages.length : 0})`}
         subTitle=""
-        icon={<ImageIcon style={{ color: muiColors.grey[700] }} />}
+        icon={<CollectionsIcon style={{ color: muiColors.grey[700] }} />}
         noScroll={true}
         expandedByDefault
       >

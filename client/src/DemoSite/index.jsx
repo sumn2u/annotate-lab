@@ -10,10 +10,10 @@ const userReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_CLASSIFICATION": {
       switch (action.cls) {
-        case "Line-Crossing": {
-          return setIn(state, ["selectedTool"], "create-line");
+        case "Car": {
+          return setIn(state, ["selectedTool"], "create-box");
         }
-        case "Area-Occupancy": {
+        case "Bicycle": {
           return setIn(state, ["selectedTool"], "create-polygon");
         }
       }
@@ -42,7 +42,7 @@ const preprocessDataBeforeSend = (output) => {
 export default () => {
 
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
-  const labels = ["Line-Crossing", "Area-Occupancy"]
+  const labels = ["Car", "Bicycle"]
   const enabledTools = ["create-point", "create-box", "create-polygon", "create-line", "create-expanding-line"]
   const [imageNames, setImageNames] = useState([])
   // const [selectedImage, setSelectedImage] = useState(null)
@@ -100,6 +100,7 @@ export default () => {
       }}
       preselectCls="Line-Crossing"
       onSelectJump={onSelectJumpHandle}
+      showTags={true}
       onNextImage={() => {
         changeSelectedImageIndex((selectedImageIndex + 1) % imageNames.length)
         console.log(selectedImageIndex, 'selectedImageIndex')

@@ -24,6 +24,7 @@ import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
 import {Save, Download} from "@mui/icons-material"
 import html2canvas from 'html2canvas';
+import capitalize from "lodash/capitalize"
 
 const emptyArr = []
 const theme = createTheme()
@@ -229,7 +230,7 @@ export const MainLayout = ({
                     keyframes={state.keyframes}
                   />
                 ) : activeImage ? (
-                  <div key="activeImage" style={styles.headerTitle}>{activeImage.name}</div>
+                  <div key="activeImage" style={styles.headerTitle}>{capitalize(activeImage.name)}</div>
                 ) : null,
               ].filter(Boolean)}
               headerItems={[
