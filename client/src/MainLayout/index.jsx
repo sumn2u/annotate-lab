@@ -22,7 +22,7 @@ import getHotkeyHelpText from "../utils/get-hotkey-help-text"
 import {useKey} from "react-use"
 import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
-import {Save, Download} from "@mui/icons-material"
+import {Save, Download, ExitToApp} from "@mui/icons-material"
 import html2canvas from 'html2canvas';
 import capitalize from "lodash/capitalize"
 
@@ -113,6 +113,10 @@ export const MainLayout = ({
     });
   };
 
+  const logout = () => {
+    window.localStorage.removeItem("__REACT_WORKSPACE_CONFIGURATION");
+    window.location.reload();
+  }
   const canvas = (
     <ImageCanvas
       {...settings}
@@ -197,8 +201,10 @@ export const MainLayout = ({
   const onClickHeaderItem = useEventCallback((item) => {
     if (item.name === "Download") {
       downloadAnnotatedImage()
-    } else {
-    dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
+    } else if(item.name === "Exit"){
+      logout()
+    }else {
+      dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
     }
   })
   const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)
@@ -247,6 +253,7 @@ export const MainLayout = ({
                 !downloadImage && {name: "Download", icon: <Download/>},
                 !hideSave && {name: "Save", icon: <Save />},
                 !hideSettings && {name: "Settings"},
+                {name: "Exit", icon: <ExitToApp />}
               ].filter(Boolean)}
               onClickHeaderItem={onClickHeaderItem}
               onClickIconSidebarItem={onClickIconSidebarItem}

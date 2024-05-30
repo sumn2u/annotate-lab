@@ -4,3 +4,9 @@ body {
   margin: 0;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
+
+/* Custom CSS for adjusting input height */
+.MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-input {
+  /* Add your desired height value */
+  height: 5px; /* Example height */
+}

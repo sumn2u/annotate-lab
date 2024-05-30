@@ -113,11 +113,9 @@ export default (state, action) => {
       return setNewImage(action.image, action.imageIndex)
     }
     case "SELECT_CLASSIFICATION": {
-      console.log(activeImage.selectedClsList, 'activeImage.selectedClsList', activeImage)
       let selectedClsList = activeImage.selectedClsList || []
       selectedClsList = selectedClsList.indexOf(action.cls) !== -1 ? arrayRemove(selectedClsList, action.cls) : selectedClsList.concat([action.cls])
       selectedClsList = selectedClsList.filter(item => item !== '')
-      console.log(selectedClsList, 'selectedClsList')
       state = setIn(state, [...pathToActiveImage, 'selectedClsList'], selectedClsList)
       return setIn(state, ["selectedCls"], action.cls)
     }

@@ -4,16 +4,17 @@ import React, { useEffect, useState } from "react"
 import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-server'
 import { getImages } from "../utils/get-data-from-server";
 import {setIn} from 'seamless-immutable';
+import SetupPage from "../SetupPage";
 
 
 const userReducer = (state, action) => {
   switch (action.type) {
     case "SELECT_CLASSIFICATION": {
       switch (action.cls) {
-        case "Car": {
+        case "One": {
           return setIn(state, ["selectedTool"], "create-box");
         }
-        case "Bicycle": {
+        case "Two": {
           return setIn(state, ["selectedTool"], "create-polygon");
         }
       }
@@ -41,10 +42,15 @@ const preprocessDataBeforeSend = (output) => {
 export default () => {
 
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
-  const labels = ["Car", "Bicycle"]
-  const enabledTools = ["create-point", "create-box", "create-polygon", "create-line", "create-expanding-line"]
+  const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
-
+  const [settings, setSettings] =  useState({
+    dataTask: null,
+    configuration: {
+      multiple: false,
+      labels: []
+    }
+  })
   const [loading, setLoading] = useState(true); // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
 
@@ -54,6 +60,43 @@ export default () => {
 
     let selectedImageIndex = imageNames.indexOf(selectedImage)
     changeSelectedImageIndex(selectedImageIndex)
+  }
+  
+  const getEnabledTools = (taskType) => {
+    if (taskType === 'Image Classification') {
+      return ["create-box", "create-polygon", "create-point"]
+    } else if (taskType === 'Image Segmentation') {
+      return ["create-polygon"]
+    }
+  }
+  const setConfiguration = (settingsPayload) => {
+    const { type, payload } = settingsPayload;
+
+    if (type === 'SET_DATATYPE') {
+      setSettings(prevSettings => {
+        return {
+          ...prevSettings,
+          dataTask: payload
+        };
+      });
+    }else if (type === 'UPDATE_CONFIGURATION') {
+      setSettings(prevSettings => {
+        return {
+          ...prevSettings,
+          configuration: payload
+        };
+      });
+    }
+  };
+
+ 
+  const preloadConfiguration = () => {
+     // get last saved configuration
+     const savedConfiguration = JSON.parse(window.localStorage.__REACT_WORKSPACE_CONFIGURATION || "{}");
+     if (savedConfiguration.configuration.labels.length > 0) {
+       setSettings(savedConfiguration);
+       setShowLabel(true)
+     }
   }
 
   useEffect(() => {
@@ -71,6 +114,7 @@ export default () => {
 
         setImageNames(extractedNames);
         setLoading(false); // Set loading to false when data is fetched
+        preloadConfiguration()
       } catch (error) {
         console.error('Failed to fetch image names:', error);
       }
@@ -82,26 +126,24 @@ export default () => {
 
   return (
     <div>
-    {loading ? ( // Render loading indicator if loading is true
-        <div>Loading...</div>
+    { !showLabel ? ( // Render loading indicator if loading is true
+        <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel}/>
       ) : (
     <Annotator
       taskDescription="Classify Waste Materials."
       images={imageNames}
-      enabledTools={enabledTools}
-      regionClsList={labels}
+      enabledTools={getEnabledTools(settings.dataTask) || []}
+      regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
       enabledRegionProps= {["name", "class"]}
       userReducer= {userReducer}
       onExit={(output) => {
         preprocessDataBeforeSend(output)
       }}
-      preselectCls="Line-Crossing"
       onSelectJump={onSelectJumpHandle}
-      showTags={true}
+      showTags={false}
       onNextImage={() => {
         changeSelectedImageIndex((selectedImageIndex + 1) % imageNames.length)
-        console.log(selectedImageIndex, 'selectedImageIndex')
       }}
       onPrevImage={() => {
         changeSelectedImageIndex((selectedImageIndex - 1 + imageNames.length) % imageNames.length)
