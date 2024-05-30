@@ -145,7 +145,7 @@ export default () => {
         preprocessDataBeforeSend(output)
       }}
       onSelectJump={onSelectJumpHandle}
-      showTags={false}
+      showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}
       onNextImage={() => {
         changeSelectedImageIndex((selectedImageIndex + 1) % imageNames.length)
@@ -153,6 +153,7 @@ export default () => {
       onPrevImage={() => {
         changeSelectedImageIndex((selectedImageIndex - 1 + imageNames.length) % imageNames.length)
       }}
+      hideSettings={true}
       selectedImageIndex={selectedImageIndex}
       
     />)}
