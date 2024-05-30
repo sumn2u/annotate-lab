@@ -11,11 +11,10 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import PropTypes from "prop-types"
 import InfoIcon from '@mui/icons-material/Info'; 
-import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-import ImageIcon from '@mui/icons-material/Image';
 import ConfigureImageClassification from "../ConfigureImageClassification";
 import ConfigureImageSegmentation from "../ConfigureImageSegmentation";
 import Button from '@mui/material/Button';
+import ConfigurationTask from "../ConfigurationTask";
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -63,17 +62,16 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
   const [currentTab, setTab] = useState("datatype");
   const [hasConfig, setHasConfig] = useState(false);
-  const dataTypes = [
-    { name: "Image Classification", icon: ImageIcon },
-    { name: "Image Segmentation", icon: ImageSearchIcon },
-  ];
-
   const updateConfiguration = (newConfig) => {
     const {labels} = newConfig
     setHasConfig(labels.length > 0)
     setConfiguration({type: "UPDATE_CONFIGURATION", payload: newConfig})
   }
 
+  const updateTaskInfo = (newTaskInfo) => {
+    setConfiguration({type: "UPDATE_TASK_INFO", payload: newTaskInfo})
+  }
+  
   const showLab = ()=> {
     const { configuration } = settings;
     const hasLabels = configuration.labels.length > 0;
@@ -85,7 +83,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
   }
 
   return (
-    <Box display="flex"  justifyContent="center" minHeight="100vh" marginTop={"5rem"}>
+    <Box display="flex"  justifyContent="center"  minHeight="100vh" marginTop={"5rem"}>
         <Box>
             <Box  paddingBottom="0px">
                 <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={(e, newTab) => setTab(newTab)}>
@@ -94,33 +92,22 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                 </Tabs>
             </Box>
             {currentTab === "datatype" && (
-                <Box display="flex" flexWrap="wrap" justifyContent="initial" gap={2}>
-                {dataTypes.map(dataType => (
-                    <StyledCard key={dataType.name} 
-                        selected={dataType.name === settings.dataTask}
-                        onClick={() =>{
-                          setConfiguration({type: "SET_DATATYPE", payload: dataType.name});
-                          setTab("configure")
-                        }
-                        
-                    }>
-                    <StyledCardContent>
-                        <IconWrapper icon={dataType.icon} />
-                        <Typography variant="body2" color="textSecondary">
-                        {dataType.name}
-                        </Typography>
-                    </StyledCardContent>
-                    </StyledCard>
-                ))}
+               <Box minWidth="35vw">
+                  <ConfigurationTask config={settings} onChange={updateTaskInfo} />
+                  <Box display="flex"  justifyContent="end">
+                        <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
+                            Configure Regions
+                        </Button>
+                      </Box>
                 </Box>
             )}
 
             {currentTab === "configure" && ( 
                 <Container>
-                  {settings.dataTask === "Image Classification" && (
+                  {settings.taskChoice === "image_classification" && (
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="center">
+                      <Box display="flex"  justifyContent="end">
                         <Button variant="contained" disabled={!hasConfig} onClick={showLab} disableElevation>
                             Open Lab
                         </Button>
@@ -128,10 +115,10 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                     </>
                   
                   )}
-                  {settings.dataTask === "Image Segmentation" && (
+                  {settings.taskChoice === "image_segmentation" && (
                     <>
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="center">
+                      <Box display="flex"  justifyContent="end">
                         <Button variant="contained" disabled={!hasConfig} onClick={showLab} disableElevation>
                             Open Lab
                         </Button>

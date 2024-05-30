@@ -45,6 +45,8 @@ export default () => {
   const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const [settings, setSettings] =  useState({
+    taskDescription: "",
+    taskChoice: "image_classification",
     dataTask: null,
     configuration: {
       multiple: false,
@@ -63,27 +65,29 @@ export default () => {
   }
   
   const getEnabledTools = (taskType) => {
-    if (taskType === 'Image Classification') {
+    if (taskType === 'image_classification') {
       return ["create-box", "create-polygon", "create-point"]
-    } else if (taskType === 'Image Segmentation') {
+    } else if (taskType === 'image_segmentation') {
       return ["create-polygon"]
     }
   }
   const setConfiguration = (settingsPayload) => {
     const { type, payload } = settingsPayload;
 
-    if (type === 'SET_DATATYPE') {
-      setSettings(prevSettings => {
-        return {
-          ...prevSettings,
-          dataTask: payload
-        };
-      });
-    }else if (type === 'UPDATE_CONFIGURATION') {
+   if (type === 'UPDATE_CONFIGURATION') {
       setSettings(prevSettings => {
         return {
           ...prevSettings,
           configuration: payload
+        };
+      });
+    }else if(type === 'UPDATE_TASK_INFO'){
+      setSettings(prevSettings => {
+        return {
+          ...prevSettings,
+          taskDescription: payload.taskDescription,
+          taskChoice: payload.taskChoice,
+          dataTask: getEnabledTools(payload.taskChoice)
         };
       });
     }
@@ -134,9 +138,9 @@ export default () => {
         <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel}/>
       ) : (
     <Annotator
-      taskDescription="Classify Waste Materials."
+      taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
       images={imageNames}
-      enabledTools={getEnabledTools(settings.dataTask) || []}
+      enabledTools={settings.dataTask || []}
       regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
       enabledRegionProps= {["name", "class"]}
