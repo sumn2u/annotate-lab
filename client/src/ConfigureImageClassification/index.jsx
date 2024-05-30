@@ -2,7 +2,7 @@
 import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
 import { setIn } from "seamless-immutable"
-import Button from "@mui/material/Button";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 
 const form = {
   questions: [
@@ -26,6 +26,16 @@ const form = {
         },
       ],
     },
+    {
+        name: "regions",
+        title: "Choose annotation tool (default).",
+        type: "dropdown",
+        choices: [
+            "Polygon",
+            "Bounding Box",
+            "Point",
+          ],
+    }
   ],
 }
 
@@ -37,25 +47,50 @@ export default ({ config, onChange }) => {
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a
         }) || [],
+        regions: config.regions ? config.regions : "Polygon"
     }),
     [config.labels, config.multiple]
   )
   return (
-    <Survey
-      noActions
-      variant="flat"
-      defaultAnswers={defaultAnswers}
-      onQuestionChange={(questionId, newValue) => {
-        var arrayId = []
-        if (Array.isArray(newValue))
-          newValue = newValue.filter((json) => {
-            if (arrayId.includes(json.id)) return false
-            arrayId.push(json.id)
-            return true
-          })
-        onChange(setIn(config, [questionId], newValue))
-      }}
-      form={form}
-    />
+    <>
+      <CssBaseline />
+      <GlobalStyles styles={{
+        '.MuiSelect-select.MuiSelect-outlined': {
+          height: '2.2rem !important',
+          minHeight: '2.2rem !important',
+          lineHeight: '2.2rem !important',
+        },
+        '.MuiSelect-select.MuiSelect-outlined > div': {
+            paddingTop: '0px !important',
+          },
+        '.MuiInputBase-input.MuiOutlinedInput-input': {
+          height: '2.2rem !important',
+          minHeight: '2.2rem !important',
+          lineHeight: '2.2rem !important',
+        },
+        '.MuiOutlinedInput-root': {
+          height: '2.2rem !important',
+          minHeight: '2.2rem !important',
+          lineHeight: '2.2rem !important',
+        }
+      }} />
+   
+        <Survey
+        noActions
+        variant="flat"
+        defaultAnswers={defaultAnswers}
+        onQuestionChange={(questionId, newValue) => {
+            var arrayId = []
+            if (Array.isArray(newValue))
+            newValue = newValue.filter((json) => {
+                if (arrayId.includes(json.id)) return false
+                arrayId.push(json.id)
+                return true
+            })
+            onChange(setIn(config, [questionId], newValue))
+        }}
+        form={form}
+        />
+    </>
   )
 }

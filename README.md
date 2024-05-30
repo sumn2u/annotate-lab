@@ -2,7 +2,7 @@
 
 Annotation-Lab is a web application designed for image annotation. It consists of two main parts: the client and the server. The client is a React application responsible for the user interface, while the server is a Flask application that handles the backend logic.
 
-<img alt="example"  src="./example.png">
+![example](./example.png)
 
 <br/>
 
@@ -48,6 +48,10 @@ annotation-lab/
 - **app.py**: Main Flask application file.
 - **requirements.txt**: Contains server dependencies.
 
+## Settings
+### Image Classification Settings
+
+![classification settings](./classification-settings.png)
 ## Dependencies
 
 ### Client

@@ -9,16 +9,16 @@ import SetupPage from "../SetupPage";
 
 const userReducer = (state, action) => {
   switch (action.type) {
-    case "SELECT_CLASSIFICATION": {
-      switch (action.cls) {
-        case "One": {
-          return setIn(state, ["selectedTool"], "create-box");
-        }
-        case "Two": {
-          return setIn(state, ["selectedTool"], "create-polygon");
-        }
-      }
-    }
+  //   case "SELECT_CLASSIFICATION": {
+  //     switch (action.cls) {
+  //       case "One": {
+  //         return setIn(state, ["selectedTool"], "create-box");
+  //       }
+  //       case "Two": {
+  //         return setIn(state, ["selectedTool"], "create-polygon");
+  //       }
+  //     }
+  //   }
   }
 
   return state;
@@ -89,11 +89,15 @@ export default () => {
     }
   };
 
- 
+  
+  const getToolSelectionType = (toolName) => {
+    const regions = [ {name: "Polygon", value: "create-polygon"}, {name: "Bounding Box", value: "create-box"}, {name: "Point", value: "create-point"}] 
+    return regions.filter(region => region.name === toolName)[0]?.value || "create-polygon"
+  }
   const preloadConfiguration = () => {
      // get last saved configuration
      const savedConfiguration = JSON.parse(window.localStorage.__REACT_WORKSPACE_CONFIGURATION || "{}");
-     if (savedConfiguration.configuration.labels.length > 0) {
+     if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
        setShowLabel(true)
      }
@@ -142,6 +146,7 @@ export default () => {
       }}
       onSelectJump={onSelectJumpHandle}
       showTags={false}
+      selectedTool= {getToolSelectionType(settings.configuration.regions)}
       onNextImage={() => {
         changeSelectedImageIndex((selectedImageIndex + 1) % imageNames.length)
       }}
