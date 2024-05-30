@@ -28,7 +28,8 @@ const form = {
     },
     {
         name: "regions",
-        title: "Choose annotation tool (default).",
+        title: "Default Region Type",
+        description: "Choose default region type that can be drawn on the image.",
         type: "dropdown",
         choices: [
             "Polygon",

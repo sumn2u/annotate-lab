@@ -14,6 +14,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import ImageIcon from '@mui/icons-material/Image';
 import ConfigureImageClassification from "../ConfigureImageClassification";
+import ConfigureImageSegmentation from "../ConfigureImageSegmentation";
 import Button from '@mui/material/Button';
 
 const Container = styled("div")({
@@ -88,7 +89,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
         <Box>
             <Box  paddingBottom="0px">
                 <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={(e, newTab) => setTab(newTab)}>
-                <Tab icon={<CategoryIcon />} label="Task Type" value="datatype" />
+                <Tab icon={<CategoryIcon />} label="Task Info" value="datatype" />
                 <Tab disabled={!settings.dataTask} icon={<BuildIcon />} label="Configure" value="configure" />
                 </Tabs>
             </Box>
@@ -128,9 +129,14 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   
                   )}
                   {settings.dataTask === "Image Segmentation" && (
-                    <Typography variant="h6" gutterBottom>
-                      Image Segmentation Configuration
-                    </Typography>
+                    <>
+                      <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
+                      <Box display="flex"  justifyContent="center">
+                        <Button variant="contained" disabled={!hasConfig} onClick={showLab} disableElevation>
+                            Open Lab
+                        </Button>
+                      </Box>
+                    </>
                   
                   )}
                 </Container>
