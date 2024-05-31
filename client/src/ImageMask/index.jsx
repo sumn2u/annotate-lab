@@ -8,7 +8,6 @@ import autoseg from "autoseg/webworker"
 function convertToUDTRegions(regions) {
   return regions
     .map((r) => {
-      console.log("printing r:", r)
       switch (r.type) {
         case "point": {
           return {
@@ -66,7 +65,6 @@ export const ImageMask = ({
   // if (!window.mmgc) window.mmgc = MMGC_INIT()
   // const mmgc = window.mmgc
   const [canvasRef, setCanvasRef] = useState(null)
-
   const [sampleImageData, setSampleImageData] = useState()
 
   useEffect(() => {

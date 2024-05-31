@@ -367,10 +367,6 @@ export const ImageCanvas = ({
           {...mouseEvents}
         >
           <div id="image-container">
-            <canvas
-              style={{opacity: 0.25, ...styles.canvas}}
-              ref={canvasEl}
-            />
             {fullImageSegmentationMode && (
               <ImageMask
                 hide={!showMask}
@@ -381,6 +377,10 @@ export const ImageCanvas = ({
                 regions={regions}
               />
             )}
+              <canvas
+              style={{opacity: 0.25, ...styles.canvas}}
+              ref={canvasEl}
+            />
             <RegionShapes
               mat={mat}
               keypointDefinitions={keypointDefinitions}
