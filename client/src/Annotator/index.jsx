@@ -50,6 +50,7 @@ export const Annotator = ({
   videoName,
   onExit,
   onNextImage,
+  showMask,
   onPrevImage,
   keypointDefinitions,
   autoSegmentationOptions = { type: "autoseg" },
@@ -90,7 +91,7 @@ export const Annotator = ({
       taskDescription,
       autoSegmentationOptions,
       fullImageSegmentationMode: fullImageSegmentationMode,
-      showMask: true,
+      showMask,
       labelImages: imageClsList.length > 0 || imageTagList.length > 0,
       regionClsList,
       regionColorList,
@@ -119,7 +120,7 @@ export const Annotator = ({
   )
   const saveCurrentData = (activeImage) =>{
     console.log( "active image", activeImage)
-    // saveActiveImage(activeImage)
+    saveActiveImage(activeImage)
   }
 
   const dispatch = useEventCallback((action) => {

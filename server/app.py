@@ -4,7 +4,7 @@ from email import header
 from urllib import response
 from urllib.robotparser import RequestRate
 from wsgiref import headers
-from flask import Flask, jsonify, request, url_for, send_from_directory
+from flask import Flask, jsonify, request, url_for,send_from_directory
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
 import numpy as np
