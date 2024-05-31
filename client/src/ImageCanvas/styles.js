@@ -16,7 +16,7 @@ export default {
     zIndex: 10,
     top: 10,
     left: 10,
-    opacity: 1,
+    opacity: 0.5,
     transition: "opacity 500ms",
     "&:hover": {
       opacity: 1,

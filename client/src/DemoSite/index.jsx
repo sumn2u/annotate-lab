@@ -64,6 +64,10 @@ export default () => {
     let selectedImageIndex = imageNames.indexOf(selectedImage)
     changeSelectedImageIndex(selectedImageIndex)
   }
+
+  const isFullSegmentationMode = (taskChoice) => {
+    return taskChoice === "image_segmentation"
+  }
   
   const getEnabledTools = (selectedTools) => {
     const enabledTools = [
@@ -166,7 +170,7 @@ export default () => {
       }}
       hideSettings={true}
       selectedImageIndex={selectedImageIndex}
-      
+      fullImageSegmentationMode= {isFullSegmentationMode(settings.taskChoice)}
     />)}
     </div>
 

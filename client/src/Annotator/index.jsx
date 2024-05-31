@@ -25,6 +25,7 @@ export const Annotator = ({
   selectedImage = images && images.length > 0 ? 0 : undefined,
   showPointDistances,
   pointDistancePrecision,
+  fullImageSegmentationMode = false,
   showTags = getFromLocalStorage("showTags", true),
   enabledTools = ["select",
   "create-point",
@@ -51,6 +52,7 @@ export const Annotator = ({
   onNextImage,
   onPrevImage,
   keypointDefinitions,
+  autoSegmentationOptions = { type: "autoseg" },
   onSelectJump,
   hideHeader,
   hideHeaderText,
@@ -86,6 +88,8 @@ export const Annotator = ({
       selectedTool,
       mode: null,
       taskDescription,
+      autoSegmentationOptions,
+      fullImageSegmentationMode: fullImageSegmentationMode,
       showMask: true,
       labelImages: imageClsList.length > 0 || imageTagList.length > 0,
       regionClsList,
@@ -207,6 +211,7 @@ Annotator.propTypes = {
   onExit: PropTypes.func.isRequired,
   onNextImage: PropTypes.func,
   onPrevImage: PropTypes.func,
+  fullImageSegmentationMode: PropTypes.bool,
   keypointDefinitions: PropTypes.object,
   hideHeader: PropTypes.bool,
   hideHeaderText: PropTypes.bool,
@@ -218,6 +223,16 @@ Annotator.propTypes = {
   enabledRegionProps: PropTypes.arrayOf(PropTypes.string),
   userReducer: PropTypes.func,
   onSelectJump: PropTypes.func,
+  autoSegmentationOptions: PropTypes.oneOfType([
+    PropTypes.shape({
+      type: PropTypes.oneOf(['simple']).isRequired,
+    }),
+    PropTypes.shape({
+      type: PropTypes.oneOf(['autoseg']).isRequired,
+      maxClusters: PropTypes.number,
+      slicWeightFactor: PropTypes.number,
+    }),
+  ])
 }
 
 export default Annotator

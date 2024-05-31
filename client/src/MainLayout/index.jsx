@@ -126,7 +126,7 @@ export const MainLayout = ({
       }
       key={state.selectedImage}
       showMask={state.showMask}
-      fullImageSegmentationMode={false}
+      fullImageSegmentationMode={state.fullImageSegmentationMode}
       autoSegmentationOptions={state.autoSegmentationOptions}
       showTags={state.showTags}
       allowedArea={state.allowedArea}

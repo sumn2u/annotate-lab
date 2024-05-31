@@ -20,7 +20,7 @@ const form = {
         isRequired: true,
         choices: [
           { value: "image_classification", text: "Image Classification" },
-          { value: "image_segmentation", text: "Image Selection" },
+          { value: "image_segmentation", text: "Image Segmentation" },
         ],
       },
 
