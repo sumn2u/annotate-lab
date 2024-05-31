@@ -75,7 +75,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
       const selectedClsList = ''; // Assuming 'cls' information is not present
       const comment = ''; // Assuming 'comment' information is not present
       const processed = false; // Assuming 'processed' information is not present
-      const name = image.path.split('.')[0]; // Remove file extension from image name
+      const name = image.filename.split('.')[0]; // Remove file extension from image name
       return { src, name, selectedClsList, comment, processed };
     });
     setConfiguration({type: "UPDATE_IMAGES", payload: extractedNames})

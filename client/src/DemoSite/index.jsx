@@ -116,29 +116,14 @@ export default () => {
        setSettings(savedConfiguration);
        setShowLabel(true)
      }
+     if(savedConfiguration.images && savedConfiguration.images.length > 0) {
+      setImageNames(savedConfiguration.images)
+     }
   }
 
   useEffect(() => {
-    const fetchImageNames = async () => {
-      try {
-        let response = await getImages();
-        const extractedNames = response.imagesNames.map(image => {
-          const src = `images/${image['image-name']}`;
-          const selectedClsList = (image['cls']  || '').split(';');
-          const comment = image['comment'] || " ";
-          const processed = image['processed'] || false;
-          const name = image['image-name'].split('.')[0]; // Remove file extension from image name
-          return { src, name, selectedClsList,  comment, processed};
-        });
-
-        setImageNames(extractedNames);
-        setLoading(false); // Set loading to false when data is fetched
-        preloadConfiguration()
-      } catch (error) {
-        console.error('Failed to fetch image names:', error);
-      }
-    };
-    fetchImageNames();
+    preloadConfiguration()
+    setLoading(false);
   }, []);
 
   

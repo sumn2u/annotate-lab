@@ -119,7 +119,7 @@ export const Annotator = ({
   )
   const saveCurrentData = (activeImage) =>{
     console.log( "active image", activeImage)
-    saveActiveImage(activeImage)
+    // saveActiveImage(activeImage)
   }
 
   const dispatch = useEventCallback((action) => {

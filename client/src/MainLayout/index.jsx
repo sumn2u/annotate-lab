@@ -135,7 +135,7 @@ export const MainLayout = ({
       regionTagList={state.regionTagList}
       regions={
         state.annotationType === "image"
-          ? activeImage?.regions || []
+          ? activeImage.regions || []
           : impliedVideoRegions
       }
       realSize={activeImage ? activeImage.realSize : undefined}
@@ -204,13 +204,7 @@ export const MainLayout = ({
     } else if(item.name === "Exit"){
       logout()
     }else {
-      if(item.name === "Next" || item.name === "Prev"){
-          if(state.images?.length > 1){
-            dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
-        }
-      }else{
-        dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
-      }
+     dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
     }
   })
   const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)

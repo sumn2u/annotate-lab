@@ -2,9 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 
 const ImageUpload = ({ onImageUpload }) => {
   const [images, setImages] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState('');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (images.length + acceptedFiles.length > 2) {
@@ -15,11 +17,42 @@ const ImageUpload = ({ onImageUpload }) => {
     const newImages = acceptedFiles.map((file) => {
       return Object.assign(file, {
         preview: URL.createObjectURL(file),
+        imageName: file.name,
       });
     });
-    setImages((prevImages) => [...prevImages, ...newImages]);
-    onImageUpload(newImages);
+    uploadImages(newImages);
+    
   }, [images, onImageUpload]);
+
+  const uploadImages = async (images) => {
+    const formData = new FormData();
+
+    images.forEach((image) => {
+      formData.append('file', image);
+    });
+
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log(response.data);
+      setUploadStatus('Upload successful!');
+
+      const uploadedFiles = response.data.files;
+      const uploadedImages = uploadedFiles.map(file => ({
+        preview: file.url,
+        filename: file.filename,
+      }));
+      setImages(uploadedImages);
+      onImageUpload(uploadedImages);
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      setUploadStatus('Upload failed.');
+    }
+  };
 
   const handleRemoveImage = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -88,6 +121,7 @@ const ImageUpload = ({ onImageUpload }) => {
           </Box>
         ))}
       </Box>
+      {uploadStatus && <Typography>{uploadStatus}</Typography>}
     </Box>
   );
 };

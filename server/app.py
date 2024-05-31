@@ -4,8 +4,7 @@ from email import header
 from urllib import response
 from urllib.robotparser import RequestRate
 from wsgiref import headers
-from flask import Flask
-from flask import jsonify, request
+from flask import Flask, jsonify, request, url_for, send_from_directory
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
 import numpy as np
@@ -13,9 +12,18 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
-CORS(app, resources={r"/*": {"origins": "localhost:5173"}})
+# Set the folder to save uploaded files
+UPLOAD_FOLDER = 'uploads'
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# CORS(app, resources={r"/*": {"origins": "localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
+# Ensure the upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 
 dbModule = Module()
 path = os.path.abspath('../client/public/images')
@@ -30,6 +38,45 @@ def save_annotate_info():
     except AssertionError:
         print('error')
     pass
+
+# Allowed extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_uploaded_files():
+    files = []
+    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
+        if allowed_file(filename):
+            file_url = url_for('uploaded_file', filename=filename, _external=True)
+            files.append({'filename': filename, 'url': file_url})
+    return files
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        files = get_uploaded_files()
+        return jsonify({"message": "File uploaded successfully", "files": files}), 201
+    
+    return jsonify({"error": "File type not allowed"}), 400
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    # return jsonify({'url': url_for('static', filename=f'uploads/{filename}', _external=True)})
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
 
 @app.route('/activeImage', methods=['POST'])
 @cross_origin(origins='*', headers=['Content-Type'])
