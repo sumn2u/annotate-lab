@@ -2,3 +2,4 @@ flask
 flask-cors
 numpy
 pandas
+python-dotenv

@@ -10,8 +10,13 @@ from db.db_handler import Module
 import numpy as np
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+
+# Get the CLIENT_URL environment variable
+client_url = os.getenv('CLIENT_URL')
 
 # Set the folder to save uploaded files
 UPLOAD_FOLDER = 'uploads'
@@ -19,8 +24,8 @@ UPLOAD_FOLDER = 'uploads'
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# CORS(app, resources={r"/*": {"origins": "localhost:5173"}})
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": client_url},
+                     r"/uploads/*": {"origins": "*"}})
 # Ensure the upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -29,7 +34,7 @@ dbModule = Module()
 path = os.path.abspath('../client/public/images')
 
 @app.route('/save', methods=['POST'])
-@cross_origin(origin='localhost:5173', headers=['Content-Type'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def save_annotate_info():
     try:
         request_data = request.get_json()
@@ -54,6 +59,7 @@ def get_uploaded_files():
     return files
 
 @app.route('/upload', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
@@ -71,15 +77,14 @@ def upload_file():
     
     return jsonify({"error": "File type not allowed"}), 400
 
-@app.route('/uploads/<filename>')
+@app.route('/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
-    # return jsonify({'url': url_for('static', filename=f'uploads/{filename}', _external=True)})
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 
 @app.route('/activeImage', methods=['POST'])
-@cross_origin(origins='*', headers=['Content-Type'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def save_active_image_info():
     try:
         request_data = request.get_json()
@@ -90,7 +95,7 @@ def save_active_image_info():
 
 
 @app.route('/imagesName', methods=['POST'])
-@cross_origin(origins='*', headers=['Content-Type'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def images_name():
     global path
     try:
@@ -145,7 +150,7 @@ def images_name():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/imagesInfo', methods=['GET'])
-@cross_origin(origins='*', headers=['Content-Type'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def get_images_info():
     global path
 
