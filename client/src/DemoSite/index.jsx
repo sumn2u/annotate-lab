@@ -50,7 +50,9 @@ export default () => {
     dataTask: null,
     configuration: {
       multiple: false,
-      labels: []
+      labels: [],
+      multipleRegions: false,
+      multipleRegionLabels: false,
     }
   })
   const [loading, setLoading] = useState(true); // Add loading state
@@ -64,12 +66,12 @@ export default () => {
     changeSelectedImageIndex(selectedImageIndex)
   }
   
-  const getEnabledTools = (taskType) => {
-    if (taskType === 'image_classification') {
-      return ["create-box", "create-polygon", "create-point"]
-    } else if (taskType === 'image_segmentation') {
-      return ["create-polygon"]
-    }
+  const getEnabledTools = (selectedTools) => {
+    const enabledTools = [
+      {name: "bounding-box", value: "create-box"}, 
+      {name: "polygon", value: "create-polygon"}, 
+      {name: "point", value: "create-point"}]  
+    return enabledTools.filter(tool => selectedTools.includes(tool.name)).map(tool => tool.value) || []
   }
   const setConfiguration = (settingsPayload) => {
     const { type, payload } = settingsPayload;
@@ -87,7 +89,6 @@ export default () => {
           ...prevSettings,
           taskDescription: payload.taskDescription,
           taskChoice: payload.taskChoice,
-          dataTask: getEnabledTools(payload.taskChoice)
         };
       });
     }
@@ -140,7 +141,7 @@ export default () => {
     <Annotator
       taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
       images={imageNames}
-      enabledTools={settings.dataTask || []}
+      enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
       regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
       enabledRegionProps= {["name", "class"]}

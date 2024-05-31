@@ -13,6 +13,13 @@ const form = {
       isRequired: true
     },
     {
+        name: "regionTypesAllowed",
+        title: "Region Types Allowed",
+        description: "What types of regions can be drawn on the image.",
+        type: "checkbox",
+        choices: ["bounding-box", "polygon", "point"],
+      },
+    {
       name: "labels",
       title: "Labels",
       description: "Classifications or tags to be labeled.",
@@ -81,14 +88,19 @@ export default ({ config, onChange }) => {
         variant="flat"
         defaultAnswers={defaultAnswers}
         onQuestionChange={(questionId, newValue) => {
-            var arrayId = []
-            if (Array.isArray(newValue))
-            newValue = newValue.filter((json) => {
-                if (arrayId.includes(json.id)) return false
-                arrayId.push(json.id)
-                return true
-            })
-            onChange(setIn(config, [questionId], newValue))
+            if(questionId !=="regionTypesAllowed"){
+                let arrayId = []
+                if (Array.isArray(newValue)){
+                    newValue = newValue.filter((json) => {
+                        if (arrayId.includes(json.id)) return false
+                        arrayId.push(json.id)
+                        return true
+                    })
+                    onChange(setIn(config, [questionId], newValue))
+                }
+            }else {
+                onChange(setIn(config, [questionId], newValue))
+            }
         }}
         form={form}
         />
