@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-server'
 import { getImages } from "../utils/get-data-from-server";
 import SetupPage from "../SetupPage";
+import { useSnackbar } from '../SnackbarContext';
 
 
 const userReducer = (state, action) => {
@@ -22,23 +23,10 @@ const userReducer = (state, action) => {
   return state;
 };
 
-const preprocessDataBeforeSend = (output) => {
-  const selectedImageIndex  = output.selectedImage;
-  let _image = output.images[selectedImageIndex]
-  let regions = _image['regions'] || []
-  let imageData = getImageData(_image)
-
-  imageData['regions'] = [] 
-  for (let regionNum = 0; regionNum < regions.length; regionNum++){
-    imageData['regions'].push(splitRegionData(regions[regionNum]))
-  }
-
-  saveData(imageData)
-  }
 
 
 export default () => {
-
+  const { showSnackbar } = useSnackbar();
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
   const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
@@ -54,6 +42,25 @@ export default () => {
       multipleRegionLabels: false,
     }
   })
+
+  const preprocessDataBeforeSend = (output) => {
+    const selectedImageIndex  = output.selectedImage;
+    let _image = output.images[selectedImageIndex]
+    let regions = _image['regions'] || []
+    let imageData = getImageData(_image)
+  
+    imageData['regions'] = [] 
+    for (let regionNum = 0; regionNum < regions.length; regionNum++){
+      imageData['regions'].push(splitRegionData(regions[regionNum]))
+    }
+    saveData(imageData).then(response => {
+      showSnackbar(response.message, 'success');
+    })
+    .catch(error => {
+      showSnackbar(error.message, 'error');
+    });
+    }
+  
   const [loading, setLoading] = useState(true); // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
 
@@ -129,7 +136,7 @@ export default () => {
   
 
   return (
-    <div>
+    <>
     { !showLabel ? ( // Render loading indicator if loading is true
         <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel}/>
       ) : (
@@ -159,7 +166,7 @@ export default () => {
       selectedImageIndex={selectedImageIndex}
       fullImageSegmentationMode= {isFullSegmentationMode(settings.taskChoice)}
     />)}
-    </div>
+    </>
 
   )
 }

@@ -17,8 +17,7 @@ import noopReducer from "./reducers/noop-reducer.js"
 import {useTranslation} from "react-i18next"
 import getActiveImage from "./reducers/get-active-image.js"
 import { saveActiveImage } from "../utils/send-data-to-server"
-
-
+import { useSnackbar} from "../SnackbarContext/index.jsx"
 export const Annotator = ({
   images,
   allowedArea,
@@ -70,6 +69,7 @@ export const Annotator = ({
     selectedImage = (images || []).findIndex((img) => img.src === selectedImage)
     if (selectedImage === -1) selectedImage = undefined
   }
+  const { showSnackbar } = useSnackbar();
   const {t} = useTranslation();
   const annotationType = images ? "image" : "video"
   const [state, dispatchToReducer] = useReducer(
@@ -119,8 +119,12 @@ export const Annotator = ({
     })
   )
   const saveCurrentData = (activeImage) =>{
-    console.log( "active image", activeImage)
-    saveActiveImage(activeImage)
+    saveActiveImage(activeImage).then(response => {
+      showSnackbar(response.message, 'success');
+    })
+    .catch(error => {
+      showSnackbar(error.message, 'error');
+    });
   }
 
   const dispatch = useEventCallback((action) => {
@@ -160,25 +164,25 @@ export const Annotator = ({
 
   return (
     <SettingsProvider>
-      <MainLayout
-        RegionEditLabel={RegionEditLabel}
-        alwaysShowNextButton={Boolean(onNextImage)}
-        alwaysShowPrevButton={Boolean(onPrevImage)}
-        state={state}
-        dispatch={dispatch}
-        onRegionClassAdded={onRegionClassAdded}
-        hideHeader={hideHeader}
-        hideHeaderText={hideHeaderText}
-        hideNext={hideNext}
-        hidePrev={hidePrev}
-        hideClone={hideClone}
-        hideSettings={hideSettings}
-        hideSave={hideSave}
-        allImages= {allImages}
-        enabledRegionProps={enabledRegionProps}
-        onSelectJump={onSelectJump}
-        saveActiveImage = {saveCurrentData}
-      />
+        <MainLayout
+          RegionEditLabel={RegionEditLabel}
+          alwaysShowNextButton={Boolean(onNextImage)}
+          alwaysShowPrevButton={Boolean(onPrevImage)}
+          state={state}
+          dispatch={dispatch}
+          onRegionClassAdded={onRegionClassAdded}
+          hideHeader={hideHeader}
+          hideHeaderText={hideHeaderText}
+          hideNext={hideNext}
+          hidePrev={hidePrev}
+          hideClone={hideClone}
+          hideSettings={hideSettings}
+          hideSave={hideSave}
+          allImages= {allImages}
+          enabledRegionProps={enabledRegionProps}
+          onSelectJump={onSelectJump}
+          saveActiveImage = {saveCurrentData}
+        />
     </SettingsProvider>
   )
 }

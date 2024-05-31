@@ -3,8 +3,10 @@ import { useDropzone } from 'react-dropzone';
 import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { useSnackbar } from '../SnackbarContext';
 
 const ImageUpload = ({ onImageUpload }) => {
+  const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState([]);
   const [uploadStatus, setUploadStatus] = useState('');
 
@@ -37,8 +39,7 @@ const ImageUpload = ({ onImageUpload }) => {
           'Content-Type': 'multipart/form-data'
         }
       });
-
-      console.log(response.data);
+      showSnackbar(response.data.message, 'success');
       setUploadStatus('Upload successful!');
 
       const uploadedFiles = response.data.files;
@@ -49,6 +50,7 @@ const ImageUpload = ({ onImageUpload }) => {
       setImages(uploadedImages);
       onImageUpload(uploadedImages);
     } catch (error) {
+      showSnackbar(response.data.message, 'error');
       console.error('Error uploading images:', error);
       setUploadStatus('Upload failed.');
     }

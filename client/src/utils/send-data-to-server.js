@@ -14,17 +14,21 @@ export const getImageData = (activeImage) => {
 }
 
 export const saveData = (imageData) => {
+  return new Promise((resolve, reject) => {
     axios.post(`${import.meta.env.VITE_SERVER_URL}/save`, imageData)
       .then(response => {
-        console.log(response);
+        resolve(response.data); // Resolve with response data
       })
-}
+      .catch(error => {
+        reject(error.response.data); // Reject with error data
+      });
+  });
+};
 
 export const saveActiveImage = (activeImage) => {
   if (activeImage === null)
     return
 
-  console.log(activeImage, 'activeImagessss')
   let regions = activeImage['regions'] || []
   let imageData = getImageData(activeImage)
 
@@ -33,12 +37,15 @@ export const saveActiveImage = (activeImage) => {
     imageData['regions'].push(splitRegionData(regions[regionNum]))
   }
 
-  console.log(imageData, 'imageData with regions')
-  axios.post(`${import.meta.env.VITE_SERVER_URL}/activeImage`, imageData)
-    .then(response => {
-      console.log(response)
-    })
-
+  return new Promise((resolve, reject) => {
+    axios.post(`${import.meta.env.VITE_SERVER_URL}/activeImage`, imageData)
+      .then(response => {
+        resolve(response.data); // Resolve with response data
+      })
+      .catch(error => {
+        reject(error.response.data); // Reject with error data
+      });
+  });
 }
 
 export const splitRegionData = (region) => {

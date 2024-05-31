@@ -63,15 +63,11 @@ export const FilesListMenu = ({
   saveActiveImage,
   onClick
 }) => {
-
   const [change, setChange] = useState('')
-
   const handleClickLabel = (label) => {
-    // console.log(state)
     onClick(getActiveImage(state))
-    // console.log(getActiveImage(state).activeImage)
     saveActiveImage(getActiveImage(state).activeImage)
-    // onSelectJump(label)
+    onSelectJump(label)
     // setChange(label)
   }
 

@@ -183,21 +183,31 @@ class Module:
             arguman[1].to_csv(arguman[0], index=False)
 
     def handleNewData(self, data):
-        imageData = self.getImageData(data)
-        self.imagesInfo = self.saveRegionInDB(self.imagesInfo, 'image-src', imageData['image-src'][0], imageData, 0)
-        
-        for region in data['regions']: #TODO: ADD Regions as region for each image -> for deletion process
-            self.saveRegionInfo(region['type'], data['src'], region)
-        
-        print(f"Self.imagesInfo: {self.imagesInfo} and imageInfoName: {imageInfoName}")
-        # save data automatically 
-        self.saveDataAutomatically(((imageInfoName, self.imagesInfo), (circleRegionInfo, self.imageCircleRegions), (boxRegionInfo, self.imageBoxRegions), (polygonInfo, self.imagePolygonRegions)))
-        
+        try: 
+            imageData = self.getImageData(data)
+            self.imagesInfo = self.saveRegionInDB(self.imagesInfo, 'image-src', imageData['image-src'][0], imageData, 0)
+            
+            for region in data['regions']: #TODO: ADD Regions as region for each image -> for deletion process
+                self.saveRegionInfo(region['type'], data['src'], region)
+            
+            print(f"Self.imagesInfo: {self.imagesInfo} and imageInfoName: {imageInfoName}")
+            # save data automatically 
+            self.saveDataAutomatically(((imageInfoName, self.imagesInfo), (circleRegionInfo, self.imageCircleRegions), (boxRegionInfo, self.imageBoxRegions), (polygonInfo, self.imagePolygonRegions)))
+            return True  # Return True if data was successfully handled
+        except Exception as e:
+            print('Error:', e)
+            return False  #
+            
     def handleActiveImageData(self, data):
-        imageData = self.getImageData(data)
-        self.imagesInfo = self.saveRegionInDB(self.imagesInfo, 'image-src', imageData['image-src'][0], imageData, 0)
-        self.imagesInfo.to_csv(imageInfoName, index=False)
-
+        try:
+            imageData = self.getImageData(data)
+            self.imagesInfo = self.saveRegionInDB(self.imagesInfo, 'image-src', imageData['image-src'][0], imageData, 0)
+            self.imagesInfo.to_csv(imageInfoName, index=False)
+            return True  # Return True if data was successfully handled
+        except Exception as e:
+            print('Error:', e)
+            return False  # Return False if an error occurred while handling the data
+        
     def createCategories(self, labels):
         if labels is None:
             return

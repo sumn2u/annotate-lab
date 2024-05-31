@@ -38,11 +38,16 @@ path = os.path.abspath('../client/public/images')
 def save_annotate_info():
     try:
         request_data = request.get_json()
-        dbModule.handleNewData(request_data)
-        return "got it"
+        if dbModule.handleNewData(request_data): 
+            # Return success response
+            return jsonify({"status": "success", "message": "Annotation data saved successfully"}), 200
+        else:
+            # Return failure response if handleNewData fails
+            return jsonify({"status": "error", "message": "Failed to save annotation data"}), 500
     except AssertionError:
-        print('error')
-    pass
+        # Handle any other exceptions
+        return jsonify({"status": "error", "message": "An error occurred while processing the request"}), 500
+
 
 # Allowed extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -61,21 +66,24 @@ def get_uploaded_files():
 @app.route('/upload', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
-    
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-    
-    if file and allowed_file(file.filename):
-        filename = file.filename
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        files = get_uploaded_files()
-        return jsonify({"message": "File uploaded successfully", "files": files}), 201
-    
-    return jsonify({"error": "File type not allowed"}), 400
+    try:
+        if 'file' not in request.files:
+            return jsonify({"status": "error", "message": "No file part in the request"}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "No selected file"}), 400
+        
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            files = get_uploaded_files()
+            return jsonify({"status": "success", "message": "File uploaded successfully", "files": files}), 201
+        else:
+            return jsonify({"status": "error", "message": "File type not allowed"}), 400
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
@@ -88,10 +96,16 @@ def uploaded_file(filename):
 def save_active_image_info():
     try:
         request_data = request.get_json()
-        dbModule.handleActiveImageData(request_data)
-        return 'got it '
+        # Assume handleActiveImageData returns True if successful
+        if dbModule.handleActiveImageData(request_data):
+            # Return success response
+            return jsonify({"status": "success", "message": "Image data saved successfully"}), 200
+        else:
+            # Return failure response if handleActiveImageData fails
+            return jsonify({"status": "error", "message": "Failed to save image data"}), 500
     except AssertionError:
-        print('error')
+        # Handle any other exceptions
+        return jsonify({"status": "error", "message": "An error occurred while processing the request"}), 500
 
 
 @app.route('/imagesName', methods=['POST'])
