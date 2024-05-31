@@ -4,7 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import CategoryIcon from "@mui/icons-material/Category";
 import BuildIcon from "@mui/icons-material/Build";
-import PreviewIcon from "@mui/icons-material/Preview";
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import React, { useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -15,6 +15,7 @@ import ConfigureImageClassification from "../ConfigureImageClassification";
 import ConfigureImageSegmentation from "../ConfigureImageSegmentation";
 import Button from '@mui/material/Button';
 import ConfigurationTask from "../ConfigurationTask";
+import ImageUpload from "../ImageUpload";
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -68,6 +69,18 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
     setConfiguration({type: "UPDATE_CONFIGURATION", payload: newConfig})
   }
 
+  const handleImageUpload = (images) => {
+    const extractedNames = images.map(image => {
+      const src = image.preview;
+      const selectedClsList = ''; // Assuming 'cls' information is not present
+      const comment = ''; // Assuming 'comment' information is not present
+      const processed = false; // Assuming 'processed' information is not present
+      const name = image.path.split('.')[0]; // Remove file extension from image name
+      return { src, name, selectedClsList, comment, processed };
+    });
+    setConfiguration({type: "UPDATE_IMAGES", payload: extractedNames})
+  };
+
   const updateTaskInfo = (newTaskInfo) => {
     setConfiguration({type: "UPDATE_TASK_INFO", payload: newTaskInfo})
   }
@@ -89,6 +102,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                 <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={(e, newTab) => setTab(newTab)}>
                 <Tab icon={<CategoryIcon />} label="Task Info" value="datatype" />
                 <Tab disabled={!settings.dataTask} icon={<BuildIcon />} label="Configure" value="configure" />
+                <Tab disabled={!settings.dataTask} icon={<AddPhotoAlternateIcon />} label="Image" value="image" />
                 </Tabs>
             </Box>
             {currentTab === "datatype" && (
@@ -96,7 +110,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   <ConfigurationTask config={settings} onChange={updateTaskInfo} />
                   <Box display="flex"  justifyContent="end">
                         <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
-                            Configure Regions
+                            Next
                         </Button>
                       </Box>
                 </Box>
@@ -108,8 +122,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
                       <Box display="flex"  justifyContent="end">
-                        <Button variant="contained" disabled={!hasConfig} onClick={showLab} disableElevation>
-                            Open Lab
+                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
+                            Next
                         </Button>
                       </Box>
                     </>
@@ -119,7 +133,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                     <>
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
                       <Box display="flex"  justifyContent="end">
-                        <Button variant="contained" disabled={!hasConfig} onClick={showLab} disableElevation>
+                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
                             Open Lab
                         </Button>
                       </Box>
@@ -127,8 +141,22 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   
                   )}
                 </Container>
-            )
-            }
+            )}
+            {currentTab === "image" && (
+              <>
+               <Box sx={{ padding: '2rem' }}>
+                <Typography variant="h6" gutterBottom>
+                  Upload Images
+                </Typography>
+                <ImageUpload onImageUpload={handleImageUpload} />
+              </Box>
+              <Box display="flex"  justifyContent="end">
+                <Button variant="contained" onClick={showLab} disableElevation>
+                    Open Lab
+                </Button>
+              </Box>
+              </>
+            )}
         </Box>
     </Box>
   );

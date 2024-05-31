@@ -47,6 +47,7 @@ export default () => {
   const [settings, setSettings] =  useState({
     taskDescription: "",
     taskChoice: "image_classification",
+    images: [],
     dataTask: null,
     configuration: {
       multiple: false,
@@ -89,6 +90,13 @@ export default () => {
           ...prevSettings,
           taskDescription: payload.taskDescription,
           taskChoice: payload.taskChoice,
+        };
+      });
+    }else if (type === 'UPDATE_IMAGES'){
+      setSettings(prevSettings => {
+        return {
+          ...prevSettings,
+          images: payload
         };
       });
     }
@@ -140,7 +148,7 @@ export default () => {
       ) : (
     <Annotator
       taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
-      images={imageNames}
+      images={settings.images || []}
       enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
       regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
