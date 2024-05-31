@@ -66,7 +66,9 @@ export default () => {
   }
 
   const isFullSegmentationMode = (taskChoice) => {
-    return taskChoice === "image_segmentation"
+    // DO MASKIN FROM SERVER
+    return false;
+    //  taskChoice === "image_segmentation"
   }
   
   const getEnabledTools = (selectedTools) => {
@@ -101,6 +103,7 @@ export default () => {
           images: payload
         };
       });
+      setImageNames(payload)
     }
   };
 
@@ -115,9 +118,6 @@ export default () => {
      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
        setShowLabel(true)
-     }
-     if(savedConfiguration.images && savedConfiguration.images.length > 0) {
-      setImageNames(savedConfiguration.images)
      }
   }
 
@@ -148,10 +148,12 @@ export default () => {
       showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}
       onNextImage={() => {
-        changeSelectedImageIndex((selectedImageIndex + 1) % imageNames.length)
+        const updatedIndex = (selectedImageIndex + 1) % imageNames.length
+        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
       onPrevImage={() => {
-        changeSelectedImageIndex((selectedImageIndex - 1 + imageNames.length) % imageNames.length)
+        const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
+        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
       hideSettings={true}
       selectedImageIndex={selectedImageIndex}
