@@ -49,9 +49,9 @@ annotation-lab/
 - **requirements.txt**: Contains server dependencies.
 
 ## Settings
-### Image Classification Settings
+One can configure the tools, tags, upload images and do many more from the settings.
 
-![classification settings](./classification-settings.png)
+![configuration](./configuration.png)
 ## Dependencies
 
 ### Client

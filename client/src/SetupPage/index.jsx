@@ -134,7 +134,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
                       <Box display="flex"  justifyContent="end">
                         <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
-                            Open Lab
+                            Next
                         </Button>
                       </Box>
                     </>

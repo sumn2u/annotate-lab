@@ -1,5 +1,5 @@
 {
-  "name": "@starwit/react-image-annotate",
+  "name": "@annotate-lab/react-image-annotate",
   "version": "5.0.7-0",
   "private": false,
   "type": "module",
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/starwit/react-image-annotate"
+    "url": "hhttps://github.com/sumn2u/annotate-lab"
   },
   "peerDependencies": {
     "react": "^18.0.0",
