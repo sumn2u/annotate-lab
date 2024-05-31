@@ -1,9 +1,7 @@
-import {examples} from "./Examples.jsx"
 import Annotator from "../Annotator"
 import React, { useEffect, useState } from "react"
 import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-server'
 import { getImages } from "../utils/get-data-from-server";
-import {setIn} from 'seamless-immutable';
 import SetupPage from "../SetupPage";
 
 
