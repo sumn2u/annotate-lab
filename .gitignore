@@ -34,3 +34,4 @@ secret.story.*
 *.secret.*
 .idea
 .idea/*
+server/uploads/*

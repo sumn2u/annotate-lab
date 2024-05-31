@@ -14,7 +14,7 @@ export const getImageData = (activeImage) => {
 }
 
 export const saveData = (imageData) => {
-    axios.post('http://127.0.0.1:5000/save', imageData)
+    axios.post(`${import.meta.env.VITE_SERVER_URL}/save`, imageData)
       .then(response => {
         console.log(response);
       })
@@ -34,7 +34,7 @@ export const saveActiveImage = (activeImage) => {
   }
 
   console.log(imageData, 'imageData with regions')
-  axios.post('http://127.0.0.1:5000/activeImage', imageData)
+  axios.post(`${import.meta.env.VITE_SERVER_URL}/activeImage`, imageData)
     .then(response => {
       console.log(response)
     })
