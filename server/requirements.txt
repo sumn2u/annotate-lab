@@ -3,3 +3,5 @@ flask-cors
 numpy
 pandas
 python-dotenv
+pillow
+requests

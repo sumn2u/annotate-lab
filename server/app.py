@@ -4,11 +4,15 @@ from email import header
 from urllib import response
 from urllib.robotparser import RequestRate
 from wsgiref import headers
-from flask import Flask, jsonify, request, url_for,send_from_directory
+from flask import Flask, jsonify, request, url_for,send_from_directory,send_file
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
 import numpy as np
+from io import BytesIO
 import pandas as pd
+import requests
+import json
+from PIL import Image, ImageDraw
 import os
 from dotenv import load_dotenv
 
@@ -108,56 +112,173 @@ def save_active_image_info():
         return jsonify({"status": "error", "message": "An error occurred while processing the request"}), 500
 
 
+def create_json_response(image_name):
+    imagesName = []
+    for (root, dirs, files) in os.walk(path):
+        for f in files:
+            if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
+                dictionary = {'image-name': f}
+                imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+                polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+                if imageIndex is not None:
+                    comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
+                    dictionary['comment'] = comment if comment != "nan" else ''
+                    dictionary['cls'] = str(dbModule.imagesInfo.at[imageIndex, 'selected-classes'])
+                    dictionary['cls'] = dictionary['cls'] if dictionary['cls'] != "nan" else ''
+                    dictionary['processed'] = True
+                else:
+                    dictionary['processed'] = False
+
+                if polygonRegions is not None:
+                    if isinstance(polygonRegions, pd.DataFrame):
+                        regions_list = polygonRegions.to_dict(orient='records')
+                        for region in regions_list:
+                            points = region.get('points', '')
+                            decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
+                            region['points'] = decoded_points
+                        dictionary['regions'] = regions_list
+                    else:
+                        dictionary['regions'] = polygonRegions
+
+                imagesName.append(dictionary)
+
+    # Convert the response to JSON and then to a BytesIO object
+    json_data = json.dumps({'configuration': imagesName})
+    json_bytes = BytesIO(json_data.encode('utf-8'))
+
+    # Use the image_name for the download file name
+    download_filename = f'configuration_download.json'
+
+    return json_bytes, download_filename
+
 @app.route('/imagesName', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def images_name():
-    global path
     try:
-        request_data = request.get_json()
-
+        data = request.get_json()
         # Ensure the expected structure of the JSON data
-        if 'params' in request_data and 'image_name' in request_data['params']:
-            image_name = request_data['params']['image_name']
-        else:
-            raise ValueError("Invalid JSON data format: 'params' or 'labels' not found.")
+        image_name = data.get('image_name')
+        if not image_name:
+            raise ValueError("Invalid JSON data format: 'image_name' not found.")
 
-        # Assuming dbModule.createCategories works correctly with the 'labels' data
-        dbModule.createCategories(image_name)
+        json_bytes, download_filename = create_json_response(image_name)
 
-        imagesName = []
-        for (root, dirs, files) in os.walk(path):
-            for f in files:
-                if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
-                    dictionary = {'image-name': f}
-                    imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
-                    polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
-                    if imageIndex is not None:
-                        comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
-                        dictionary['comment'] = comment if comment != "nan" else ''
-                        dictionary['cls'] = str(dbModule.imagesInfo.at[imageIndex, 'selected-classes'])
-                        dictionary['cls'] = dictionary['cls'] if dictionary['cls'] != "nan" else ''
-                        dictionary['processed'] = True
-                    
-                    else:
-                        dictionary['processed'] = False
-                    
-                    if polygonRegions is not None:
-                        if isinstance(polygonRegions, pd.DataFrame):
-                            regions_list = polygonRegions.to_dict(orient='records')
-                            for region in regions_list:
-                                points = region.get('points', '')
-                                decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
-                                region['points'] = decoded_points
-                            dictionary['regions'] = regions_list
-                        else:
-                            dictionary['regions'] = polygonRegions
+         # Convert BytesIO to string and return as JSON
+        json_str = json_bytes.getvalue().decode('utf-8')
+        return jsonify(json.loads(json_str))
 
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'error': str(e)}), 500
 
-                    imagesName.append(dictionary)
+@app.route('/download_configuration', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def download_configuration():
 
-        response = jsonify({'imagesName': imagesName})
-        return response
+    try:
+        data = request.get_json()
+        # Ensure the expected structure of the JSON data
+        image_name = data.get('image_name')
+        if not image_name:
+            raise ValueError("Invalid JSON data format: 'image_name' not found.")
 
+        json_bytes, download_filename = create_json_response(image_name)
+
+        return send_file(json_bytes, mimetype='application/json', as_attachment=True, download_name=download_filename)
+
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/download_image_with_annotations', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def download_image_with_annotations():
+
+    try:
+        data = request.get_json()
+        # Ensure the expected structure of the JSON data
+        image_name = data.get('image_name')
+        if not image_name:
+            raise ValueError("Invalid JSON data format: 'image_name' not found.")
+
+        json_bytes, download_filename = create_json_response(image_name)
+            # Convert BytesIO to string and return as JSON
+        json_str = json_bytes.getvalue().decode('utf-8')
+        
+        images = json.loads(json_str).get("configuration", [])
+
+        color_map = data.get("colorMap", {})
+        
+        # Convert color map values to tuples
+        for key in color_map.keys():
+            color_map[key] = tuple(color_map[key])
+        
+        for image_info in images:
+            image_url = image_info.get("regions", [])[0].get("image-src")
+            response = requests.get(image_url)
+            image = Image.open(BytesIO(response.content))
+            draw = ImageDraw.Draw(image)
+            
+            for region in image_info.get("regions", []):
+                points = region.get("points", [])
+                width, height = image.size
+                label = region.get("class")
+                color = color_map.get(label, (255, 0, 0))  # Default to red if label not in color_map
+                scaled_points = [(x * width, y * height) for x, y in points]
+                draw.polygon(scaled_points, outline=color)
+            
+            img_byte_arr = BytesIO()
+            image.save(img_byte_arr, format='PNG')
+            img_byte_arr.seek(0)
+
+            return send_file(img_byte_arr, mimetype='image/png', as_attachment=True, download_name=image_info.get("image-name"))
+        
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/download_image_mask', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def download_image_mask():
+    try:
+        data = request.get_json()
+        # Ensure the expected structure of the JSON data
+        image_name = data.get('image_name')
+        if not image_name:
+            raise ValueError("Invalid JSON data format: 'image_name' not found.")
+
+        json_bytes, download_filename = create_json_response(image_name)
+            # Convert BytesIO to string and return as JSON
+        json_str = json_bytes.getvalue().decode('utf-8')
+        
+        images = json.loads(json_str).get("configuration", [])
+
+        color_map = data.get("colorMap", {})
+
+        # Convert color map values to tuples
+        for key in color_map.keys():
+            color_map[key] = tuple(color_map[key])
+
+        for image_info in images:
+            image_url = image_info.get("regions", [])[0].get("image-src")
+            response = requests.get(image_url)
+            image = Image.open(BytesIO(response.content))
+            width, height = image.size
+            mask = Image.new('RGB', (width, height), (0, 0, 0))  # 'RGB' mode for colored masks
+            draw = ImageDraw.Draw(mask)
+            
+            for region in image_info.get("regions", []):
+                points = region.get("points", [])
+                label = region.get("class")
+                color = color_map.get(label, (255, 255, 255))  # Default to white if label not in color_map
+                scaled_points = [(int(x * width), int(y * height)) for x, y in points]
+                draw.polygon(scaled_points, outline=color, fill=color)
+            
+            mask_byte_arr = BytesIO()
+            mask.save(mask_byte_arr, format='PNG')
+            mask_byte_arr.seek(0)
+
+            return send_file(mask_byte_arr, mimetype='image/png', as_attachment=True, download_name=f"mask_{image_info.get('image-name')}")
     except Exception as e:
         print('Error:', e)
         return jsonify({'error': str(e)}), 500
@@ -200,8 +321,9 @@ def get_images_info():
 
         response = jsonify({'imagesNames': imagesName})
         return response
-    except AssertionError:
-        print('Error')
+    except Exception as e:
+        print('Error:', e)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/', methods=['GET'])
 def main():

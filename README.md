@@ -149,4 +149,4 @@ This project is licensed under the MIT License.
 
 ## Acknowledgment
 
-This project is built on top of idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate) and [image_annotator](https://github.com/gnamiro/image_annotator/tree/master) package with customizations.
+This project uses some part of work from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate) and [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).
