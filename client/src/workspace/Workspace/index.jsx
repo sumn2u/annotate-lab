@@ -42,9 +42,10 @@ export default ({
   hideHeader = false,
   hideHeaderText = false,
   children,
+  selectedImageName,
+  classList
 }) => {
   const [sidebarAndContentRef, sidebarAndContent] = useMeasure()
-
   return (
     <ThemeProvider theme={theme}>
       <IconDictionaryContext.Provider value={iconDictionary}>
@@ -55,6 +56,8 @@ export default ({
               leftSideContent={headerLeftSide}
               onClickItem={onClickHeaderItem}
               items={headerItems}
+              selectedImageName={selectedImageName}
+              classList={classList}
             />
           )}
           <SidebarsAndContent ref={sidebarAndContentRef}>

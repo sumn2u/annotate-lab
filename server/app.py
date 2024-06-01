@@ -225,7 +225,9 @@ def download_image_with_annotations():
                 label = region.get("class")
                 color = color_map.get(label, (255, 0, 0))  # Default to red if label not in color_map
                 scaled_points = [(x * width, y * height) for x, y in points]
-                draw.polygon(scaled_points, outline=color)
+                # Draw polygon with thicker outline
+                draw.line(scaled_points + [scaled_points[0]], fill=color, width=5)  # Change width as desired
+
             
             img_byte_arr = BytesIO()
             image.save(img_byte_arr, format='PNG')

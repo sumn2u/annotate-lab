@@ -22,7 +22,7 @@ import getHotkeyHelpText from "../utils/get-hotkey-help-text"
 import {useKey} from "react-use"
 import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
-import {Save, Download, ExitToApp} from "@mui/icons-material"
+import {Save, ExitToApp} from "@mui/icons-material"
 import html2canvas from 'html2canvas';
 import capitalize from "lodash/capitalize"
 
@@ -199,9 +199,7 @@ export const MainLayout = ({
   })
 
   const onClickHeaderItem = useEventCallback((item) => {
-    if (item.name === "Download") {
-      downloadAnnotatedImage()
-    } else if(item.name === "Exit"){
+    if(item.name === "Exit"){
       logout()
     }else {
      dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
@@ -226,6 +224,8 @@ export const MainLayout = ({
               iconDictionary={iconDictionary}
               hideHeader={hideHeader}
               hideHeaderText={hideHeaderText}
+              selectedImageName={state.images[currentImageIndex]?.src.split('/').pop()}
+              classList = {state.regionClsList}
               headerLeftSide={[
                 state.annotationType === "video" ? (
                   <KeyframeTimeline
@@ -250,7 +250,6 @@ export const MainLayout = ({
                 !hideClone &&
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone"},
-                !downloadImage && {name: "Download", icon: <Download/>},
                 !hideSave && {name: "Save", icon: <Save />},
                 !hideSettings && {name: "Settings"},
                 {name: "Exit", icon: <ExitToApp />}
