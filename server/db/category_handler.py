@@ -42,9 +42,10 @@ def create_categories(labels):
     if not os.path.exists(categories_folder):
         os.makedirs(categories_folder)
         
-    cat_lists = os.listdir(categories_folder)
+    existing_categories = [cat.name for cat in categories_folder.iterdir() if cat.is_dir()]
+   
     for label in labels:
-        if label not in cat_lists:
+        if label not in existing_categories:
             os.makedirs(categories_folder / label)
 
 def add_image_folder(label, image_name, image_src):

@@ -1,8 +1,3 @@
 image-name,selected-classes,comment,image-original-height,image-original-width,image-src,processed
-['bianchi'],['Line-Crossing;Area-Occupancy'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Line-Crossing'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Line-Crossing'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Line-Crossing'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Line-Crossing'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Line-Crossing'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
-['bianchi'],['Area-Occupancy'],[' '],[1186],[1920],['images/bianchi.jpeg'],[1]
+['orange'],['Apple'],[''],[249],[320],['http://127.0.0.1:5000/uploads/orange.png'],[1]
+['orange'],['Apple'],[''],[249],[320],['http://127.0.0.1:5000/uploads/orange.png'],[1]

@@ -31,7 +31,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 dbModule = Module()
-path = os.path.abspath('../client/public/images')
+path = os.path.abspath('./uploads')
 
 @app.route('/save', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
@@ -116,22 +116,21 @@ def images_name():
         request_data = request.get_json()
 
         # Ensure the expected structure of the JSON data
-        if 'params' in request_data and 'labels' in request_data['params']:
-            labels = request_data['params']['labels']
+        if 'params' in request_data and 'image_name' in request_data['params']:
+            image_name = request_data['params']['image_name']
         else:
             raise ValueError("Invalid JSON data format: 'params' or 'labels' not found.")
 
         # Assuming dbModule.createCategories works correctly with the 'labels' data
-        dbModule.createCategories(labels)
+        dbModule.createCategories(image_name)
 
         imagesName = []
         for (root, dirs, files) in os.walk(path):
             for f in files:
-                if f.lower().endswith(('.png', '.jpg', '.jpeg')):
+                if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
                     dictionary = {'image-name': f}
-                    imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'images/' + f)
-                    polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'images/' + f)
-                
+                    imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+                    polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
                     if imageIndex is not None:
                         comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
                         dictionary['comment'] = comment if comment != "nan" else ''
