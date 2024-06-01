@@ -82,7 +82,9 @@ export default () => {
     const enabledTools = [
       {name: "bounding-box", value: "create-box"}, 
       {name: "polygon", value: "create-polygon"}, 
-      {name: "point", value: "create-point"}]  
+      {name: "point", value: "create-point"},
+      {name: "circle", value: "create-circle"}]
+      
     return enabledTools.filter(tool => selectedTools.includes(tool.name)).map(tool => tool.value) || []
   }
   const setConfiguration = (settingsPayload) => {

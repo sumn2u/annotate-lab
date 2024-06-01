@@ -17,7 +17,7 @@ const form = {
         title: "Region Types Allowed",
         description: "What types of regions can be drawn on the image.",
         type: "checkbox",
-        choices: ["bounding-box", "polygon", "point"],
+        choices: ["bounding-box", "polygon", "circle"],
       },
     {
       name: "labels",

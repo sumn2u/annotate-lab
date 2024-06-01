@@ -12,11 +12,11 @@ import {
   faMask,
   faMousePointer,
   faSearch,
+  faCircleDot,
   faTag,
   faVectorSquare
 } from "@fortawesome/free-solid-svg-icons"
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew"
-
 const faStyle = { marginTop: 4, width: 16, height: 16, marginBottom: 4 }
 
 export const iconDictionary = {
@@ -55,6 +55,14 @@ export const iconDictionary = {
       fixedWidth
       icon={faDrawPolygon}
     />
+  ),
+  "create-circle": () => (
+    <FontAwesomeIcon
+      style={faStyle}
+      size="xs"
+      fixedWidth
+      icon={faCircleDot}
+      />
   ),
   "create-expanding-line": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faGripLines} />

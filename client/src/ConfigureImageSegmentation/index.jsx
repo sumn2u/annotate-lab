@@ -11,7 +11,7 @@ const form = {
         title: "Region Types Allowed",
         description: "What types of regions can be drawn on the image.",
         type: "multiple-dropdown",
-        choices: ["bounding-box", "polygon", "point"],
+        choices: ["bounding-box", "polygon", "circle"],
       },
       {
         name: "multipleRegions",

@@ -46,6 +46,19 @@ const RegionComponents = {
       />
     </g>
   )),
+  circle: memo(({ region, iw, ih }) => (
+    <g transform={`translate(${region.x * iw} ${region.y * ih})`}>
+      <ellipse
+        strokeWidth={2}
+        cx={Math.max(region.w * iw / 2, 0)}
+        cy={Math.max(region.h * ih / 2, 0)}
+        rx={Math.max(region.w * iw / 2, 0)}
+        ry={Math.max(region.h * ih / 2, 0)}
+        stroke={colorAlpha(region.color, 0.75)}
+        fill={colorAlpha(region.color, 0.25)}
+      />
+    </g>
+  )),
   polygon: memo(({region, iw, ih, fullSegmentationMode}) => {
     const Component = region.open ? "polyline" : "polygon"
     return (

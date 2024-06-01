@@ -60,7 +60,8 @@ export default (
         })
         break
       }
-      case "box": {
+      case "box":
+      case "circle": {
         impliedRegions.push({
           ...prev,
           highlighted: false,

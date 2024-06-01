@@ -44,7 +44,8 @@ export const getEnclosingBox = (region) => {
     case "line": {
       return {x: region.x1, y: region.y1, w: 0, h: 0}
     }
-    case "box": {
+    case "box":
+    case "circle": {
       return {x: region.x, y: region.y, w: region.w, h: region.h}
     }
     case "point": {
@@ -61,7 +62,8 @@ export const moveRegion = (region, x, y) => {
     case "point": {
       return {...region, x, y}
     }
-    case "box": {
+    case "box": 
+    case "circle":{
       return {...region, x: x - region.w / 2, y: y - region.h / 2}
     }
     default: {

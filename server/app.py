@@ -121,6 +121,7 @@ def create_json_response(image_name):
                 imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
                 polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
                 boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+                circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, 'image-src',  'http://127.0.0.1:5000/uploads/' + f)
 
                 if imageIndex is not None:
                     comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
@@ -160,6 +161,19 @@ def create_json_response(image_name):
                             dictionary['regions'].extend(boxRegions)
                         else:
                             dictionary['regions'] = boxRegions
+                
+                if circleRegions is not None:
+                    if isinstance(circleRegions, pd.DataFrame):
+                        regions_list = circleRegions.to_dict(orient='records')
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(regions_list)
+                        else:
+                            dictionary['regions'] = regions_list
+                    else:
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(circleRegions)
+                        else:
+                            dictionary['regions'] = circleRegions
 
                 imagesName.append(dictionary)
 
@@ -256,7 +270,16 @@ def download_image_with_annotations():
                     w = float(region['w'][1:-1]) * width
                     h = float(region['h'][1:-1]) * height
                     # Draw rectangle with thicker outline
-                    draw.rectangle([x, y, x + w, y + h], outline=color, width=3)  
+                    draw.rectangle([x, y, x + w, y + h], outline=color, width=3)
+
+                elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
+                    rx = float(region['rx'][1:-1]) * width  # Remove brackets and convert to float
+                    ry = float(region['ry'][1:-1]) * height
+                    rw = float(region['rw'][1:-1]) * width
+                    rh = float(region['rh'][1:-1]) * height
+                    # Draw ellipse (circle if rw and rh are equal)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3)  
+
 
             
             img_byte_arr = BytesIO()
@@ -313,6 +336,13 @@ def download_image_mask():
                     h = float(region['h'][1:-1]) * height
                     # Draw rectangle for bounding box
                     draw.rectangle([x, y, x + w, y + h], outline=color, fill=color)
+                elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
+                    rx = float(region['rx'][1:-1]) * width  # Remove brackets and convert to float
+                    ry = float(region['ry'][1:-1]) * height
+                    rw = float(region['rw'][1:-1]) * width
+                    rh = float(region['rh'][1:-1]) * height
+                    # Draw ellipse (circle if rw and rh are equal)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, fill=color)
 
             
             mask_byte_arr = BytesIO()
