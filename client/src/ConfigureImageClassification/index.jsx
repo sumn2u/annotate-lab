@@ -51,6 +51,7 @@ export default ({ config, onChange }) => {
   const defaultAnswers = useMemo(
     () => ({
       multiple: config.multiple ? config.multiple : false,
+      regionTypesAllowed: config.regionTypesAllowed,
       labels:
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a

@@ -41,7 +41,7 @@ const ImageUpload = ({ onImageUpload }) => {
       });
       showSnackbar(response.data.message, 'success');
       setUploadStatus('Upload successful!');
-
+      
       const uploadedFiles = response.data.files;
       const uploadedImages = uploadedFiles.map(file => ({
         preview: file.url,
@@ -50,7 +50,11 @@ const ImageUpload = ({ onImageUpload }) => {
       setImages(uploadedImages);
       onImageUpload(uploadedImages);
     } catch (error) {
-      showSnackbar(response.data.message, 'error');
+      if(error?.data){
+        showSnackbar(error.data.message, 'error');
+      }else {
+        showSnackbar("Couldn't connect server", 'error')
+      }
       console.error('Error uploading images:', error);
       setUploadStatus('Upload failed.');
     }

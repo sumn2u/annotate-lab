@@ -72,6 +72,9 @@ export default ({ config, onChange }) => {
             '.MuiSelect-select.MuiSelect-outlined > div': {
                 paddingTop: '0px !important',
             },
+            '.MuiButtonBase-root.MuiCheckbox-root': {
+              padding: '2px !important',
+            },
             '.MuiInputBase-input.MuiOutlinedInput-input': {
             height: '2.2rem !important',
             minHeight: '2.2rem !important',

@@ -30,7 +30,7 @@ const form = {
 export default ({ config, onChange }) => {
     const defaultAnswers = useMemo(
         () => ({
-          taskDescription: config.taskInfo || "",
+          taskDescription: config.taskDescription || "",
           taskChoice: config.taskChoice !== undefined ? config.taskChoice : "image_classification",
         }),
         [config.taskDescription, config.taskChoice]
