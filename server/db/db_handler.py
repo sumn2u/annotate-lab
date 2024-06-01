@@ -178,6 +178,13 @@ class Module:
         
         return None
     
+    def findInfoInBoxDb(self, database, uid_columns, uid):
+        regions = database[database[uid_columns] == uid]
+        if len(regions) > 0:
+            return regions
+        
+        return None
+    
     def saveDataAutomatically(self, *args):
         for arguman in args[0]:
             arguman[1].to_csv(arguman[0], index=False)

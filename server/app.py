@@ -120,6 +120,8 @@ def create_json_response(image_name):
                 dictionary = {'image-name': f}
                 imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
                 polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+                boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
+
                 if imageIndex is not None:
                     comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
                     dictionary['comment'] = comment if comment != "nan" else ''
@@ -136,9 +138,28 @@ def create_json_response(image_name):
                             points = region.get('points', '')
                             decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
                             region['points'] = decoded_points
-                        dictionary['regions'] = regions_list
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(regions_list)
+                        else:
+                            dictionary['regions'] = regions_list
                     else:
-                        dictionary['regions'] = polygonRegions
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(polygonRegions)
+                        else:
+                            dictionary['regions'] = polygonRegions
+                                
+                if boxRegions is not None:
+                    if isinstance(boxRegions, pd.DataFrame):
+                        regions_list = boxRegions.to_dict(orient='records')
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(regions_list)
+                        else:
+                            dictionary['regions'] = regions_list
+                    else:
+                        if 'regions' in dictionary:
+                            dictionary['regions'].extend(boxRegions)
+                        else:
+                            dictionary['regions'] = boxRegions
 
                 imagesName.append(dictionary)
 
@@ -224,9 +245,18 @@ def download_image_with_annotations():
                 width, height = image.size
                 label = region.get("class")
                 color = color_map.get(label, (255, 0, 0))  # Default to red if label not in color_map
-                scaled_points = [(x * width, y * height) for x, y in points]
-                # Draw polygon with thicker outline
-                draw.line(scaled_points + [scaled_points[0]], fill=color, width=5)  # Change width as desired
+                if 'points' in region and region['points']:
+                    points = region['points']
+                    scaled_points = [(x * width, y * height) for x, y in points]
+                    # Draw polygon with thicker outline
+                    draw.line(scaled_points + [scaled_points[0]], fill=color, width=3)  # Change width as desired
+                elif all(key in region for key in ('x', 'y', 'w', 'h')):
+                    x = float(region['x'][1:-1]) * width  # Remove brackets and convert to float
+                    y = float(region['y'][1:-1]) * height
+                    w = float(region['w'][1:-1]) * width
+                    h = float(region['h'][1:-1]) * height
+                    # Draw rectangle with thicker outline
+                    draw.rectangle([x, y, x + w, y + h], outline=color, width=3)  
 
             
             img_byte_arr = BytesIO()
@@ -270,11 +300,20 @@ def download_image_mask():
             draw = ImageDraw.Draw(mask)
             
             for region in image_info.get("regions", []):
-                points = region.get("points", [])
                 label = region.get("class")
                 color = color_map.get(label, (255, 255, 255))  # Default to white if label not in color_map
-                scaled_points = [(int(x * width), int(y * height)) for x, y in points]
-                draw.polygon(scaled_points, outline=color, fill=color)
+                if 'points' in region and region['points']:
+                    points = region['points']
+                    scaled_points = [(int(x * width), int(y * height)) for x, y in points]
+                    draw.polygon(scaled_points, outline=color, fill=color)
+                elif all(key in region for key in ('x', 'y', 'w', 'h')):
+                    x = float(region['x'][1:-1]) * width  # Remove brackets and convert to float
+                    y = float(region['y'][1:-1]) * height
+                    w = float(region['w'][1:-1]) * width
+                    h = float(region['h'][1:-1]) * height
+                    # Draw rectangle for bounding box
+                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color)
+
             
             mask_byte_arr = BytesIO()
             mask.save(mask_byte_arr, format='PNG')
