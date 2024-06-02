@@ -5,7 +5,7 @@ Annotation-Lab is a web application designed for image annotation. It consists o
 ![example](./example.png)
 
 # Demo 
-[![Annotation Lab](https://img.youtube.com/vi/9IWszY7U8jU/0.jpg)](https://www.youtube.com/watch?v=9IWszY7U8jU)
+[![Annotation Lab](https://img.youtube.com/vi/b78BJhbasVw/0.jpg)](https://www.youtube.com/watch?v=b78BJhbasVw)
 
 
 <br/>
