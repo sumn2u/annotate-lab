@@ -23,7 +23,6 @@ import {useKey} from "react-use"
 import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
 import {Save, ExitToApp} from "@mui/icons-material"
-import html2canvas from 'html2canvas';
 import capitalize from "lodash/capitalize"
 
 const emptyArr = []
@@ -95,23 +94,6 @@ export const MainLayout = ({
       e.target.focus()
     }
   }, [])
-
-  const downloadAnnotatedImage = () => {
-    const divElement = document.getElementById('image-container');
-    const svgElement = document.getElementById('region-svg');
-    html2canvas(divElement, {
-      width: svgElement.getAttribute('width'),
-      height: svgElement.getAttribute('height'),
-    }).then(canvas => {
-      const dataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = 'downloaded-image.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  };
 
   const logout = () => {
     window.localStorage.removeItem("__REACT_WORKSPACE_CONFIGURATION");
