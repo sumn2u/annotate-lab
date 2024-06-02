@@ -8,7 +8,12 @@ const form = {
   questions: [
     {
       name: "multipleRegions",
-      title: "Allow multiple classifications per image?",
+      title: "Can multiple regions be created?",
+      type: "boolean",
+    },
+    {
+      name: "multipleRegionLabels",
+      title: "Multiple Region Labels Allowed?",
       type: "boolean",
     },
     {
@@ -51,6 +56,7 @@ export default ({ config, onChange }) => {
     () => ({
       multipleRegions:  Boolean(config.multipleRegions ? config.multipleRegions : true),
       regionTypesAllowed: config.regionTypesAllowed ? config.regionTypesAllowed : [],
+      multipleRegionLabels: Boolean(config.multipleRegionLabels ? config.multipleRegionLabels : true),
       labels:
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a
@@ -88,7 +94,7 @@ export default ({ config, onChange }) => {
         variant="flat"
         defaultAnswers={defaultAnswers}
         onQuestionChange={(questionId, newValue) => {
-            if(questionId !=="regionTypesAllowed" && questionId !== "multipleRegions"){
+            if(questionId !=="regionTypesAllowed" && questionId !=="multipleRegions" && questionId !=="multipleRegionLabels"){
                 let arrayId = []
                 if (Array.isArray(newValue)){
                     newValue = newValue.filter((json) => {

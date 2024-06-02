@@ -1,7 +1,6 @@
 import Annotator from "../Annotator"
 import React, { useEffect, useState } from "react"
 import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-server'
-import { getImages } from "../utils/get-data-from-server";
 import SetupPage from "../SetupPage";
 import { useSnackbar } from '../SnackbarContext';
 import { useSettings } from "../SettingsProvider";
