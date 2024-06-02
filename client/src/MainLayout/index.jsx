@@ -108,7 +108,6 @@ export const MainLayout = ({
       }
       key={state.selectedImage}
       showMask={state.showMask}
-      fullImageSegmentationMode={state.fullImageSegmentationMode}
       autoSegmentationOptions={state.autoSegmentationOptions}
       showTags={state.showTags}
       allowedArea={state.allowedArea}
@@ -302,7 +301,6 @@ export const MainLayout = ({
                 },
                 state.fullImageSegmentationMode && {
                   name: "show-mask",
-                  alwaysShowing: true,
                   helperText: "Show / Hide Mask",
                 },
                 {

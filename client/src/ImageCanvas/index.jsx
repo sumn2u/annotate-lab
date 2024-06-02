@@ -18,7 +18,6 @@ import useEventCallback from "use-event-callback"
 import RegionShapes from "../RegionShapes"
 import useWasdMode from "./use-wasd-mode"
 import PropTypes from 'prop-types'
-import ImageMask from "../ImageMask"
 
 const theme = createTheme()
 
@@ -56,9 +55,6 @@ export const ImageCanvas = ({
   videoPlaying = false,
   onImageOrVideoLoaded,
   onChangeRegion,
-  fullImageSegmentationMode,
-  autoSegmentationOptions,
-  showMask = true,
   onBeginRegionEdit,
   onCloseRegionEdit,
   onBeginBoxTransform,
@@ -367,16 +363,6 @@ export const ImageCanvas = ({
           {...mouseEvents}
         >
           <>
-            {fullImageSegmentationMode && (
-              <ImageMask
-                hide={!showMask}
-                autoSegmentationOptions={autoSegmentationOptions}
-                imagePosition={imagePosition}
-                regionClsList={regionClsList}
-                imageSrc={imageSrc}
-                regions={regions}
-              />
-            )}
               <canvas
               style={{opacity: 0.25, ...styles.canvas}}
               ref={canvasEl}
@@ -446,13 +432,11 @@ ImageCanvas.propTypes = {
   onBeginMoveKeypoint: PropTypes.func.isRequired,
   onAddPolygonPoint: PropTypes.func.isRequired,
   onSelectRegion: PropTypes.func.isRequired,
-  autoSegmentationOptions: PropTypes.object,
   onBeginMovePoint: PropTypes.func.isRequired,
   onImageOrVideoLoaded: PropTypes.func.isRequired,
   onChangeVideoTime: PropTypes.func.isRequired,
   onRegionClassAdded: PropTypes.func.isRequired,
   onChangeVideoPlaying: PropTypes.func,
-  fullImageSegmentationMode: PropTypes.bool,
 }
 
 export default ImageCanvas

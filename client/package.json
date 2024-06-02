@@ -51,7 +51,6 @@
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "@vitejs/plugin-react": "^4.1.0",
-    "autoseg": "^0.0.12",
     "axios": "^1.7.2",
     "gh-pages": "^6.1.1",
     "material-survey": "^2.1.0",

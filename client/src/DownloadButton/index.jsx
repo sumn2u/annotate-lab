@@ -44,7 +44,6 @@ const DownloadButton = ({selectedImageName, classList}) => {
             url = "imagesName"
         }
         const withoutExtension = selectedImageName.slice(0, selectedImageName.lastIndexOf('.'));
-        console.log(withoutExtension, 'selectedImageName')
         getImageFile(url, config_data)
             .then(response => {
                  // Create a link element and click it to trigger the download
