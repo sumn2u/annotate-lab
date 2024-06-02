@@ -2,7 +2,9 @@
 
 Annotation-Lab is a web application designed for image annotation. It consists of two main parts: the client and the server. The client is a React application responsible for the user interface, while the server is a Flask application that handles the backend logic.
 
+![example](./example.png)
 
+# Demo 
 [![Annotation Lab](https://img.youtube.com/vi/9IWszY7U8jU/0.jpg)](https://www.youtube.com/watch?v=9IWszY7U8jU)
 
 
