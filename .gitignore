@@ -35,3 +35,4 @@ secret.story.*
 .idea
 .idea/*
 server/uploads/*
+server/.vercel
