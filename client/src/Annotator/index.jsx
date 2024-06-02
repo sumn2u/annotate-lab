@@ -4,7 +4,6 @@ import React, {useEffect, useReducer} from "react"
 import makeImmutable, {without} from "seamless-immutable"
 
 import MainLayout from "../MainLayout"
-import SettingsProvider from "../SettingsProvider"
 import combineReducers from "./reducers/combine-reducers.js"
 import generalReducer from "./reducers/general-reducer.js"
 import getFromLocalStorage from "../utils/get-from-local-storage"
@@ -161,7 +160,6 @@ export const Annotator = ({
     return t("error.imagevideo")
 
   return (
-    <SettingsProvider>
         <MainLayout
           RegionEditLabel={RegionEditLabel}
           alwaysShowNextButton={Boolean(onNextImage)}
@@ -181,7 +179,6 @@ export const Annotator = ({
           onSelectJump={onSelectJump}
           saveActiveImage = {saveCurrentData}
         />
-    </SettingsProvider>
   )
 }
 

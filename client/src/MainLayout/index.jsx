@@ -96,7 +96,7 @@ export const MainLayout = ({
   }, [])
 
   const logout = () => {
-    window.localStorage.removeItem("__REACT_WORKSPACE_CONFIGURATION");
+    settings.changeSetting('settings', null)
     window.location.reload();
   }
   const canvas = (

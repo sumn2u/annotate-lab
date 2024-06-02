@@ -16,7 +16,7 @@ import ConfigureImageSegmentation from "../ConfigureImageSegmentation";
 import Button from '@mui/material/Button';
 import ConfigurationTask from "../ConfigurationTask";
 import ImageUpload from "../ImageUpload";
-
+import { useSettings } from "../SettingsProvider";
 const Container = styled("div")({
   marginTop: "2rem",
 })
@@ -63,6 +63,7 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
   const [currentTab, setTab] = useState("datatype");
   const [hasConfig, setHasConfig] = useState(false);
+  const settingsConfig = useSettings()
   const updateConfiguration = (newConfig) => {
     const {labels} = newConfig
     setHasConfig(labels.length > 0)
@@ -90,8 +91,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
     const hasLabels = configuration.labels.length > 0;
     setShowLabel(hasLabels)
     if(hasLabels) {
-      window.localStorage.__REACT_WORKSPACE_CONFIGURATION =
-      JSON.stringify(settings)
+      settingsConfig.changeSetting('settings',settings);
     }
   }
 

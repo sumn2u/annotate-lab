@@ -4,6 +4,7 @@ import {createRoot} from "react-dom/client"
 import Theme from "./Theme"
 import DemoSite from "./DemoSite"
 import "./site.css"
+import {SettingsProvider} from "./SettingsProvider"
 
 
 const Site = () => {
@@ -11,7 +12,7 @@ const Site = () => {
     .replace(/\/$/, "")
     .split("/")
     .slice(-1)[0]
-  return <Theme><DemoSite/></Theme>
+  return <Theme><SettingsProvider><DemoSite/></SettingsProvider></Theme>
 }
 
 const container = document.getElementById("app")

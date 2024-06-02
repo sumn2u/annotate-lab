@@ -7,6 +7,17 @@ const defaultSettings = {
   showCrosshairs: false,
   showHighlightBox: true,
   wasdMode: true,
+  settings: {
+    taskDescription: "",
+    taskChoice: "image_classification",
+    images: [],
+    dataTask: null,
+    configuration: {
+      labels: [],
+      multipleRegions: true,
+      multipleRegionLabels: true,
+    }
+  }
 }
 
 export const SettingsContext = createContext(defaultSettings)

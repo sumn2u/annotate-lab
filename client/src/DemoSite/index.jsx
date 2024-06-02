@@ -4,7 +4,7 @@ import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-ser
 import { getImages } from "../utils/get-data-from-server";
 import SetupPage from "../SetupPage";
 import { useSnackbar } from '../SnackbarContext';
-
+import { useSettings } from "../SettingsProvider";
 
 const userReducer = (state, action) => {
   switch (action.type) {
@@ -30,6 +30,7 @@ export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
   const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
+  const settingsConfig = useSettings()
   const [settings, setSettings] =  useState({
     taskDescription: "",
     taskChoice: "image_classification",
@@ -116,7 +117,7 @@ export default () => {
   }
   const preloadConfiguration = () => {
      // get last saved configuration
-     const savedConfiguration = JSON.parse(window.localStorage.__REACT_WORKSPACE_CONFIGURATION || "{}");
+     const savedConfiguration = settingsConfig.settings|| {};
      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
        setShowLabel(true)
