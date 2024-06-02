@@ -36,10 +36,9 @@ export default () => {
     images: [],
     dataTask: null,
     configuration: {
-      multiple: false,
       labels: [],
-      multipleRegions: false,
-      multipleRegionLabels: false,
+      multipleRegions: true,
+      multipleRegionLabels: true,
     }
   })
 
@@ -79,7 +78,7 @@ export default () => {
       {name: "point", value: "create-point"},
       {name: "circle", value: "create-circle"}]
       
-    return enabledTools.filter(tool => selectedTools.includes(tool.name)).map(tool => tool.value) || []
+    return enabledTools.filter(tool => selectedTools?.includes(tool.name)).map(tool => tool.value) || []
   }
   const setConfiguration = (settingsPayload) => {
     const { type, payload } = settingsPayload;
@@ -147,6 +146,7 @@ export default () => {
       onExit={(output) => {
         preprocessDataBeforeSend(output)
       }}
+      settings={settings}
       onSelectJump={onSelectJumpHandle}
       showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}

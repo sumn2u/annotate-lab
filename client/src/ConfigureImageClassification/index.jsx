@@ -7,10 +7,9 @@ import { CssBaseline, GlobalStyles } from "@mui/material";
 const form = {
   questions: [
     {
-      name: "multiple",
+      name: "multipleRegions",
       title: "Allow multiple classifications per image?",
       type: "boolean",
-      isRequired: true
     },
     {
         name: "regionTypesAllowed",
@@ -50,15 +49,15 @@ const form = {
 export default ({ config, onChange }) => {
   const defaultAnswers = useMemo(
     () => ({
-      multiple: config.multiple ? config.multiple : false,
-      regionTypesAllowed: config.regionTypesAllowed,
+      multipleRegions:  Boolean(config.multipleRegions ? config.multipleRegions : true),
+      regionTypesAllowed: config.regionTypesAllowed ? config.regionTypesAllowed : [],
       labels:
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a
         }) || [],
         regions: config.regions ? config.regions : "Polygon"
     }),
-    [config.labels, config.multiple]
+    [config.labels, config.multipleRegions]
   )
   return (
     <>
@@ -89,7 +88,7 @@ export default ({ config, onChange }) => {
         variant="flat"
         defaultAnswers={defaultAnswers}
         onQuestionChange={(questionId, newValue) => {
-            if(questionId !=="regionTypesAllowed"){
+            if(questionId !=="regionTypesAllowed" && questionId !== "multipleRegions"){
                 let arrayId = []
                 if (Array.isArray(newValue)){
                     newValue = newValue.filter((json) => {

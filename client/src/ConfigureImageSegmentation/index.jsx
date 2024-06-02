@@ -47,9 +47,9 @@ export default ({ config, onChange }) => {
       asMutable(
         {
           multipleRegions: Boolean(
-            config.multipleRegions || config.multipleRegions === undefined
+            config.multipleRegions ? config.multipleRegions : true
           ),
-          multipleRegionLabels: Boolean(config.multipleRegionLabels),
+          multipleRegionLabels: Boolean(config.multipleRegionLabels ? config.multipleRegionLabels : true),
           regionTypesAllowed: config.regionTypesAllowed,
           labels:
             (config.labels || []).map((a) =>
@@ -91,7 +91,7 @@ export default ({ config, onChange }) => {
         variant="flat"
         defaultAnswers={defaultAnswers}
         onQuestionChange={(questionId, newValue) => {
-            if(questionId !=="regionTypesAllowed"){
+            if(questionId !=="regionTypesAllowed" && questionId !=="multipleRegions" && questionId !=="multipleRegionLabels"){
                 let arrayId = []
                 if (Array.isArray(newValue)){
                     newValue = newValue.filter((json) => {
