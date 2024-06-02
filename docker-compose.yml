@@ -1,20 +1,13 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+  vite-client:
+    build: ./client
     ports:
-      - "5173:5173"
+      - "80:80"
+  flask-server:
+    build: ./server
+    ports:
+      - "8080:5000"
     depends_on:
-      - server
-
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - FLASK_ENV=development
+      - vite-client

@@ -63,6 +63,9 @@
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-raw-plugin": "^1.0.2"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
+  },
   "prettier": {
     "semi": false
   }

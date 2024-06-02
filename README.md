@@ -2,7 +2,9 @@
 
 Annotation-Lab is a web application designed for image annotation. It consists of two main parts: the client and the server. The client is a React application responsible for the user interface, while the server is a Flask application that handles the backend logic.
 
-![example](./example.png)
+
+[![Annotation Lab](https://img.youtube.com/vi/9IWszY7U8jU/0.jpg)](https://www.youtube.com/watch?v=9IWszY7U8jU)
+
 
 <br/>
 
@@ -122,9 +124,12 @@ The application should now be running on [http://localhost:5173](http://localhos
 The server should now be running on [http://localhost:5000](http://localhost:5000).
 
 ### Running using Docker.
-Navigate to the root directory and run the following command to start the application:
+First, change the `VITE_SERVER_URL` to  `http://127.0.0.1:8080`.
+Then, navigate to the root directory and run the following command to start the application: 
 ```sh
-docker-compose up --build
+docker-compose build
+docker-compose up -d #running in detached mode
+
 ```
 
 ## Usage
