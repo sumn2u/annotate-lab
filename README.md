@@ -1,6 +1,6 @@
 # Annotate-Lab
 
-Annotate-Lab is an open source application designed for image annotation. It consists of two main parts: the client and the server. The client is a React application responsible for the user interface, while the server is a Flask application that handles the backend logic.
+Annotate-Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our [documentation](./docs/annotate-lab.md).
 
 ![example](./example.png)
 
@@ -17,6 +17,7 @@ Annotate-Lab is an open source application designed for image annotation. It con
 - [Setup and Installation](#setup-and-installation)
 - [Running the Application](#running-the-application)
 - [Usage](#usage)
+- [Outputs](#outputs)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -139,6 +140,138 @@ docker-compose up -d #running in detached mode
 1. Open your web browser and navigate to [http://localhost:5173](http://localhost:5173).
 2. Use the user interface to upload and annotate images.
 3. The annotations and other interactions will be handled by the Flask server running at [http://localhost:5000](http://localhost:5000).
+
+## Outputs
+Sample of annotated image  along with its mask and settings is show below.
+
+![orange_annotation](./docs/orange_annotated-image.png)
+![orange_annotation_mask](./docs/orange_masked-image.png)
+
+```json
+{
+   "configuration":[
+      {
+         "image-name":"orange.png",
+         "processed":false,
+         "regions":[
+            {
+               "region-id":9937965146177845,
+               "image-src":"http://127.0.0.1:5000/uploads/orange.png",
+               "class":"Orange",
+               "comment":"NaN",
+               "tags":"NaN",
+               "points":[
+                  [
+                     0.6928366035182679,
+                     0.6305818673883626
+                  ],
+                  [
+                     0.7265307848443843,
+                     0.5372124492557511
+                  ],
+                  [
+                     0.7465367050067659,
+                     0.37483085250338294
+                  ],
+                  [
+                     0.6759895128552098,
+                     0.2313937753721245
+                  ],
+                  [
+                     0.4727714817320704,
+                     0.12178619756427606
+                  ],
+                  [
+                     0.3032476319350474,
+                     0.2124492557510149
+                  ],
+                  [
+                     0.21585334912043302,
+                     0.4059539918809202
+                  ],
+                  [
+                     0.21058863328822733,
+                     0.5656292286874154
+                  ],
+                  [
+                     0.25902401894451965,
+                     0.6752368064952639
+                  ],
+                  [
+                     0.33167709742895807,
+                     0.7415426251691475
+                  ],
+                  [
+                     0.5296304127198918,
+                     0.7564276048714479
+                  ]
+               ]
+            }
+         ]
+      },
+      {
+         "image-name":"orange.png",
+         "processed":false,
+         "regions":[
+            {
+               "region-id":9937965146177845,
+               "image-src":"http://127.0.0.1:5000/uploads/orange.png",
+               "class":"Orange",
+               "comment":"NaN",
+               "tags":"NaN",
+               "points":[
+                  [
+                     0.6928366035182679,
+                     0.6305818673883626
+                  ],
+                  [
+                     0.7265307848443843,
+                     0.5372124492557511
+                  ],
+                  [
+                     0.7465367050067659,
+                     0.37483085250338294
+                  ],
+                  [
+                     0.6759895128552098,
+                     0.2313937753721245
+                  ],
+                  [
+                     0.4727714817320704,
+                     0.12178619756427606
+                  ],
+                  [
+                     0.3032476319350474,
+                     0.2124492557510149
+                  ],
+                  [
+                     0.21585334912043302,
+                     0.4059539918809202
+                  ],
+                  [
+                     0.21058863328822733,
+                     0.5656292286874154
+                  ],
+                  [
+                     0.25902401894451965,
+                     0.6752368064952639
+                  ],
+                  [
+                     0.33167709742895807,
+                     0.7415426251691475
+                  ],
+                  [
+                     0.5296304127198918,
+                     0.7564276048714479
+                  ]
+               ]
+            }
+         ]
+      }
+   ]
+}
+
+```
 
 ## Troubleshooting
 
