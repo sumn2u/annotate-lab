@@ -71,21 +71,29 @@ def get_uploaded_files():
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def upload_file():
     try:
+        uploaded_files = []
+
         if 'file' not in request.files:
             return jsonify({"status": "error", "message": "No file part in the request"}), 400
         
-        file = request.files['file']
+        files = request.files.getlist('file')
         
-        if file.filename == '':
-            return jsonify({"status": "error", "message": "No selected file"}), 400
+        for file in files:
+            if file.filename == '':
+                return jsonify({"status": "error", "message": "No selected file"}), 400
+            
+    
+            if file and allowed_file(file.filename):
+                filename = file.filename
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file_url = url_for('uploaded_file', filename=filename, _external=True)
+                file_info = {'filename': filename, 'url': file_url}
+                uploaded_files.append(file_info)
+            else:
+                return jsonify({"status": "error", "message": "File type not allowed"}), 400
         
-        if file and allowed_file(file.filename):
-            filename = file.filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            files = get_uploaded_files()
-            return jsonify({"status": "success", "message": "File uploaded successfully", "files": files}), 201
-        else:
-            return jsonify({"status": "error", "message": "File type not allowed"}), 400
+        return jsonify({"status": "success", "message": "Files uploaded successfully", "files": uploaded_files}), 201
+    
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

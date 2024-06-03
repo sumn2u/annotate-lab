@@ -8,11 +8,10 @@ import { useSnackbar } from '../SnackbarContext';
 const ImageUpload = ({ onImageUpload }) => {
   const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState([]);
-  const [uploadStatus, setUploadStatus] = useState('');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (images.length + acceptedFiles.length > 2) {
-      alert("You can only upload up to 2 images.");
+      showSnackbar("You can only upload up to 2 images", "error");
       return;
     }
 
@@ -40,7 +39,6 @@ const ImageUpload = ({ onImageUpload }) => {
         }
       });
       showSnackbar(response.data.message, 'success');
-      setUploadStatus('Upload successful!');
       
       const uploadedFiles = response.data.files;
       const uploadedImages = uploadedFiles.map(file => ({
@@ -56,7 +54,6 @@ const ImageUpload = ({ onImageUpload }) => {
         showSnackbar("Couldn't connect server", 'error')
       }
       console.error('Error uploading images:', error);
-      setUploadStatus('Upload failed.');
     }
   };
 
@@ -127,7 +124,6 @@ const ImageUpload = ({ onImageUpload }) => {
           </Box>
         ))}
       </Box>
-      {uploadStatus && <Typography>{uploadStatus}</Typography>}
     </Box>
   );
 };
