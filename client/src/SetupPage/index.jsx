@@ -101,8 +101,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
             <Box  paddingBottom="0px">
                 <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={(e, newTab) => setTab(newTab)}>
                 <Tab icon={<CategoryIcon />} label="Task Info" value="datatype" />
-                <Tab disabled={!settings.taskChoice} icon={<BuildIcon />} label="Configure" value="configure" />
-                <Tab disabled={!settings.configuration.labels} icon={<AddPhotoAlternateIcon />} label="Image" value="image" />
+                <Tab disabled={settings.taskDescription.length < 1} icon={<BuildIcon />} label="Configure" value="configure" />
+                <Tab disabled={settings.configuration.labels.length < 1} icon={<AddPhotoAlternateIcon />} label="Image" value="image" />
                 </Tabs>
             </Box>
             {currentTab === "datatype" && (
