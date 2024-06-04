@@ -59,6 +59,7 @@ const ImageUpload = ({ onImageUpload }) => {
 
   const handleRemoveImage = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    onImageUpload(images.filter((_, i) => i !== index));
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

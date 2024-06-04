@@ -151,7 +151,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                 <ImageUpload onImageUpload={handleImageUpload} />
               </Box>
               <Box display="flex"  justifyContent="end">
-                <Button variant="contained" onClick={showLab} disableElevation>
+                <Button variant="contained" disabled={settings.images.length < 1} onClick={showLab} disableElevation>
                     Open Lab
                 </Button>
               </Box>
