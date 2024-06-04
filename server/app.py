@@ -122,14 +122,16 @@ def save_active_image_info():
 
 def create_json_response(image_name):
     imagesName = []
+    base_url = request.host_url + 'uploads/'
     for (root, dirs, files) in os.walk(path):
         for f in files:
             if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
                 dictionary = {'image-name': f}
-                imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
-                polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
-                boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', 'http://127.0.0.1:5000/uploads/' + f)
-                circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, 'image-src',  'http://127.0.0.1:5000/uploads/' + f)
+                image_url = base_url + f
+                imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', image_url)
+                polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', image_url)
+                boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', image_url)
+                circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, 'image-src',  image_url)
 
                 if imageIndex is not None:
                     comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
