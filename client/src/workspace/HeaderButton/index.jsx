@@ -30,8 +30,8 @@ const ButtonInnerContent = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 }))
-const IconContainer = styled("div")(({ textHidden }) => ({
-  color: colors.grey[700],
+const IconContainer = styled("div")(({ textHidden, disabled }) => ({
+  color: disabled ? colors.grey[400] : colors.grey[700],
   height: textHidden ? 32 : 20,
   paddingTop: textHidden ? 8 : 0,
   "& .MuiSvgIcon-root": {
@@ -39,10 +39,10 @@ const IconContainer = styled("div")(({ textHidden }) => ({
     height: 18,
   },
 }))
-const Text = styled("div")(({ theme }) => ({
+const Text = styled("div")(({ theme, disabled }) => ({
   fontWeight: "bold",
   fontSize: 11,
-  color: colors.grey[800],
+  color: disabled ? colors.grey[500] : colors.grey[800],
   display: "flex",
   alignItems: "center",
   lineHeight: 1,
@@ -61,11 +61,11 @@ export const HeaderButton = ({
     <ThemeProvider theme={theme}>
       <StyledButton onClick={onClick} disabled={disabled}>
         <ButtonInnerContent>
-          <IconContainer textHidden={hideText}>
+          <IconContainer textHidden={hideText} disabled={disabled}>
             {icon || getIcon(name, customIconMapping)}
           </IconContainer>
           {!hideText && (
-            <Text>
+            <Text disabled={disabled}>
               <div>{name}</div>
             </Text>
           )}

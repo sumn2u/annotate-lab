@@ -128,8 +128,6 @@ export default () => {
     setLoading(false);
   }, []);
 
-  
-
   return (
     <>
     { !showLabel ? ( // Render loading indicator if loading is true
@@ -159,6 +157,7 @@ export default () => {
         changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
       hideSettings={true}
+      disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}
     />)}
     </>

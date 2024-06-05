@@ -56,6 +56,7 @@ export const Annotator = ({
   hideHeaderText,
   hideNext,
   hidePrev,
+  disabledNextAndPrev,
   hideClone,
   hideSettings,
   hideSave,
@@ -171,6 +172,7 @@ export const Annotator = ({
           hideHeaderText={hideHeaderText}
           hideNext={hideNext}
           hidePrev={hidePrev}
+          disabledNextAndPrev={disabledNextAndPrev}
           hideClone={hideClone}
           hideSettings={hideSettings}
           hideSave={hideSave}
@@ -216,6 +218,7 @@ Annotator.propTypes = {
   hideHeaderText: PropTypes.bool,
   hideNext: PropTypes.bool,
   hidePrev: PropTypes.bool,
+  disabledNextAndPrev: PropTypes.bool,
   hideClone: PropTypes.bool,
   hideSettings: PropTypes.bool,
   settings: PropTypes.object,

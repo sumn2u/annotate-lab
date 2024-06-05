@@ -43,6 +43,7 @@ export const MainLayout = ({
   hideHeaderText,
   hideNext = false,
   hidePrev = false,
+  disabledNextAndPrev,
   hideClone = false,
   hideSettings = false,
   downloadImage = false,
@@ -221,8 +222,8 @@ export const MainLayout = ({
                 ) : null,
               ].filter(Boolean)}
               headerItems={[
-                !hidePrev && {name: "Prev"},
-                !hideNext && {name: "Next"},
+                !hidePrev && {name: "Prev", disabled: disabledNextAndPrev},
+                !hideNext && {name: "Next", disabled: disabledNextAndPrev},
                 state.annotationType !== "video"
                   ? null
                   : !state.videoPlaying
