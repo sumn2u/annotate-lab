@@ -9,21 +9,30 @@ const ImageUpload = ({ onImageUpload }) => {
   const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState([]);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    if (images.length + acceptedFiles.length > 2) {
+  const onDrop = useCallback((acceptedFiles, fileRejections) => {
+    if (fileRejections.length) {
+      const { errors } = fileRejections[0];
+      if (errors.length) {
+        showSnackbar(errors[0].message, "error");
+        return;
+      }
+    }
+  
+    const totalImages = images.length + acceptedFiles.length;
+    if (totalImages > 2) {
       showSnackbar("You can only upload up to 2 images", "error");
       return;
     }
-
+  
     const newImages = acceptedFiles.map((file) => {
       return Object.assign(file, {
         preview: URL.createObjectURL(file),
         imageName: file.name,
       });
     });
+  
     uploadImages(newImages);
-    
-  }, [images, onImageUpload]);
+  }, [images, onImageUpload, showSnackbar]);
 
   const uploadImages = async (images) => {
     const formData = new FormData();
