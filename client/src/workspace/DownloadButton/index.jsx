@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DownloadIcon from "@mui/icons-material/Download";
+import DescriptionIcon from "@mui/icons-material/Description";
+import ImageIcon from "@mui/icons-material/Image";
+import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import colors from "../../colors.js";
 import { getImageFile } from "../../utils/get-data-from-server.js";
 import { useSnackbar} from "../../SnackbarContext/index.jsx"
@@ -83,9 +86,9 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => handleDownload("configuration")}>Configuration</MenuItem>
-        <MenuItem onClick={() => handleDownload("masked-image")}>Masked Image</MenuItem>
-        <MenuItem onClick={() => handleDownload("annotated-image")}> Annotated Image</MenuItem>
+        <MenuItem onClick={() => handleDownload("configuration")}> <DescriptionIcon style={{ marginRight: 8 }} />Configuration</MenuItem>
+        <MenuItem onClick={() => handleDownload("masked-image")}> <ImageIcon style={{ marginRight: 8 }} />Masked Image</MenuItem>
+        <MenuItem onClick={() => handleDownload("annotated-image")}> <ImageSearchIcon style={{ marginRight: 8 }} />Annotated Image</MenuItem>
       </Menu>
     </>
   );
