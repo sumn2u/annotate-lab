@@ -135,7 +135,7 @@ def create_json_response(image_name):
     imagesName = []
     base_url = request.host_url + 'uploads/'
     # Initialize the main dictionary for storing image information
-    main_dict = {'image-name': image_name, 'regions': [], 'processed': False, 'comment': '', 'cls': ''}
+    main_dict = {'image-name': image_name, 'regions': []}
     added_region_ids = set()  # Set to track added region IDs
     
     for (root, dirs, files) in os.walk(path):
