@@ -59,7 +59,12 @@ export const ClassSelectionMenu = ({
   regionClsList,
   regionColorList,
   onSelectCls,
+  regions
 }) => {
+  
+  const getRegionsLabelCount = (label) => {
+    return regions?.filter((r) => r.cls === label).length;
+  }
 
   useEffect(() => {
     if (selectedCls == null) {
@@ -95,6 +100,9 @@ export const ClassSelectionMenu = ({
               {capitalize(label)}
             </Label>
             <DashSep />
+            { getRegionsLabelCount(label) > 0 &&
+              <Number>[{getRegionsLabelCount(label)}]</Number>
+            }
           </LabelContainer>
         ))}
         <Box pb={2} />

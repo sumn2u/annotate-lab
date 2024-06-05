@@ -1,5 +1,5 @@
 const translationEnEN = {
-  "menu.classifications": "Classifications",
+  "menu.classifications": "Labels",
   "menu.history": "History",
   "menu.regions": "Regions",
   "error.image": "Could not load image",

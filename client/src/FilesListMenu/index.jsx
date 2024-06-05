@@ -74,7 +74,7 @@ export const FilesListMenu = ({
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
-        title={`Images (${allImages.length > 0 ? allImages.length : 0})`}
+        title={`Images [${allImages.length > 0 ? allImages.length : 0}]`}
         subTitle=""
         icon={<CollectionsIcon style={{ color: muiColors.grey[700] }} />}
         noScroll={true}
