@@ -1,7 +1,7 @@
 // @flow
 
 import React, {useCallback, useRef} from "react"
-import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
+import {createTheme, ThemeProvider} from "@mui/material/styles"
 import ClassSelectionMenu from "../ClassSelectionMenu"
 import DebugBox from "../DebugSidebarBox"
 import HistorySidebarBox from "../HistorySidebarBox"
