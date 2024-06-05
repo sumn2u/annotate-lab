@@ -279,8 +279,8 @@ export const MainLayout = ({
                 {
                   name: "create-circle",
                   helperText:
-                    "Add Circle Box" +
-                    getHotkeyHelpText("create_circle_box"),
+                    "Add Circle" +
+                    getHotkeyHelpText("create_circle"),
                 },
                 {
                   name: "create-polygon",
