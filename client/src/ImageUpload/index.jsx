@@ -57,9 +57,28 @@ const ImageUpload = ({ onImageUpload }) => {
     }
   };
 
+  const deleteImage = async (filename) => {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_SERVER_URL}/uploads/${filename}`);
+      showSnackbar(response.data.message, 'success');
+
+      // Update the state to remove the deleted image
+      const updatedImages = images.filter((image) => image.filename !== filename);
+      setImages(updatedImages);
+      onImageUpload(updatedImages);
+    } catch (error) {
+      if (error?.response?.data) {
+        showSnackbar(error.response.data.message, 'error');
+      } else {
+        showSnackbar("Couldn't connect to the server", 'error');
+      }
+      console.error('Error deleting image:', error);
+    }
+  };
+  
   const handleRemoveImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    onImageUpload(images.filter((_, i) => i !== index));
+    const imageToRemove = images[index];
+    deleteImage(imageToRemove.filename);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

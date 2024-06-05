@@ -101,7 +101,18 @@ def upload_file():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/uploads/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    try:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return jsonify({"status": "success", "message": "File deleted successfully"}), 200
+        else:
+            return jsonify({"status": "error", "message": "File not found"}), 404
 
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/activeImage', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
