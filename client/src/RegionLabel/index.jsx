@@ -157,8 +157,11 @@ export const RegionLabel = ({
                 InputProps={{
                   sx: styles.commentBox,
                 }}
+                id="commentField"
                 fullWidth
                 multiline
+                placeholder="Write comment here..."
+                style={styles.nameField}
                 rows={3}
                 ref={commentInputRef}
                 onClick={onCommentInputClick}

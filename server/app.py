@@ -134,10 +134,13 @@ def save_active_image_info():
 def create_json_response(image_name):
     imagesName = []
     base_url = request.host_url + 'uploads/'
+    # Initialize the main dictionary for storing image information
+    main_dict = {'image-name': image_name, 'regions': [], 'processed': False, 'comment': '', 'cls': ''}
+    added_region_ids = set()  # Set to track added region IDs
+    
     for (root, dirs, files) in os.walk(path):
         for f in files:
             if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
-                dictionary = {'image-name': f}
                 image_url = base_url + f
                 imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', image_url)
                 polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', image_url)
@@ -146,57 +149,38 @@ def create_json_response(image_name):
 
                 if imageIndex is not None:
                     comment = str(dbModule.imagesInfo.at[imageIndex, 'comment'])
-                    dictionary['comment'] = comment if comment != "nan" else ''
-                    dictionary['cls'] = str(dbModule.imagesInfo.at[imageIndex, 'selected-classes'])
-                    dictionary['cls'] = dictionary['cls'] if dictionary['cls'] != "nan" else ''
-                    dictionary['processed'] = True
-                else:
-                    dictionary['processed'] = False
+                    main_dict['comment'] = comment if comment != "nan" else ''
+                    main_dict['cls'] = str(dbModule.imagesInfo.at[imageIndex, 'selected-classes'])
+                    main_dict['cls'] = main_dict['cls'] if main_dict['cls'] != "nan" else ''
+                    main_dict['processed'] = True
+
+                def add_regions(regions):
+                    if isinstance(regions, pd.DataFrame):
+                        regions_list = regions.to_dict(orient='records')
+                    else:
+                        regions_list = regions
+
+                    for region in regions_list:
+                        region_id = region.get('region-id')
+                        if region_id not in added_region_ids:
+                            added_region_ids.add(region_id)
+                            if 'points' in region:
+                                points = region['points']
+                                decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
+                                region['points'] = decoded_points
+                            main_dict['regions'].append(region)
 
                 if polygonRegions is not None:
-                    if isinstance(polygonRegions, pd.DataFrame):
-                        regions_list = polygonRegions.to_dict(orient='records')
-                        for region in regions_list:
-                            points = region.get('points', '')
-                            decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
-                            region['points'] = decoded_points
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(regions_list)
-                        else:
-                            dictionary['regions'] = regions_list
-                    else:
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(polygonRegions)
-                        else:
-                            dictionary['regions'] = polygonRegions
-                                
-                if boxRegions is not None:
-                    if isinstance(boxRegions, pd.DataFrame):
-                        regions_list = boxRegions.to_dict(orient='records')
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(regions_list)
-                        else:
-                            dictionary['regions'] = regions_list
-                    else:
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(boxRegions)
-                        else:
-                            dictionary['regions'] = boxRegions
-                
-                if circleRegions is not None:
-                    if isinstance(circleRegions, pd.DataFrame):
-                        regions_list = circleRegions.to_dict(orient='records')
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(regions_list)
-                        else:
-                            dictionary['regions'] = regions_list
-                    else:
-                        if 'regions' in dictionary:
-                            dictionary['regions'].extend(circleRegions)
-                        else:
-                            dictionary['regions'] = circleRegions
+                    add_regions(polygonRegions)
 
-                imagesName.append(dictionary)
+                if boxRegions is not None:
+                    add_regions(boxRegions)
+
+                if circleRegions is not None:
+                    add_regions(circleRegions)
+
+    # Add the main dictionary to the list
+    imagesName.append(main_dict)
 
     # Convert the response to JSON and then to a BytesIO object
     json_data = json.dumps({'configuration': imagesName})
