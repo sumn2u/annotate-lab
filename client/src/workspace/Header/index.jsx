@@ -2,7 +2,7 @@ import React from "react"
 import HeaderButton from "../HeaderButton"
 import Box from "@mui/material/Box"
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
-import DownloadButton from "../../DownloadButton"
+import DownloadButton from "../DownloadButton"
 const theme = createTheme()
 const emptyObj = {}
 
@@ -43,7 +43,7 @@ export const Header = ({
           {"Lab"}
         </BrandText>
         <Box flexGrow={1}>{leftSideContent}</Box>
-        <DownloadButton selectedImageName={selectedImageName} classList={classList}
+        <DownloadButton selectedImageName={selectedImageName} classList={classList} hideHeaderText={hideHeaderText} 
                 onDownload={onClickItem}
                 />
         {items.map((item) => (

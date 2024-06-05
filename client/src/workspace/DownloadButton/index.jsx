@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DownloadIcon from "@mui/icons-material/Download";
-import colors from "../colors";
-import { getImageFile } from "../utils/get-data-from-server";
-import { useSnackbar} from "../SnackbarContext/index.jsx"
-import { hexToRgbTuple } from "../utils/color-utils.js";
-const DownloadButton = ({selectedImageName, classList}) => {
+import colors from "../../colors.js";
+import { getImageFile } from "../../utils/get-data-from-server.js";
+import { useSnackbar} from "../../SnackbarContext/index.jsx"
+import { hexToRgbTuple } from "../../utils/color-utils.js";
+import HeaderButton from "../HeaderButton/index.jsx";
+
+const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showSnackbar } = useSnackbar();
 
@@ -68,14 +69,14 @@ const DownloadButton = ({selectedImageName, classList}) => {
   };
 
   return (
-    <div>
-      <IconButton
-        aria-controls="download-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <DownloadIcon />
-      </IconButton>
+    <>
+      <HeaderButton
+       key={"download-button"}
+       hideText={hideHeaderText}
+       name={"Download"}
+       onClick={handleClick}
+       icon={<DownloadIcon />}
+     />
       <Menu
         id="download-menu"
         anchorEl={anchorEl}
@@ -86,7 +87,7 @@ const DownloadButton = ({selectedImageName, classList}) => {
         <MenuItem onClick={() => handleDownload("masked-image")}>Masked Image</MenuItem>
         <MenuItem onClick={() => handleDownload("annotated-image")}> Annotated Image</MenuItem>
       </Menu>
-    </div>
+    </>
   );
 };
 
