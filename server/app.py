@@ -19,8 +19,9 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 
 
-# Get the CLIENT_URL environment variable
-client_url = os.getenv('CLIENT_URL')
+# Get the CLIENT_URL environment variable, set a default if not found
+client_url = os.getenv('CLIENT_URL', 'http://localhost:5000')
+
 
 # Set the folder to save uploaded files
 UPLOAD_FOLDER = 'uploads'

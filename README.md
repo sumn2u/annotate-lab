@@ -34,6 +34,7 @@ annotation-lab/
 │   └── ... (other React app files)
 ├── server/
 │   ├── db/
+│   ├── tests/
 │   ├── venv/
 │   ├── app.py
 │   ├── requirements.txt
@@ -50,6 +51,7 @@ annotation-lab/
 ### Server
 - **db/**: Database-related files and handlers.
 - **venv/**: Python virtual environment (not included in version control).
+- **tests/**: Contains test files.
 - **app.py**: Main Flask application file.
 - **requirements.txt**: Contains server dependencies.
 
