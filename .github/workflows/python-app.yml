@@ -32,4 +32,5 @@ jobs:
     - name: Run tests
       run: |
         source venv/bin/activate
-        python -m unittest discover -s server/tests/test_app.py
+        cd server
+        python3 -m unittest tests/test_app.py
