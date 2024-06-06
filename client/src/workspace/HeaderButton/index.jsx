@@ -51,6 +51,7 @@ const Text = styled("div")(({ theme, disabled }) => ({
 
 export const HeaderButton = ({
   name,
+  label,
   icon,
   disabled,
   onClick,
@@ -66,7 +67,7 @@ export const HeaderButton = ({
           </IconContainer>
           {!hideText && (
             <Text disabled={disabled}>
-              <div>{name}</div>
+              <div>{label}</div>
             </Text>
           )}
         </ButtonInnerContent>

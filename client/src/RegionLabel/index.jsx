@@ -160,7 +160,7 @@ export const RegionLabel = ({
                 id="commentField"
                 fullWidth
                 multiline
-                placeholder="Write comment here..."
+                placeholder={t("comment_placeholder")}
                 style={styles.nameField}
                 rows={3}
                 ref={commentInputRef}

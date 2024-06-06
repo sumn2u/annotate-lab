@@ -4,8 +4,10 @@ import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
+import { useTranslation } from "react-i18next"
 
 const ImageUpload = ({ onImageUpload }) => {
+  const { t } = useTranslation(); 
   const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState([]);
 
@@ -20,7 +22,7 @@ const ImageUpload = ({ onImageUpload }) => {
   
     const totalImages = images.length + acceptedFiles.length;
     if (totalImages > 2) {
-      showSnackbar("You can only upload up to 2 images", "error");
+      showSnackbar(t("error.configuration.image_upload.max"), "error");
       return;
     }
   
@@ -60,7 +62,7 @@ const ImageUpload = ({ onImageUpload }) => {
       if(error?.data){
         showSnackbar(error.data.message, 'error');
       }else {
-        showSnackbar("Couldn't connect server", 'error')
+        showSnackbar(t("error.server_connection"), 'error')
       }
       console.error('Error uploading images:', error);
     }
@@ -79,7 +81,7 @@ const ImageUpload = ({ onImageUpload }) => {
       if (error?.response?.data) {
         showSnackbar(error.response.data.message, 'error');
       } else {
-        showSnackbar("Couldn't connect to the server", 'error');
+        showSnackbar(t("error.server_connection"), 'error');
       }
       console.error('Error deleting image:', error);
     }
@@ -118,9 +120,9 @@ const ImageUpload = ({ onImageUpload }) => {
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <Typography>Drop the files here...</Typography>
+          <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.file_drop")}</Typography>
         ) : (
-          <Typography>Drag 'n' drop some files here, or click to select files (up to 2)</Typography>
+          <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.description")}</Typography>
         )}
       </Box>
       <Box display="flex" flexWrap="wrap" gap="1rem">

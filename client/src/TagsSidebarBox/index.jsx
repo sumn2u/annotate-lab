@@ -6,6 +6,7 @@ import Select from "react-select"
 import useEventCallback from "use-event-callback"
 import { asMutable } from "seamless-immutable"
 import PropTypes from "prop-types"
+import { useTranslation } from "react-i18next"
 
 const emptyArr = []
 const noop = () => null
@@ -16,6 +17,7 @@ export const TagsSidebarBox = ({
   imageTagList = emptyArr,
   onChangeImage = noop,
 }) => {
+  const { t } = useTranslation()
   const { tags = [], cls = null } = currentImage || {}
   const onChangeClassification = useEventCallback((o) =>
     onChangeImage({ cls: o.value })
@@ -44,7 +46,7 @@ export const TagsSidebarBox = ({
 
   return (
     <SidebarBoxContainer
-      title="Image Tags"
+      title={t("image_tags")}
       expandedByDefault
       noScroll
       icon={<StyleIcon style={{ color: grey[700] }} />}
@@ -52,7 +54,7 @@ export const TagsSidebarBox = ({
       {imageClsList.length > 0 && (
         <div style={{ padding: 8 }}>
           <Select
-            placeholder="Image Classification"
+            placeholder={t("image_tags_classification_placeholder")}
             onChange={onChangeClassification}
             value={selectValue}
             options={memoImgClsList}
@@ -63,7 +65,7 @@ export const TagsSidebarBox = ({
         <div style={{ padding: 8, paddingTop: 0 }}>
           <Select
             isMulti
-            placeholder="Image Tags"
+            placeholder={t("image_tags")}
             onChange={onChangeTags}
             value={memoCurrentTags}
             options={memoImgTagList}
