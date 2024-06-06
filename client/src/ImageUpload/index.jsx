@@ -133,17 +133,24 @@ const ImageUpload = ({ onImageUpload }) => {
         {isDragActive ? (
           <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.file_drop")}</Typography>
         ) : (
-          loading ?
-            progress > 0 && progress < 100 ? (
-              <div>
-                <progress value={progress} max={100} />
-                <p>{progress}%</p>
-              </div>
-            ) : (
-              <div className="loading">Loading...</div>
-            )
-            :
-            <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.description")}</Typography>
+          <>
+          {loading ? (
+            <>
+              {progress > 0 && progress < 100 ? (
+                <>
+                  <progress value={progress} max={100} />
+                  <p>{progress}%</p>
+                </>
+              ) : (
+                <div className="loading">{t("loading")}</div>
+              )}
+            </>
+          ) : (
+            <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>
+              {t("configuration.image_upload.description")}
+            </Typography>
+          )}
+        </>
         )}
       </Box>
       <Box display="flex" flexWrap="wrap" gap="1rem">

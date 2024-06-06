@@ -59,7 +59,8 @@ const translationEnEN = {
   "helptext_circle": "Add Circle",
   "comment_placeholder": "Write comment here...",
   "image_tags": "Image Tags",
-  "image_tags_classification_placeholder": "Image Classification"
+  "image_tags_classification_placeholder": "Image Classification",
+  "loading": "Loading...",
 };
 
 export default translationEnEN;
