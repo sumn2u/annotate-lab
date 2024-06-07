@@ -17,6 +17,8 @@ import ConfigurationTask from "../ConfigurationTask";
 import ImageUpload from "../ImageUpload";
 import { useSettings } from "../SettingsProvider";
 import { useTranslation } from "react-i18next"
+import { Info } from '@mui/icons-material';
+import NoteSection from "../NoteSection";
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -105,7 +107,12 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
             {currentTab === "datatype" && (
                <Box minWidth="35vw" paddingTop={"2rem"}>
                   <ConfigurationTask config={settings} onChange={updateTaskInfo} />
-                  <Box display="flex"  justifyContent="end">
+                  <NoteSection 
+                  icon={Info} 
+                  text={t("more_info")} 
+                  link="https://annotate-docs.dwaste.live" 
+                />
+                  <Box display="flex" paddingTop="5rem" justifyContent="end">
                         <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
                             {t("btn.next")}
                         </Button>

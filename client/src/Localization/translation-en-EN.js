@@ -61,6 +61,9 @@ const translationEnEN = {
   "image_tags": "Image Tags",
   "image_tags_classification_placeholder": "Image Classification",
   "loading": "Loading...",
+  "note": "Note",
+  "here": "here",
+  "more_info": "More information can be found in our documentation",
 };
 
 export default translationEnEN;
