@@ -14,6 +14,7 @@ import requests
 import json
 from PIL import Image, ImageDraw
 import os
+import traceback
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -271,20 +272,25 @@ def download_image_with_annotations():
                     # Draw polygon with thicker outline
                     draw.line(scaled_points + [scaled_points[0]], fill=color, width=3)  # Change width as desired
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
-                    x = float(region['x'][1:-1]) * width  # Remove brackets and convert to float
-                    y = float(region['y'][1:-1]) * height
-                    w = float(region['w'][1:-1]) * width
-                    h = float(region['h'][1:-1]) * height
+                    try:
+                        x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
+                        y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
+                        w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
+                        h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
+                    except (ValueError, TypeError) as e:
+                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle with thicker outline
                     draw.rectangle([x, y, x + w, y + h], outline=color, width=3)
-
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
-                    rx = float(region['rx'][1:-1]) * width  # Remove brackets and convert to float
-                    ry = float(region['ry'][1:-1]) * height
-                    rw = float(region['rw'][1:-1]) * width
-                    rh = float(region['rh'][1:-1]) * height
+                    try:
+                        rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
+                        ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
+                        rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
+                        rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
+                    except (ValueError, TypeError) as e:
+                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3)  
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3) 
 
 
             
@@ -294,9 +300,19 @@ def download_image_with_annotations():
 
             return send_file(img_byte_arr, mimetype='image/png', as_attachment=True, download_name=image_info.get("image-name"))
         
+    except ValueError as ve:
+        print('ValueError:', ve)
+        traceback.print_exc()
+        return jsonify({'error': str(ve)}), 400
+    except requests.exceptions.RequestException as re:
+        print('RequestException:', re)
+        traceback.print_exc()
+        return jsonify({'error': 'Error fetching image from URL'}), 500
     except Exception as e:
-        print('Error:', e)
+        print('General error:', e)
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/download_image_mask', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
@@ -336,28 +352,43 @@ def download_image_mask():
                     scaled_points = [(int(x * width), int(y * height)) for x, y in points]
                     draw.polygon(scaled_points, outline=color, fill=color)
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
-                    x = float(region['x'][1:-1]) * width  # Remove brackets and convert to float
-                    y = float(region['y'][1:-1]) * height
-                    w = float(region['w'][1:-1]) * width
-                    h = float(region['h'][1:-1]) * height
+                    try:
+                        x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
+                        y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
+                        w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
+                        h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
+                    except (ValueError, TypeError) as e:
+                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle for bounding box
                     draw.rectangle([x, y, x + w, y + h], outline=color, fill=color)
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
-                    rx = float(region['rx'][1:-1]) * width  # Remove brackets and convert to float
-                    ry = float(region['ry'][1:-1]) * height
-                    rw = float(region['rw'][1:-1]) * width
-                    rh = float(region['rh'][1:-1]) * height
+                    try:
+                        rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
+                        ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
+                        rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
+                        rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
+                    except (ValueError, TypeError) as e:
+                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, fill=color)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3)
 
-            
             mask_byte_arr = BytesIO()
             mask.save(mask_byte_arr, format='PNG')
             mask_byte_arr.seek(0)
 
             return send_file(mask_byte_arr, mimetype='image/png', as_attachment=True, download_name=f"mask_{image_info.get('image-name')}")
+        
+    except ValueError as ve:
+        print('ValueError:', ve)
+        traceback.print_exc()
+        return jsonify({'error': str(ve)}), 400
+    except requests.exceptions.RequestException as re:
+        print('RequestException:', re)
+        traceback.print_exc()
+        return jsonify({'error': 'Error fetching image from URL'}), 500
     except Exception as e:
-        print('Error:', e)
+        print('General error:', e)
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/imagesInfo', methods=['GET'])

@@ -70,7 +70,7 @@ class Module:
         # return regionData
 
     def saveRegionInDB(self, database, idColumn, uid, data, status): # TODO if region then use one or zero changeSatus, remove in their
-        
+        print(f"Database: {database}")
         index = self.findInfoInDb(database, idColumn, uid)
 
         if index is not None: # set -> diff -> list 
