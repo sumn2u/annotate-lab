@@ -10,11 +10,12 @@ import { getImageFile } from "../../utils/get-data-from-server.js";
 import { useSnackbar} from "../../SnackbarContext/index.jsx"
 import { hexToRgbTuple } from "../../utils/color-utils.js";
 import HeaderButton from "../HeaderButton/index.jsx";
+import { useTranslation } from "react-i18next"
 
 const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showSnackbar } = useSnackbar();
-
+  const {t} = useTranslation();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -67,7 +68,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
             })
             .catch(error => {
                 console.log(error, "error");
-                showSnackbar("Error downloading the file", 'error');
+                showSnackbar(t("error.downloading_file"), 'error');
             });
   };
 
@@ -77,6 +78,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
        key={"download-button"}
        hideText={hideHeaderText}
        name={"Download"}
+       label={t("btn.download")}
        onClick={handleClick}
        icon={<DownloadIcon />}
      />
@@ -86,9 +88,27 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => handleDownload("configuration")}> <DescriptionIcon style={{ marginRight: 8 }} />Configuration</MenuItem>
-        <MenuItem onClick={() => handleDownload("masked-image")}> <ImageIcon style={{ marginRight: 8 }} />Masked Image</MenuItem>
-        <MenuItem onClick={() => handleDownload("annotated-image")}> <ImageSearchIcon style={{ marginRight: 8 }} />Annotated Image</MenuItem>
+        <MenuItem
+          onClick={() => handleDownload("configuration")}
+          sx={{ fontSize: "0.775rem", padding: "4px 8px" }}
+        >
+          <DescriptionIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
+          {t("download.configuration")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleDownload("masked-image")}
+          sx={{ fontSize: "0.775rem", padding: "4px 8px" }}
+        >
+          <ImageIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
+          {t("download.image_mask")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleDownload("annotated-image")}
+          sx={{ fontSize: "0.775rem", padding: "4px 8px" }}
+        >
+          <ImageSearchIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
+          {t("download.image_with_annotations")}
+        </MenuItem>
       </Menu>
     </>
   );

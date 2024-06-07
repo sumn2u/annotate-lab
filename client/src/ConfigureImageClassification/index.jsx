@@ -3,55 +3,58 @@ import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
 import { setIn } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material";
-
-const form = {
-  questions: [
-    {
-      name: "multipleRegions",
-      title: "Can multiple regions be created?",
-      type: "boolean",
-    },
-    {
-      name: "multipleRegionLabels",
-      title: "Multiple Region Labels Allowed?",
-      type: "boolean",
-    },
-    {
-        name: "regionTypesAllowed",
-        title: "Region Types Allowed",
-        description: "What types of regions can be drawn on the image.",
-        type: "checkbox",
-        choices: ["bounding-box", "polygon", "circle"],
-      },
-    {
-      name: "labels",
-      title: "Labels",
-      description: "Classifications or tags to be labeled.",
-      type: "matrixdynamic",
-      columns: [
-        { cellType: "text", name: "id", title: "id" , isRequired: true},
-        {
-          cellType: "text",
-          name: "description",
-          title: "Description (optional)",
-        },
-      ],
-    },
-    {
-        name: "regions",
-        title: "Default Region Type",
-        description: "Choose default region type that can be drawn on the image.",
-        type: "dropdown",
-        choices: [
-            "Polygon",
-            "Bounding Box",
-            "Point",
-          ],
-    }
-  ],
-}
+import { useTranslation } from "react-i18next"
 
 export default ({ config, onChange }) => {
+  const { t } = useTranslation();
+
+  const form = {
+    questions: [
+      {
+        name: "multipleRegions",
+        title: t("configuration.multiple_regions"),
+        type: "boolean",
+      },
+      {
+        name: "multipleRegionLabels",
+        title:t("configuration.multiple_region_labels"),
+        type: "boolean",
+      },
+      {
+          name: "regionTypesAllowed",
+          title: t("configuration.region_types_allowed"),
+          description: t("configuration.region_types_allowed.description"),
+          type: "checkbox",
+          choices: ["bounding-box", "polygon", "circle"],
+        },
+      {
+        name: "labels",
+        title: t("configuration.labels"),
+        description: t("configuration.labels.description"),
+        type: "matrixdynamic",
+        columns: [
+          { cellType: "text", name: "id", title: t("configuration.labels.option.id") , isRequired: true},
+          {
+            cellType: "text",
+            name: "description",
+            title: t("configuration.labels.option.id"),
+          },
+        ],
+      },
+      {
+          name: "regions",
+          title: t("configuration.regions"),
+          description: t("configuration.regions.description"),
+          type: "dropdown",
+          choices: [
+              "Polygon",
+              "Bounding Box",
+              "Point",
+            ],
+      }
+    ],
+  }
+
   const defaultAnswers = useMemo(
     () => ({
       multipleRegions:  Boolean(config.multipleRegions ? config.multipleRegions : true),

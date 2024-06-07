@@ -3,31 +3,31 @@ import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
 import { setIn } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material";
-
-const form = {
-  questions: [
-    {
-      name: "taskDescription",
-      title: "Task Information",
-      type: "text",
-      placeHolder: "Enter task details...",
-      isRequired: true
-    }, 
-    {
-        name: "taskChoice",
-        title: "Choice of Task",
-        type: "radiogroup",
-        isRequired: true,
-        choices: [
-          { value: "image_classification", text: "Image Classification" },
-          { value: "image_segmentation", text: "Image Segmentation" },
-        ],
-      },
-
-  ],
-}
+import {useTranslation} from "react-i18next"
 
 export default ({ config, onChange }) => {
+    const { t } = useTranslation();
+    const form = {
+      questions: [
+        {
+          name: "taskDescription",
+          title: t("setup.tabs.taskinfo.task_info"),
+          type: "text",
+          isRequired: true
+        }, 
+        {
+            name: "taskChoice",
+            title: t("setup.tabs.taskinfo.task_choice"),
+            type: "radiogroup",
+            isRequired: true,
+            choices: [
+              { value: "image_classification", text: t("setup.tabs.taskinfo.task_choice_classification")},
+              { value: "image_segmentation", text: t("setup.tabs.taskinfo.task_choice_segmentation") },
+            ],
+          },
+    
+      ],
+    }
     const defaultAnswers = useMemo(
         () => ({
           taskDescription: config.taskDescription || "",

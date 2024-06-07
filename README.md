@@ -1,8 +1,8 @@
 # Annotate-Lab
 
-Annotate-Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our [documentation](./docs/annotate-lab.md).
+Annotate-Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our [documentation](https://annotate-docs.dwaste.live/).
 
-![example](./example.png)
+![example](./sample_images/example.png)
 
 # Demo 
 [![Annotate Lab](https://img.youtube.com/vi/b78BJhbasVw/0.jpg)](https://www.youtube.com/watch?v=b78BJhbasVw)
@@ -34,6 +34,7 @@ annotation-lab/
 │   └── ... (other React app files)
 ├── server/
 │   ├── db/
+│   ├── tests/
 │   ├── venv/
 │   ├── app.py
 │   ├── requirements.txt
@@ -50,13 +51,14 @@ annotation-lab/
 ### Server
 - **db/**: Database-related files and handlers.
 - **venv/**: Python virtual environment (not included in version control).
+- **tests/**: Contains test files.
 - **app.py**: Main Flask application file.
 - **requirements.txt**: Contains server dependencies.
 
 ## Settings
 One can configure the tools, tags, upload images and do many more from the settings.
 
-![configuration](./configuration.png)
+![configuration](./sample_images/configuration.png)
 ## Dependencies
 
 ### Client
@@ -144,8 +146,8 @@ docker-compose up -d #running in detached mode
 ## Outputs
 Sample of annotated image  along with its mask and settings is show below.
 
-![orange_annotation](./docs/orange_annotated-image.png)
-![orange_annotation_mask](./docs/orange_masked-image.png)
+![orange_annotation](./sample_images/orange_annotated-image.png)
+![orange_annotation_mask](./sample_images/orange_masked-image.png)
 
 ```json
 {

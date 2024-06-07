@@ -3,8 +3,8 @@ import HeaderButton from "../HeaderButton"
 import Box from "@mui/material/Box"
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import DownloadButton from "../DownloadButton"
+import { useTranslation } from "react-i18next"
 const theme = createTheme()
-const emptyObj = {}
 
 const Container = styled("div")(({ theme }) => ({
   width: "100%",
@@ -21,9 +21,6 @@ const BrandText = styled(Box)(({ theme }) => ({
   marginLeft: "1rem",
   display: "flex",
   alignItems: "center",
-  "& .dot": {
-    color: "green", // Color of the dot
-  },
 }))
 
 export const Header = ({
@@ -34,13 +31,14 @@ export const Header = ({
   selectedImageName,
   classList
 }) => {
+
+  const{ t } = useTranslation()
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
       <BrandText flexGrow={1}>
-          {"A"}
-          <span className="dot">.</span>
-          {"Lab"}
+          {t("labname")}
         </BrandText>
         <Box flexGrow={1}>{leftSideContent}</Box>
         <DownloadButton selectedImageName={selectedImageName} classList={classList} hideHeaderText={hideHeaderText} 

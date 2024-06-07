@@ -24,6 +24,7 @@ import {useSettings} from "../SettingsProvider"
 import {withHotKeys} from "react-hotkeys"
 import {Save, ExitToApp} from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
+import { useTranslation } from "react-i18next"
 
 const emptyArr = []
 const theme = createTheme()
@@ -54,6 +55,7 @@ export const MainLayout = ({
   enabledRegionProps,
 }) => {
   const settings = useSettings()
+  const { t } = useTranslation(); 
   const memoizedActionFns = useRef({})
   const action = (type, ...params) => {
     const fnKey = `${type}(${params.join(",")})`
@@ -222,19 +224,19 @@ export const MainLayout = ({
                 ) : null,
               ].filter(Boolean)}
               headerItems={[
-                !hidePrev && {name: "Prev", disabled: disabledNextAndPrev},
-                !hideNext && {name: "Next", disabled: disabledNextAndPrev},
+                !hidePrev && {name: "Prev", label: t("btn.previous"), disabled: disabledNextAndPrev},
+                !hideNext && {name: "Next", label: t("btn.next"), disabled: disabledNextAndPrev},
                 state.annotationType !== "video"
                   ? null
                   : !state.videoPlaying
-                    ? {name: "Play"}
-                    : {name: "Pause"},
+                    ? {name: "Play", label: t("btn.play")}
+                    : {name: "Pause", label: t("btn.pause")},
                 !hideClone &&
                 !nextImageHasRegions &&
-                activeImage.regions && {name: "Clone"},
-                !hideSave && {name: "Save", icon: <Save />},
-                !hideSettings && {name: "Settings"},
-                {name: "Exit", icon: <ExitToApp />}
+                activeImage.regions && {name: "Clone", label: t("btn.clone")},
+                !hideSave && {name: "Save", label:t("btn.save"), icon: <Save />},
+                !hideSettings && {name: "Settings", label: t("btn.settings")},
+                {name: "Exit", label:t("btn.exit"), icon: <ExitToApp />}
               ].filter(Boolean)}
               onClickHeaderItem={onClickHeaderItem}
               onClickIconSidebarItem={onClickIconSidebarItem}
@@ -246,25 +248,25 @@ export const MainLayout = ({
               iconSidebarItems={[
                 {
                   name: "select",
-                  helperText: "Select" + getHotkeyHelpText("select_tool"),
+                  helperText: t("helptext_select") + getHotkeyHelpText("select_tool"),
                   alwaysShowing: true,
                 },
                 {
                   name: "pan",
                   helperText:
-                    "Drag/Pan (right or middle click)" +
+                  t("helptext_pan") +
                     getHotkeyHelpText("pan_tool"),
                   alwaysShowing: true,
                 },
                 {
                   name: "zoom",
                   helperText:
-                    "Zoom In/Out (scroll)" + getHotkeyHelpText("zoom_tool"),
+                  t("helptext_zoom") + getHotkeyHelpText("zoom_tool"),
                   alwaysShowing: true,
                 },
                 {
                   name: "show-tags",
-                  helperText: "Show / Hide Tags",
+                  helperText: t("helptext_tags"),
                   alwaysShowing: true,
                 },
                 {
@@ -274,19 +276,19 @@ export const MainLayout = ({
                 {
                   name: "create-box",
                   helperText:
-                    "Add Bounding Box" +
+                    t("helptext_boundingbox") +
                     getHotkeyHelpText("create_bounding_box"),
                 },
                 {
                   name: "create-circle",
                   helperText:
-                    "Add Circle" +
+                    t("helptext_circle") +
                     getHotkeyHelpText("create_circle"),
                 },
                 {
                   name: "create-polygon",
                   helperText:
-                    "Add Polygon" + getHotkeyHelpText("create_polygon"),
+                    t("helptext_polypolygon") + getHotkeyHelpText("create_polygon"),
                 },
                 {
                   name: "create-line",

@@ -9,6 +9,7 @@ import capitalize from "lodash/capitalize"
 import classnames from "classnames"
 import Checkbox from "@mui/material/Checkbox"
 import getActiveImage from "../Annotator/reducers/get-active-image"
+import { useTranslation } from "react-i18next"
 
 const theme = createTheme()
 const LabelContainer = styled("div")(({ theme }) => ({
@@ -64,6 +65,7 @@ export const FilesListMenu = ({
   onClick
 }) => {
   const [change, setChange] = useState('')
+  const { t } = useTranslation();
   const handleClickLabel = (label) => {
     onClick(getActiveImage(state))
     saveActiveImage(getActiveImage(state).activeImage)
@@ -74,7 +76,7 @@ export const FilesListMenu = ({
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
-        title={`Images [${allImages.length > 0 ? allImages.length : 0}]`}
+        title={`${t("menu.images")} [${allImages.length > 0 ? allImages.length : 0}]`}
         subTitle=""
         icon={<CollectionsIcon style={{ color: muiColors.grey[700] }} />}
         noScroll={true}

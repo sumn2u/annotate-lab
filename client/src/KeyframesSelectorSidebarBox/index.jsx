@@ -7,6 +7,7 @@ import * as colors from "@mui/material/colors"
 import getTimeString from "../KeyframeTimeline/get-time-string.js"
 import TrashIcon from "@mui/icons-material/Delete"
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
+import { useTranslation } from "react-i18next"
 
 const theme = createTheme()
 const KeyframeRow = styled("div")(({ theme }) => ({
@@ -51,11 +52,11 @@ const KeyframesSelectorSidebarBox = ({
   onDeleteKeyframe,
 }) => {
   const keyframeTimes = Object.keys(keyframes).map((t) => parseInt(t))
-
+  const { t } = useTranslation()
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
-        title="Keyframes"
+        title={t("keyframes")}
         subTitle=""
         icon={<AddLocationIcon style={{ color: colors.grey[700] }} />}
         expandedByDefault

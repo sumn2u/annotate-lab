@@ -3,45 +3,49 @@ import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
 import { setIn, asMutable } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material";
+import { useTranslation } from "react-i18next"
 
-const form = {
+
+export default ({ config, onChange }) => {
+  const { t } = useTranslation();
+
+  const form = {
     questions: [
       {
         name: "regionTypesAllowed",
-        title: "Region Types Allowed",
-        description: "What types of regions can be drawn on the image.",
+        title: t("configuration.region_types_allowed"),
+        description: t("configuration.region_types_allowed.description"),
         type: "multiple-dropdown",
         choices: ["bounding-box", "polygon", "circle"],
       },
       {
         name: "multipleRegions",
-        title: "Can multiple regions be created?",
+        title: t("configuration.multiple_regions"),
         type: "boolean",
       },
       {
         name: "multipleRegionLabels",
-        title: "Multiple Region Labels Allowed?",
+        title: t("configuration.multiple_region_labels"),
         type: "boolean",
       },
       {
         name: "labels",
-        title: "Available Labels",
+        title: t("configuration.labels"),
         description:
-          "If you're labeling regions on an image, these are the allowed classifications or tags.",
+          t("configuration.labels.description"),
         type: "matrixdynamic",
         columns: [
-          { cellType: "text", name: "id", title: "id" },
+          { cellType: "text", name: "id", title: t("configuration.labels.option.id") , isRequired: true},
           {
             cellType: "text",
             name: "description",
-            title: "Description (optional)",
+            title: t("configuration.labels.option.description"),
           },
         ],
       },
     ],
   }
 
-export default ({ config, onChange }) => {
   const defaultAnswers = useMemo(
     () =>
       asMutable(
