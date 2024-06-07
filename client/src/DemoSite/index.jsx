@@ -68,7 +68,9 @@ export default () => {
     })[0]
 
     let selectedImageIndex = imageNames.indexOf(selectedImage)
+    if(selectedImageIndex != -1){
     changeSelectedImageIndex(selectedImageIndex)
+    }
   }
   
   const getEnabledTools = (selectedTools) => {
@@ -139,7 +141,7 @@ export default () => {
       enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
       regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
-      enabledRegionProps= {["class", "comment"]}
+      enabledRegionProps= {["class", "name"]}
       userReducer= {userReducer}
       onExit={(output) => {
         preprocessDataBeforeSend(output)
