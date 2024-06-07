@@ -8,6 +8,8 @@ import { useSnackbar } from '../SnackbarContext';
 const ImageUpload = ({ onImageUpload }) => {
   const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const onDrop = useCallback((acceptedFiles, fileRejections) => {
     if (fileRejections.length) {
@@ -17,20 +19,20 @@ const ImageUpload = ({ onImageUpload }) => {
         return;
       }
     }
-  
+
     const totalImages = images.length + acceptedFiles.length;
     if (totalImages > 2) {
       showSnackbar("You can only upload up to 2 images", "error");
       return;
     }
-  
+
     const newImages = acceptedFiles.map((file) => {
       return Object.assign(file, {
         preview: URL.createObjectURL(file),
         imageName: file.name,
       });
     });
-  
+
     uploadImages(newImages);
   }, [images, onImageUpload, showSnackbar]);
 
@@ -42,13 +44,19 @@ const ImageUpload = ({ onImageUpload }) => {
     });
 
     try {
+      setLoading(true);
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          let percentCompleted = Math.floor((loaded * 100) / total);
+          setProgress(percentCompleted)
         }
       });
       showSnackbar(response.data.message, 'success');
-      
+
       const uploadedFiles = response.data.files;
       const uploadedImages = uploadedFiles.map(file => ({
         preview: file.url,
@@ -57,12 +65,15 @@ const ImageUpload = ({ onImageUpload }) => {
       setImages(uploadedImages);
       onImageUpload(uploadedImages);
     } catch (error) {
-      if(error?.data){
+      if (error?.data) {
         showSnackbar(error.data.message, 'error');
-      }else {
+      } else {
         showSnackbar("Couldn't connect server", 'error')
       }
       console.error('Error uploading images:', error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +95,7 @@ const ImageUpload = ({ onImageUpload }) => {
       console.error('Error deleting image:', error);
     }
   };
-  
+
   const handleRemoveImage = (index) => {
     const imageToRemove = images[index];
     deleteImage(imageToRemove.filename);
@@ -120,7 +131,17 @@ const ImageUpload = ({ onImageUpload }) => {
         {isDragActive ? (
           <Typography>Drop the files here...</Typography>
         ) : (
-          <Typography>Drag 'n' drop some files here, or click to select files (up to 2)</Typography>
+          loading ?
+            progress > 0 && progress < 100 ? (
+              <div>
+                <progress value={progress} max={100} />
+                <p>{progress}%</p>
+              </div>
+            ) : (
+              <div className="loading">Loading...</div>
+            )
+            :
+            <Typography>Drag 'n' drop some files here, or click to select files (up to 2)</Typography>
         )}
       </Box>
       <Box display="flex" flexWrap="wrap" gap="1rem">
