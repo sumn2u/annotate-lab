@@ -141,7 +141,7 @@ export default () => {
       enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
       regionClsList={settings.configuration.labels.map(label => label.id) || []}
       selectedImage={selectedImageIndex}
-      enabledRegionProps= {["class", "name"]}
+      enabledRegionProps= {["class", "comment"]}
       userReducer= {userReducer}
       onExit={(output) => {
         preprocessDataBeforeSend(output)
