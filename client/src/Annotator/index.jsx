@@ -15,7 +15,7 @@ import PropTypes from "prop-types"
 import noopReducer from "./reducers/noop-reducer.js"
 import {useTranslation} from "react-i18next"
 import getActiveImage from "./reducers/get-active-image.js"
-import { saveActiveImage } from "../utils/send-data-to-server"
+import { saveActiveImage, saveData, splitRegionData, getImageData} from "../utils/send-data-to-server"
 import { useSnackbar} from "../SnackbarContext/index.jsx"
 export const Annotator = ({
   images,
@@ -124,21 +124,55 @@ export const Annotator = ({
       showSnackbar(error.message, 'error');
     });
   }
-
-  const dispatch = useEventCallback((action) => {
+  const preprocessDataBeforeSend = async (output) => {
+    const selectedImageIndex = output.selectedImage;
+    let _image = output.images[selectedImageIndex];
+    let regions = _image['regions'] || [];
+    let imageData = getImageData(_image);
+  
+    imageData['regions'] = [];
+    for (let regionNum = 0; regionNum < regions.length; regionNum++) {
+      imageData['regions'].push(splitRegionData(regions[regionNum]));
+    }
+  
+    try {
+      const response = await saveData(imageData);
+      showSnackbar(response.message, 'success');
+      return imageData['regions'];
+    } catch (error) {
+      showSnackbar(error.message, 'error');
+      return [];
+    }
+  };
+  
+  const dispatch = useEventCallback(async (action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {
       if (["Exit", "Done", "Save", "Complete"].includes(action.buttonName)) {
-        return onExit(without(state, "history"))
+        // save the current data
+        if (action.buttonName === "Save") {
+          const result = await preprocessDataBeforeSend(without(state, "history"));
+          dispatchToReducer({
+            type: "SAVE_LAST_REGIONS",
+            payload: result
+          });
+          dispatchToReducer({
+            type: "ENABLE_DOWNLOAD",
+            payload: result
+          });
+          return null;
+        } else {
+          return onExit(without(state, "history"));
+        }
       } else if (action.buttonName === "Next" && onNextImage) {
-        saveCurrentData(getActiveImage(state).activeImage)
-        return onNextImage(without(state, "history"))
+        saveCurrentData(getActiveImage(state).activeImage);
+        return onNextImage(without(state, "history"));
       } else if (action.buttonName === "Prev" && onPrevImage) {
-        saveCurrentData(getActiveImage(state).activeImage)
-        return onPrevImage(without(state, "history"))
+        saveCurrentData(getActiveImage(state).activeImage);
+        return onPrevImage(without(state, "history"));
       }
     }
-    dispatchToReducer(action)
-  })
+    dispatchToReducer(action);
+  });
 
   const onRegionClassAdded = useEventCallback((cls) => {
     dispatchToReducer({

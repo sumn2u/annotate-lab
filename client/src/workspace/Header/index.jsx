@@ -33,7 +33,8 @@ export const Header = ({
 }) => {
 
   const{ t } = useTranslation()
-
+  const downloadMenu = items.find((item) => item.name === "Download")
+  
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -41,10 +42,11 @@ export const Header = ({
           {t("labname")}
         </BrandText>
         <Box flexGrow={1}>{leftSideContent}</Box>
-        <DownloadButton selectedImageName={selectedImageName} classList={classList} hideHeaderText={hideHeaderText} 
-                onDownload={onClickItem}
+        {downloadMenu && <DownloadButton selectedImageName={selectedImageName} classList={classList} hideHeaderText={hideHeaderText} 
+                onDownload={onClickItem} disabled={downloadMenu.disabled}
                 />
-        {items.map((item) => (
+          }
+        {items.filter(item => item.name !== "Download").map((item) => (
           <HeaderButton
             key={item.name}
             hideText={hideHeaderText}

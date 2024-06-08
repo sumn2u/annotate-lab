@@ -125,7 +125,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   {settings.taskChoice === "image_classification" && (
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="end">
+                      <Box display="flex"  justifyContent="end" paddingBottom="6rem">
                         <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
                             {t("btn.next")}
                         </Button>
@@ -136,7 +136,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   {settings.taskChoice === "image_segmentation" && (
                     <>
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="end">
+                      <Box display="flex"  justifyContent="end" paddingBottom="6rem">
                         <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
                             {t("btn.next")}
                         </Button>
