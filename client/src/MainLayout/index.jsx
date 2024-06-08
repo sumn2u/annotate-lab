@@ -224,6 +224,7 @@ export const MainLayout = ({
                 ) : null,
               ].filter(Boolean)}
               headerItems={[
+                { name: "Download", label:t("btn.download"), disabled: !state.enabledDownload, hasInnerMenu: true},
                 !hidePrev && {name: "Prev", label: t("btn.previous"), disabled: disabledNextAndPrev},
                 !hideNext && {name: "Next", label: t("btn.next"), disabled: disabledNextAndPrev},
                 state.annotationType !== "video"
@@ -231,10 +232,10 @@ export const MainLayout = ({
                   : !state.videoPlaying
                     ? {name: "Play", label: t("btn.play")}
                     : {name: "Pause", label: t("btn.pause")},
-                !hideClone &&
+                !hideClone && state.hasNewChange &&
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone", label: t("btn.clone")},
-                !hideSave && {name: "Save", label:t("btn.save"), icon: <Save />},
+                !hideSave && {name: "Save", label:t("btn.save"), disabled: !state.hasNewChange, icon: <Save />},
                 !hideSettings && {name: "Settings", label: t("btn.settings")},
                 {name: "Exit", label:t("btn.exit"), icon: <ExitToApp />}
               ].filter(Boolean)}

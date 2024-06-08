@@ -1,31 +1,50 @@
 import Annotator from "../Annotator"
 import React, { useEffect, useState } from "react"
-import {saveData, splitRegionData, getImageData} from '../utils/send-data-to-server'
 import SetupPage from "../SetupPage";
-import { useSnackbar } from '../SnackbarContext';
 import { useSettings } from "../SettingsProvider";
+import {setIn} from "seamless-immutable"
+
+const extractRelevantProps = (region) => ({
+  cls: region.cls,
+  comment: region.comment,
+  id: region.id,
+});
 
 const userReducer = (state, action) => {
   switch (action.type) {
-  //   case "SELECT_CLASSIFICATION": {
-  //     switch (action.cls) {
-  //       case "One": {
-  //         return setIn(state, ["selectedTool"], "create-box");
-  //       }
-  //       case "Two": {
-  //         return setIn(state, ["selectedTool"], "create-polygon");
-  //       }
-  //     }
-  //   }
+    case "CLOSE_REGION_EDITOR":
+    case "DELETE_REGION": {
+      const { images, selectedImage } = state;
+      const lastRegions = state.lastRegions || [];
+      if (selectedImage != null  && lastRegions) {
+        const currentImage = images[selectedImage];
+        const regions = currentImage ? (currentImage.regions || []) : [];
+        if (
+          regions.length !== lastRegions.length ||
+          !regions.every((region, index) => {
+            const lastRegion = lastRegions[index] || [];
+            const currentProps = extractRelevantProps(region);
+            const lastProps = extractRelevantProps(lastRegion);
+            return JSON.stringify(currentProps) === JSON.stringify(lastProps);
+          })
+        ) {
+          return setIn(state, ["hasNewChange"], true);
+        } else {
+          return setIn(state, ["hasNewChange"], false);
+        }
+      }
+    }
+    case "SAVE_LAST_REGIONS": {
+      return setIn(state, ["lastRegions"], action.payload);
+    }
+    case "ENABLE_DOWNLOAD": {
+      return setIn(state, ["enabledDownload"], true);
+    }
   }
-
   return state;
 };
 
-
-
 export default () => {
-  const { showSnackbar } = useSnackbar();
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
   const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
@@ -42,23 +61,6 @@ export default () => {
     }
   })
 
-  const preprocessDataBeforeSend = (output) => {
-    const selectedImageIndex  = output.selectedImage;
-    let _image = output.images[selectedImageIndex]
-    let regions = _image['regions'] || []
-    let imageData = getImageData(_image)
-  
-    imageData['regions'] = [] 
-    for (let regionNum = 0; regionNum < regions.length; regionNum++){
-      imageData['regions'].push(splitRegionData(regions[regionNum]))
-    }
-    saveData(imageData).then(response => {
-      showSnackbar(response.message, 'success');
-    })
-    .catch(error => {
-      showSnackbar(error.message, 'error');
-    });
-    }
   
   const [loading, setLoading] = useState(true); // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
@@ -144,7 +146,7 @@ export default () => {
       enabledRegionProps= {["class", "comment"]}
       userReducer= {userReducer}
       onExit={(output) => {
-        preprocessDataBeforeSend(output)
+        console.log("Exiting!")
       }}
       settings={settings}
       onSelectJump={onSelectJumpHandle}

@@ -12,7 +12,7 @@ import { hexToRgbTuple } from "../../utils/color-utils.js";
 import HeaderButton from "../HeaderButton/index.jsx";
 import { useTranslation } from "react-i18next"
 
-const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
+const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showSnackbar } = useSnackbar();
   const {t} = useTranslation();
@@ -80,6 +80,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText}) => {
        name={"Download"}
        label={t("btn.download")}
        onClick={handleClick}
+       disabled={disabled}
        icon={<DownloadIcon />}
      />
       <Menu
