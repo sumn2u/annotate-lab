@@ -76,13 +76,25 @@ class Module:
         if index is not None: # set -> diff -> list 
             # Ensure 'selected-classes' is a string before splitting
             print(f"Updating existing data in database: {data}")
-            selected_classes_str = data['selected-classes']
+            selected_classes_str = data.get('selected-classes', data['class'])
+            
+            print(f"selected_classes_str: {selected_classes_str}")
             if isinstance(selected_classes_str, list) and len(selected_classes_str) == 1 and isinstance(selected_classes_str[0], str):
                 selected_classes_str = selected_classes_str[0]
 
-            # Split the strings to create sets
-            new_cat_set = set(selected_classes_str.split(';'))
-            old_cat_set = set(database.loc[index, 'selected-classes'].split(';'))
+            if 'selected-classes' in data:
+                if ';' in selected_classes_str:
+                    old_cat_set = set(database.loc[index, 'selected-classes'].split(';'))
+                    # Split the strings to create sets
+                    new_cat_set = set(selected_classes_str.split(';'))
+                else:
+                    old_cat_set = set(database.loc[index, 'selected-classes'])
+                    # Split the strings to create sets
+                    new_cat_set = set(selected_classes_str)
+            else:
+                old_cat_set = set(database.loc[index, 'class'])
+                # Split the strings to create sets
+                new_cat_set = set(selected_classes_str)
             
             for key, value in data.items():
                 _value = value[0] if status == 0 else value

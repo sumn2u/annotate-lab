@@ -68,7 +68,7 @@ export const RegionSelectAndTransformBox = memo(
                 pbox={pbox}
               />
             )}
-            {r.type === "box" &&
+            {(r.type === "box" || r.type === "circle") &&
               !dragWithPrimary &&
               !zoomWithPrimary &&
               !r.locked &&
