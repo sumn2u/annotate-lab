@@ -370,7 +370,7 @@ def download_image_mask():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=3, fill=color)
 
             mask_byte_arr = BytesIO()
             mask.save(mask_byte_arr, format='PNG')
