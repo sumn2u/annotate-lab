@@ -52,6 +52,7 @@ export const Annotator = ({
   onPrevImage,
   keypointDefinitions,
   onSelectJump,
+  openDocs,
   hideHeader,
   hideHeaderText,
   hideNext,
@@ -169,6 +170,8 @@ export const Annotator = ({
       } else if (action.buttonName === "Prev" && onPrevImage) {
         saveCurrentData(getActiveImage(state).activeImage);
         return onPrevImage(without(state, "history"));
+      } else if (action.buttonName === "Docs" ) {
+        return openDocs();
       }
     }
     dispatchToReducer(action);
@@ -247,6 +250,7 @@ Annotator.propTypes = {
   onExit: PropTypes.func.isRequired,
   onNextImage: PropTypes.func,
   onPrevImage: PropTypes.func,
+  openDocs: PropTypes.func.isRequired,
   keypointDefinitions: PropTypes.object,
   hideHeader: PropTypes.bool,
   hideHeaderText: PropTypes.bool,

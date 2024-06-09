@@ -25,6 +25,7 @@ const translationEnEN = {
   "btn.download": "Download",
   "btn.upload_images": "Upload Images",
   "btn.open_lab": "Open Lab",
+  "btn.docs": "Docs",
   "region.no.name" : "Enter a Name",
   "setup.tabs.taskinfo": "Task Info",
   "setup.tabs.configure": "Configure",

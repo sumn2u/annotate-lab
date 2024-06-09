@@ -185,8 +185,8 @@ export const MainLayout = ({
   const onClickHeaderItem = useEventCallback((item) => {
     if(item.name === "Exit"){
       logout()
-    }else {
-     dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
+    } else {
+      dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
     }
   })
   const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)
@@ -236,6 +236,7 @@ export const MainLayout = ({
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone", label: t("btn.clone")},
                 !hideSave && {name: "Save", label:t("btn.save"), disabled: !state.hasNewChange, icon: <Save />},
+                {name: "Docs", label: t("btn.docs")},
                 !hideSettings && {name: "Settings", label: t("btn.settings")},
                 {name: "Exit", label:t("btn.exit"), icon: <ExitToApp />}
               ].filter(Boolean)}

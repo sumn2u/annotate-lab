@@ -7,6 +7,7 @@ import HelpIcon from "@mui/icons-material/Help"
 import ExitIcon from "@mui/icons-material/ExitToApp"
 import QueuePlayNextIcon from "@mui/icons-material/QueuePlayNext"
 import HotkeysIcon from "@mui/icons-material/Keyboard"
+import DescriptionIcon from "@mui/icons-material/Description"
 
 export const iconMapping = {
   back: BackIcon,
@@ -26,6 +27,7 @@ export const iconMapping = {
   clone: QueuePlayNextIcon,
   hotkeys: HotkeysIcon,
   shortcuts: HotkeysIcon,
+  docs: DescriptionIcon,
 }
 
 export default iconMapping
