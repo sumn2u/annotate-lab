@@ -160,6 +160,7 @@ export default () => {
         const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
         changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
+      openDocs={() => window.open("https://annotate-docs.dwaste.live/", '_blank')}
       hideSettings={true}
       disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}
