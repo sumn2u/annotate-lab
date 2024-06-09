@@ -6,7 +6,9 @@ import translationEnEN from "./translation-en-EN";
 
 const resources = {
     "de-DE": {translation: translationDeDE},
-    "en-US": {translation: translationEnEN}
+    "en-US": {translation: translationEnEN},
+    "de": { translation: translationDeDE },
+    "en": { translation: translationEnEN }  
 };
 
 const lngDetectinOptions = {
