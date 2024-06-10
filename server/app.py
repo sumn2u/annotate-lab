@@ -18,6 +18,7 @@ import traceback
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+app.config.from_object("config")
 
 
 # Get the CLIENT_URL environment variable, set a default if not found
@@ -341,7 +342,7 @@ def download_image_mask():
             response = requests.get(image_url)
             image = Image.open(BytesIO(response.content))
             width, height = image.size
-            mask = Image.new('RGB', (width, height), (0, 0, 0))  # 'RGB' mode for colored masks
+            mask = Image.new('RGB', (width, height), app.config["MASK_BACKGROUND_COLOR"])  # 'RGB' mode for colored masks
             draw = ImageDraw.Draw(mask)
             
             for region in image_info.get("regions", []):
