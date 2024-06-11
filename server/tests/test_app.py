@@ -72,7 +72,11 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertIn(b'Failed to save annotation data', response.data)
 
-   
+    def test_clear_session_success(self):
+        response = self.app.post('/clearSession')
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['message'], 'Database cleared successfully.')
 
     def test_images_name_no_image_name(self):
         response = self.app.post('/imagesName', data=json.dumps({}), content_type='application/json')

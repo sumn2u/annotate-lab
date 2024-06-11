@@ -25,6 +25,8 @@ import {withHotKeys} from "react-hotkeys"
 import {Save, ExitToApp} from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
+import { clear_db } from "../utils/get-data-from-server"
+import { useSnackbar} from "../SnackbarContext/index.jsx"
 
 const emptyArr = []
 const theme = createTheme()
@@ -55,6 +57,7 @@ export const MainLayout = ({
   enabledRegionProps,
 }) => {
   const settings = useSettings()
+  const { showSnackbar } = useSnackbar();
   const { t } = useTranslation(); 
   const memoizedActionFns = useRef({})
   const action = (type, ...params) => {
@@ -98,10 +101,22 @@ export const MainLayout = ({
     }
   }, [])
 
-  const logout = () => {
-    settings.changeSetting('settings', null)
+  const reloadApp = () => {
+    settings.changeSetting('settings', null);
     window.location.reload();
   }
+  
+  const logout = async () => {
+    try {
+      const response = await clear_db();
+      showSnackbar(response.message, 'success');
+      await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 500 milliseconds
+    } catch (error) {
+      showSnackbar(error.message, 'error');
+    }
+    reloadApp()
+  };
+
   const canvas = (
     <ImageCanvas
       {...settings}

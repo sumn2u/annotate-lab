@@ -15,6 +15,7 @@ import json
 from PIL import Image, ImageDraw
 import os
 import traceback
+import shutil
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -214,6 +215,31 @@ def images_name():
         print('Error:', e)
         return jsonify({'error': str(e)}), 500
 
+
+def clear_upload_folder():
+    try:
+        for root, dirs, files in os.walk(UPLOAD_FOLDER):
+            for file in files:
+                file_path = os.path.join(root, file)
+                os.remove(file_path)
+            for dir in dirs:
+                dir_path = os.path.join(root, dir)
+                shutil.rmtree(dir_path)
+    except Exception as e:
+        print(f"Error clearing upload folder: {str(e)}")
+
+
+@app.route('/clearSession', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def clear_session():
+    try:
+        dbModule.clear_db()
+        clear_upload_folder()
+        return jsonify({"message": "Database cleared successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
 @app.route('/download_configuration', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def download_configuration():
