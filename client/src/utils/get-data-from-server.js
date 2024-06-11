@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../../config'
+import config from '../../config.js'
 export const getImages = () => {
     
     const promise = axios.get(`${config.VITE_SERVER_URL}/imagesInfo`)
@@ -11,9 +11,9 @@ export const getImages = () => {
     return dataPromise
 }
 
-export const getImageFile = (api, config) => {
-    return new Promise((resolve, reject) => {
-      axios.post(`${config.VITE_SERVER_URL}/${api}`, config, { responseType: 'blob' })
+export const getImageFile = (api, configuration) => {
+    return new Promise((resolve, reject) => {      
+      axios.post(`${config.VITE_SERVER_URL}/${api}`, configuration, { responseType: 'blob' })
         .then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             resolve(url);
