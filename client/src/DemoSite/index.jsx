@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import SetupPage from "../SetupPage";
 import { useSettings } from "../SettingsProvider";
 import {setIn} from "seamless-immutable"
+import config from '../../config.js';
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
@@ -160,7 +161,7 @@ export default () => {
         const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
         changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
-      openDocs={() => window.open("https://annotate-docs.dwaste.live/", '_blank')}
+      openDocs={() => window.open(config.demoSiteUrl, '_blank')}
       hideSettings={true}
       disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}
