@@ -111,7 +111,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   <NoteSection 
                   icon={Info} 
                   text={t("more_info")} 
-                  link={config.demoSiteUrl} 
+                  link={config.DEMO_SITE_URL} 
                 />
                   <Box display="flex" paddingTop="5rem" justifyContent="end">
                         <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
