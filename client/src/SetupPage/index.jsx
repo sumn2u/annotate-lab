@@ -19,6 +19,7 @@ import { useSettings } from "../SettingsProvider";
 import { useTranslation } from "react-i18next"
 import { Info } from '@mui/icons-material';
 import NoteSection from "../NoteSection";
+import config from '../../config.js'; //importing demo site config from client/config.js
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -110,7 +111,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                   <NoteSection 
                   icon={Info} 
                   text={t("more_info")} 
-                  link="https://annotate-docs.dwaste.live" 
+                  link={config.demoSiteUrl} 
                 />
                   <Box display="flex" paddingTop="5rem" justifyContent="end">
                         <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
