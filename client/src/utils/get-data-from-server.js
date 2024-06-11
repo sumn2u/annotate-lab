@@ -22,3 +22,16 @@ export const getImageFile = (api, config) => {
         });
     });
   };
+
+
+export const clear_db = () => {
+  return new Promise((resolve, reject) => {
+    axios.post(`${import.meta.env.VITE_SERVER_URL}/clearSession`)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error?.response); // Reject with error data
+      });
+  })
+}

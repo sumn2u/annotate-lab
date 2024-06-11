@@ -240,6 +240,18 @@ class Module:
         create_categories(labels)
 
 
+    def clear_db(self):
+        # Clear CSV files
+        empty_images_info = pd.DataFrame(columns=['image-name', 'selected-classes', 'comment', 'image-original-height', 'image-original-width', 'image-src', 'processed'])
+        empty_circle_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'rx', 'ry', 'rw', 'rh'])
+        empty_box_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'x', 'y', 'w', 'h'])
+        empty_polygon_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'points'])
+
+        empty_images_info.to_csv(imageInfoName, index=False)
+        empty_circle_regions.to_csv(circleRegionInfo, index=False)
+        empty_box_regions.to_csv(boxRegionInfo, index=False)
+        empty_polygon_regions.to_csv(polygonInfo, index=False)
+
     def __str__(self):
         return 'database'  
 
