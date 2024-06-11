@@ -11,6 +11,11 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
+jest.mock('../../config.js', () => ({
+  DEMO_SITE_URL: "https://annotate-docs.dwaste.live/",
+  VITE_SERVER_URL: "http://localhost:5000",
+}));
+
 // Mock useSettings hook
 jest.mock('../SettingsProvider', () => ({
   useSettings: jest.fn(),
