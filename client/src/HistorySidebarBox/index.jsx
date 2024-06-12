@@ -57,7 +57,7 @@ export const HistorySidebarBox = ({
               {i === 0 && (
                 <ListItemSecondaryAction onClick={() => onRestoreHistory()}>
                   <Grid item xs={1}  onClick={() => onRestoreHistory()}>
-                    <UndoIcon sx={{ fontSize: 14 }} />
+                    <UndoIcon sx={{ fontSize: 14 }}  data-testid="undo-icon"/>
                   </Grid>
                 </ListItemSecondaryAction>
               )}

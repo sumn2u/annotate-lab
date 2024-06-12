@@ -124,25 +124,29 @@ const Row = ({
           <OpenInFullIcon
             onClick={() => onChangeRegion({...r, minimized: false})}
             className="icon2"
+            data-testid={`OpenInFullIcon-${r.id}`}
           />
         ) : (
           <CloseFullscreenIcon
             onClick={() => onChangeRegion({...r, minimized: true})}
             className="icon2"
+            data-testid={`CloseFullscreenIcon-${r.id}`}
           />
         )
       }
-      trash={<TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" />}
+      trash={<TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} />}
       lock={
         r.locked ? (
           <LockIcon
             onClick={() => onChangeRegion({...r, locked: false})}
             className="icon2"
+            data-testid={`LockIcon-${r.id}`}
           />
         ) : (
           <UnlockIcon
             onClick={() => onChangeRegion({...r, locked: true})}
             className="icon2"
+            data-testid={`UnlockIcon-${r.id}`}
           />
         )
       }
@@ -151,11 +155,13 @@ const Row = ({
           <VisibleIcon
             onClick={() => onChangeRegion({...r, visible: false})}
             className="icon2"
+            data-testid={`VisibleIcon-${r.id}`}
           />
         ) : (
           <VisibleOffIcon
             onClick={() => onChangeRegion({...r, visible: true})}
             className="icon2"
+            data-testid={`InvisibleIcon-${r.id}`}
           />
         )
       }

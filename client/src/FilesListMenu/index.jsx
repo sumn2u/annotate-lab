@@ -97,6 +97,7 @@ export const FilesListMenu = ({
                 color: image.processed ? 'green' : '', // Set color conditionally
               },
             }}
+            data-testid="checkbox"
           />
             <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
               <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }}>
