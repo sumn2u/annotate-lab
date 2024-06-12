@@ -15,7 +15,7 @@ export const SidebarBoxContainer = ({
 }) => {
   return (
     <ThemeProvider theme={theme}>
-      <SidebarBox icon={icon} title={title} noScroll={noScroll}>
+      <SidebarBox icon={icon} title={title} noScroll={noScroll} expandedByDefault={expandedByDefault}>
         {children}
       </SidebarBox>
     </ThemeProvider>
