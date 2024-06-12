@@ -12,8 +12,8 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 
 ![example](./sample_images/example.png)
 
-# Demo 
-[![Annotate Lab](https://img.youtube.com/vi/b78BJhbasVw/0.jpg)](https://www.youtube.com/watch?v=b78BJhbasVw)
+# Demo [V1.0]
+[![Annotate Lab](https://img.youtube.com/vi/gR17uHbfoU4/0.jpg)](https://www.youtube.com/watch?v=gR17uHbfoU4)
 
 
 <br/>
