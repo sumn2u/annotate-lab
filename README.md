@@ -4,6 +4,7 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 
 [![Open Source Helpers](https://www.codetriage.com/sumn2u/annotate-lab/badges/users.svg)](https://www.codetriage.com/sumn2u/annotate-lab)
 [![Test Workflow](https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml/badge.svg)](https://github.com/sumn2u/annotate-lab/actions)
+[![Test Workflow](https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml/badge.svg)](https://github.com/sumn2u/annotate-lab/actions)
 [![GitHub issues](https://img.shields.io/github/issues/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/issues) [![GitHub forks](https://img.shields.io/github/forks/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/network)
 [![GitHub stars](https://img.shields.io/github/stars/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/stargazers)
 [![GitHub license](https://img.shields.io/github/license/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/blob/master/LICENSE)
