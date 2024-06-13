@@ -44,7 +44,7 @@ const translationDeDE = {
   "configuration.regions": "Standard-Regionstyp",
   "configuration.regions.description": "Wählen Sie den Standard-Regionstyp, der auf dem Bild gezeichnet werden kann.",
   "error.configuration.image_upload.max": "Maximale Anzahl von Bildern erreicht",
-  "configuration.image_upload.description": "Laden Sie Bilder hoch, die annotiert werden sollen, oder ziehen Sie Bilder hierher. Unterstützte Dateien: .jpg, .jpeg, .png und maximale Anzahl von Bildern: 2",
+  "configuration.image_upload.description": "Laden Sie Bilder hoch, die annotiert werden sollen, oder ziehen Sie Bilder hierher. Unterstützte Dateien: .jpg, .jpeg, .png und maximale Anzahl von Bildern:",
   "configuration.image_upload.file_drop": "Dateien hierher ziehen",
   "download.configuration": "Konfiguration",
   "download.image_mask": "Maskiertes Bild",

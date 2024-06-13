@@ -9,7 +9,8 @@ if (typeof import.meta !== 'undefined' && import.meta.env) {
 
 const config = {
     DEMO_SITE_URL:"https://annotate-docs.dwaste.live/",
-    VITE_SERVER_URL
+    VITE_SERVER_URL,
+    UPLOAD_LIMIT: 5,
   };
   
 export default config;

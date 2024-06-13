@@ -45,7 +45,7 @@ const translationEnEN = {
   "configuration.regions": "Default Region Type",
   "configuration.regions.description": "Choose default region type that can be drawn on the image.",
   "error.configuration.image_upload.max": "Maximum number of images reached",
-  "configuration.image_upload.description": "Upload images to be annotated, or drag and drop images here. Files supported: .jpg, .jpeg, .png and max number of images: 2",
+  "configuration.image_upload.description": "Upload images to be annotated, or drag and drop images here. Files supported: .jpg, .jpeg, .png and max number of images:",
   "configuration.image_upload.file_drop": "Drop files here",
   "download.configuration": "Configuration",
   "download.image_mask": "Masked Image",
