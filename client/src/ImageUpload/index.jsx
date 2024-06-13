@@ -67,8 +67,9 @@ const ImageUpload = ({ onImageUpload }) => {
       setImages(uploadedImages);
       onImageUpload(uploadedImages);
     } catch (error) {
-      if (error?.data) {
-        showSnackbar(error.data.message, 'error');
+      const errorResponse = error?.response?.data
+      if (errorResponse) {
+        showSnackbar(errorResponse?.message, 'error');
       }else {
         showSnackbar(t("error.server_connection"), 'error')
       }
