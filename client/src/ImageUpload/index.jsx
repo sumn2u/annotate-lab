@@ -48,7 +48,7 @@ const ImageUpload = ({ onImageUpload }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/upload`, formData, {
+      const response = await axios.post(`${config.VITE_SERVER_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -83,7 +83,7 @@ const ImageUpload = ({ onImageUpload }) => {
 
   const deleteImage = async (filename) => {
     try {
-      const response = await axios.delete(`${import.meta.env.VITE_SERVER_URL}/uploads/${filename}`);
+      const response = await axios.delete(`${config.VITE_SERVER_URL}/uploads/${filename}`);
       showSnackbar(response.data.message, 'success');
 
       // Update the state to remove the deleted image
