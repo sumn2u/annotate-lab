@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
 import { useTranslation } from "react-i18next"
+import config from '../../config.js';
 
 const ImageUpload = ({ onImageUpload }) => {
   const { t } = useTranslation(); 
@@ -23,7 +24,7 @@ const ImageUpload = ({ onImageUpload }) => {
     }
 
     const totalImages = images.length + acceptedFiles.length;
-    if (totalImages > 2) {
+    if (totalImages > config.UPLOAD_LIMIT) {
       showSnackbar(t("error.configuration.image_upload.max"), "error");
       return;
     }
@@ -108,7 +109,7 @@ const ImageUpload = ({ onImageUpload }) => {
     onDrop,
     accept: 'image/*',
     multiple: true,
-    maxFiles: 2,
+    maxFiles: config.UPLOAD_LIMIT,
   });
 
   return (
@@ -148,7 +149,7 @@ const ImageUpload = ({ onImageUpload }) => {
             </>
           ) : (
             <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>
-              {t("configuration.image_upload.description")}
+              {t("configuration.image_upload.description")} {config.UPLOAD_LIMIT}
             </Typography>
           )}
         </>
