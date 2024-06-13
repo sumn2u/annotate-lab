@@ -111,3 +111,4 @@ Annotate-Lab stands out as a robust and user-friendly open-source solution for i
 
 We thank the developers and contributors of Annotate-Lab for their dedication and hard work. We also acknowledge idapgroup's [`react-image-annotate`](https://github.com/idapgroup/react-image-annotate) package and Ghahramanpour's [`image_annotator`](https://github.com/gnamiro/image_annotator/tree/master) project, whose work has been instrumental in the development of this application.
 
+# References
