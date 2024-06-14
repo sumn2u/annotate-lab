@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
 import { useTranslation } from "react-i18next"
-import config from '../../config.js';
+import config from '../config.js';
 
 const ImageUpload = ({ onImageUpload }) => {
   const { t } = useTranslation(); 

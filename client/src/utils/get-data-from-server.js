@@ -1,5 +1,5 @@
 import axios from 'axios'
-import config from '../../config.js'
+import config from '../config.js'
 export const getImages = () => {
     
     const promise = axios.get(`${config.VITE_SERVER_URL}/imagesInfo`)
