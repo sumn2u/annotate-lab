@@ -131,7 +131,7 @@ const ImageUpload = ({ onImageUpload }) => {
           borderRadius: '4px',
         }}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()}  data-testid="file-input"/>
         {isDragActive ? (
           <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.file_drop")}</Typography>
         ) : (
