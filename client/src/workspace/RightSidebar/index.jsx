@@ -100,7 +100,7 @@ export const RightSidebar = ({ children, initiallyExpanded, height }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container className={expanded ? "expanded" : ""} style={containerStyle}>
+      <Container className={expanded ? "expanded" : ""} style={containerStyle} data-testid="right-sidebar">
         <Slider className={expanded ? "expanded" : ""}>
           <InnerSliderContent>{children}</InnerSliderContent>
         </Slider>
