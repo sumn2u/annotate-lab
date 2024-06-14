@@ -37,7 +37,7 @@ export const Header = ({
   
   return (
     <ThemeProvider theme={theme}>
-      <Container>
+      <Container data-testid="header">
       <BrandText flexGrow={1}>
           {t("labname")}
         </BrandText>
