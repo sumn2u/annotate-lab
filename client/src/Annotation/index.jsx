@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import SetupPage from "../SetupPage";
 import { useSettings } from "../SettingsProvider";
 import {setIn} from "seamless-immutable"
-import config from '../../config.js';
+import config from '../config.js';
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,

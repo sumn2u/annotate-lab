@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import Workplace from './index' // Replace with the actual file name
 import { createTheme, ThemeProvider } from '@mui/material/styles'
@@ -11,7 +11,7 @@ jest.mock('react-use', () => ({
   useMeasure: () => [jest.fn(), { height: 500 }],
 }))
 
-jest.mock('../../../config.js', () => ({
+jest.mock('../../config.js', () => ({
     DEMO_SITE_URL: "https://annotate-docs.dwaste.live/",
     VITE_SERVER_URL: "http://localhost:5000",
   }));

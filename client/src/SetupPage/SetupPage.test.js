@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { SetupPage } from './index';
 import { useSettings } from '../SettingsProvider';
@@ -11,7 +11,7 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock('../../config.js', () => ({
+jest.mock('../config.js', () => ({
   DEMO_SITE_URL: "https://annotate-docs.dwaste.live/",
   VITE_SERVER_URL: "http://localhost:5000",
 }));

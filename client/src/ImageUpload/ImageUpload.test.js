@@ -5,7 +5,7 @@ import axios from 'axios'
 import ImageUpload from './index'
 import { useSnackbar } from '../SnackbarContext'
 
-jest.mock('../../config.js', () => ({
+jest.mock('../config.js', () => ({
     DEMO_SITE_URL: "https://annotate-docs.dwaste.live/",
     VITE_SERVER_URL: "http://localhost:5000",
     UPLOAD_LIMIT: 5,

@@ -85,6 +85,5 @@ jest.mock('react-i18next', () => ({
   
       // Simulate completing the form
       fireEvent.click(screen.getByTestId('complete-button'));
-      // Add assertions to verify completion behavior based on YourComponent logic
     });
   });

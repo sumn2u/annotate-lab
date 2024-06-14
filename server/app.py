@@ -1,13 +1,6 @@
-from crypt import methods
-import dbm
-from email import header
-from urllib import response
-from urllib.robotparser import RequestRate
-from wsgiref import headers
 from flask import Flask, jsonify, request, url_for,send_from_directory,send_file
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
-import numpy as np
 from io import BytesIO
 import pandas as pd
 import requests
@@ -16,7 +9,6 @@ from PIL import Image, ImageDraw
 import os
 import traceback
 import shutil
-from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.config.from_object("config")
