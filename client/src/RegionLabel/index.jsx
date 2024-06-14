@@ -105,6 +105,7 @@ export const RegionLabel = ({
                 style={{width: 22, height: 22}}
                 size="small"
                 variant="outlined"
+                aria-label="delete"
               >
                 <TrashIcon style={{marginTop: -8, width: 16, height: 16}} />
               </IconButton>
@@ -112,6 +113,7 @@ export const RegionLabel = ({
             {enabledProperties.includes("class") && (allowedClasses || []).length > 0 && (
               <div style={{marginTop: 6}}>
                 <CreatableSelect
+                  aria-label="classification"
                   placeholder="Classification"
                   onChange={(o, actionMeta) => {
                     if (actionMeta.action === "create-option") {
@@ -134,7 +136,8 @@ export const RegionLabel = ({
             {enabledProperties.includes("tags") && (allowedTags || []).length > 0 && (
               <div style={{marginTop: 4}}>
                 <Select
-                  onChange={(newTags) =>
+                 aria-label="tags"
+                 onChange={(newTags) =>
                     onChange({
                       ...(region),
                       tags: newTags.map((t) => t.value),
@@ -157,6 +160,7 @@ export const RegionLabel = ({
                 InputProps={{
                   sx: styles.commentBox,
                 }}
+                aria-label="Comment"
                 id="commentField"
                 fullWidth
                 multiline
@@ -174,8 +178,10 @@ export const RegionLabel = ({
             {enabledProperties.includes("name") && (
               <TextField
                 id="nameField"
+                aria-label="Region Name"
                 label={t("region.label")}
                 ref={nameInputRef}
+                placeholder={t("region.no.name")}
                 onClick={onNameInputClick}
                 style={styles.nameField}
                 value={region.name || ""}
@@ -199,6 +205,7 @@ export const RegionLabel = ({
                   size="small"
                   variant="contained"
                   color="primary"
+                  aria-label="region-label-close"
                 >
                   <CheckIcon />
                 </Button>
