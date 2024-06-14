@@ -49,7 +49,7 @@ export default ({
   return (
     <ThemeProvider theme={theme}>
       <IconDictionaryContext.Provider value={iconDictionary}>
-        <Container style={style}>
+        <Container style={style} data-testid="container">
           {!hideHeader && (
             <Header
               hideHeaderText={hideHeaderText}
