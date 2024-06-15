@@ -65,7 +65,7 @@ const KeyframesSelectorSidebarBox = ({
           <KeyframeRow
             fullWidth
             key={t}
-            className={currentVideoTime === t ? "current" : ""}
+            className={`keyframeRow ${currentVideoTime === t ? "current" : ""}`}
             onClick={() => onChangeVideoTime(t)}
           >
             <div className="time">
