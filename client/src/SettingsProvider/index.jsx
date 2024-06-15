@@ -41,7 +41,8 @@ const pullSettingsFromLocalStorage = () => {
 export const useSettings = () => useContext(SettingsContext)
 
 export const SettingsProvider = ({children}) => {
-  const [state, changeState] = useState(() => pullSettingsFromLocalStorage())
+  const localStorageSettings = pullSettingsFromLocalStorage();
+  const [state, changeState] = useState({ ...defaultSettings, ...localStorageSettings });
   const changeSetting = (setting, value) => {
     changeState({...state, [setting]: value})
     window.localStorage.setItem(`settings_${setting}`, JSON.stringify(value))

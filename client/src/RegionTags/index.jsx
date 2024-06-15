@@ -51,6 +51,7 @@ export const RegionTags = ({
         return (
           <div
             key={region.id}
+            data-testid={`region-${region.id}`}
             style={{
               position: "absolute",
               ...coords,
@@ -82,6 +83,7 @@ export const RegionTags = ({
       return (
         <div
           key={region.id}
+          data-testid={`region-${region.id}`}
           style={{
             position: "absolute",
             ...coords,
