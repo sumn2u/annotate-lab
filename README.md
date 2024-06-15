@@ -26,6 +26,9 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 - [Dependencies](#dependencies)
 - [Setup and Installation](#setup-and-installation)
 - [Running the Application](#running-the-application)
+- [Running Tests](#running-tests)
+    - [Client Tests](#client-tests)
+    - [Server Tests](#server-tests)
 - [Usage](#usage)
 - [Outputs](#outputs)
 - [Troubleshooting](#troubleshooting)
@@ -146,6 +149,45 @@ docker-compose build
 docker-compose up -d #running in detached mode
 
 ```
+## Running Tests
+
+### Client Tests
+
+The client tests are located in the `client/src` directory and utilize `.test.js` extensions. They are built using [Jest](https://jestjs.io/) and [React Testing Library](https://github.com/testing-library/react-testing-library).
+
+#### Install Dependencies:
+
+```bash
+cd client
+npm install
+```
+#### Run Tests:
+```bash
+npm test
+```
+
+This command launches the test runner in interactive watch mode. It runs all test files and provides feedback on test results.
+
+
+### Server Tests
+
+The server tests are located in the `server/tests` directory and are implemented using [unittest](https://docs.python.org/3/library/unittest.html).
+
+#### Install Dependencies:
+
+```bash
+cd ../server
+python -m venv venv
+source venv/bin/activate # On Windows use `venv\Scripts\activate`
+pip install -r requirements.txt
+```
+#### Run Tests:
+```bash
+python3 -m unittest discover -s tests -p 'test_*.py'
+
+```
+
+This command discovers and runs all test files (`test_*.py`) in the `server/tests` directory using unittest.
 
 ## Usage
 
