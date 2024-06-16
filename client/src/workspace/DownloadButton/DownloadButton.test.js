@@ -11,8 +11,8 @@ jest.mock('../../SnackbarContext/index.jsx', () => ({
 }));
 
 jest.mock('../../config.js', () => ({
-    DEMO_SITE_URL: "https://annotate-docs.dwaste.live/",
-    VITE_SERVER_URL: "http://localhost:5000",
+    DOCS_URL: "https://annotate-docs.dwaste.live/",
+    SERVER_URL: "http://localhost:5000",
   }));
   
 

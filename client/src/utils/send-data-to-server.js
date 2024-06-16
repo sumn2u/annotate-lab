@@ -16,7 +16,7 @@ export const getImageData = (activeImage) => {
 
 export const saveData = (imageData) => {
   return new Promise((resolve, reject) => {
-    axios.post(`${config.VITE_SERVER_URL}/save`, imageData)
+    axios.post(`${config.SERVER_URL}/save`, imageData)
       .then(response => {
         resolve(response.data); // Resolve with response data
       })
@@ -39,7 +39,7 @@ export const saveActiveImage = (activeImage) => {
   }
 
   return new Promise((resolve, reject) => {
-    axios.post(`${config.VITE_SERVER_URL}/activeImage`, imageData)
+    axios.post(`${config.SERVER_URL}/activeImage`, imageData)
       .then(response => {
         resolve(response.data); // Resolve with response data
       })
