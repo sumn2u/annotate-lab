@@ -161,7 +161,7 @@ export default () => {
         const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
         changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
       }}
-      openDocs={() => window.open(config.DEMO_SITE_URL, '_blank')}
+      openDocs={() => window.open(config.DOCS_URL, '_blank')}
       hideSettings={true}
       disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}

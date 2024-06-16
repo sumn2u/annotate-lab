@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.config.from_object("config")
 
 
-# Get the CLIENT_URL environment variable, set a default if not found
-client_url = os.getenv('CLIENT_URL', 'http://localhost:5000')
+# Get the CLIENT_URL environment variable, set a default to 80
+client_url = os.getenv('CLIENT_URL', 'http://localhost')
 
 
 # Set the folder to save uploaded files
