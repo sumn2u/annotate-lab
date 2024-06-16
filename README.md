@@ -148,7 +148,12 @@ docker-compose build
 docker-compose up -d #running in detached mode
 
 ```
-The  application should be running on [http://localhost](http://localhost)
+The  application should be running on [http://localhost](http://localhost). 
+
+#### Note: Downloading Functionality in Docker
+
+**Note:** The downloading functionality is currently **not supported** when running the application within a Docker container.
+
 ## Running Tests
 
 ### Client Tests
