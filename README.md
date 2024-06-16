@@ -146,11 +146,8 @@ Navigate to the root directory and run the following command to start the applic
 ```sh
 docker-compose build
 docker-compose up -d #running in detached mode
-
 ```
 The  application should be running on [http://localhost](http://localhost). 
-
-#### Note: Downloading Functionality in Docker
 
 **Note:** The downloading functionality is currently **not supported** when running the application within a Docker container.
 
