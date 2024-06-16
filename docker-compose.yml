@@ -7,7 +7,9 @@ services:
       - "80:80"
   flask-server:
     build: ./server
+    environment:
+      - CLIENT_URL=http://localhost:80
     ports:
-      - "8080:5000"
+      - "5001:5000"
     depends_on:
       - vite-client
