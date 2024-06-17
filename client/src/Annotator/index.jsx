@@ -165,10 +165,8 @@ export const Annotator = ({
           return onExit(without(state, "history"));
         }
       } else if (action.buttonName === "Next" && onNextImage) {
-        saveCurrentData(getActiveImage(state).activeImage);
         return onNextImage(without(state, "history"));
       } else if (action.buttonName === "Prev" && onPrevImage) {
-        saveCurrentData(getActiveImage(state).activeImage);
         return onPrevImage(without(state, "history"));
       } else if (action.buttonName === "Docs" ) {
         return openDocs();
