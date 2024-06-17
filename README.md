@@ -277,7 +277,19 @@ Sample of annotated image  along with its mask and settings is show below.
                   0.6981424148606811
                ]
             }
-         ]
+         ],
+         "color-map":{
+            "Orange":[
+               244,
+               67,
+               54
+            ],
+            "Apple":[
+               33,
+               150,
+               243
+            ]
+         }
       }
    ]
 }
