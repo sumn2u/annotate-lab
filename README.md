@@ -142,13 +142,15 @@ The application should now be running on [http://localhost:5173](http://localhos
 The server should now be running on [http://localhost:5000](http://localhost:5000).
 
 ### Running using Docker.
-First, change the `VITE_SERVER_URL` to  `http://127.0.0.1:8080`.
-Then, navigate to the root directory and run the following command to start the application: 
+Navigate to the root directory and run the following command to start the application: 
 ```sh
 docker-compose build
 docker-compose up -d #running in detached mode
-
 ```
+The  application should be running on [http://localhost](http://localhost). 
+
+**Note:** The downloading functionality is currently **not supported** when running the application within a Docker container.
+
 ## Running Tests
 
 ### Client Tests
@@ -284,7 +286,19 @@ Sample of annotated image along with its mask and settings is show below.
                   0.6981424148606811
                ]
             }
-         ]
+         ],
+         "color-map":{
+            "Orange":[
+               244,
+               67,
+               54
+            ],
+            "Apple":[
+               33,
+               150,
+               243
+            ]
+         }
       }
    ]
 }

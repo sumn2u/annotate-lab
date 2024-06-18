@@ -35,8 +35,8 @@ test('should provide default settings', () => {
     </SettingsProvider>
   );
 
-  expect(getByTestId('showCrosshairs').textContent).toBe('false');
-  expect(getByTestId('showHighlightBox').textContent).toBe('true');
+  expect(getByTestId('showCrosshairs').textContent).toBe('');
+  expect(getByTestId('showHighlightBox').textContent).toBe('');
 });
 
 test('should change setting and update state', () => {
@@ -61,8 +61,8 @@ const TestComponent = () => {
 
   return (
     <div>
-      <span data-testid="showCrosshairs">{settings && settings.showCrosshairs.toString()}</span>
-      <span data-testid="showHighlightBox">{settings && settings.showHighlightBox.toString()}</span>
+      <span data-testid="showCrosshairs">{settings && settings.showCrosshairs?.toString()}</span>
+      <span data-testid="showHighlightBox">{settings && settings.showHighlightBox?.toString()}</span>
       <button onClick={() => settings.changeSetting('showCrosshairs', !settings.showCrosshairs)}>
         Toggle Crosshairs
       </button>

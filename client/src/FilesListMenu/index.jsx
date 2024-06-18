@@ -64,13 +64,19 @@ export const FilesListMenu = ({
   saveActiveImage,
   onClick
 }) => {
-  const [change, setChange] = useState('')
   const { t } = useTranslation();
+  const [checkedImages, setCheckedImages] = useState({});
+
   const handleClickLabel = (label) => {
     onClick(getActiveImage(state))
-    saveActiveImage(getActiveImage(state).activeImage)
     onSelectJump(label)
-    // setChange(label)
+  }
+
+  const handleCheckBoxClick = (index) => {
+    if (!checkedImages[index]) {
+      setCheckedImages(prevState => ({ ...prevState, [index]: true }))
+    }
+    saveActiveImage(getActiveImage(state).activeImage)
   }
 
   return (
@@ -85,7 +91,6 @@ export const FilesListMenu = ({
         {allImages.map((image, index) => (
           <LabelContainer
             className={classnames({ selected: image.name === selectedImage })}
-            onClick={() => {handleClickLabel(image.name)}}
             key = {index}
           >
 
@@ -97,10 +102,12 @@ export const FilesListMenu = ({
                 color: image.processed ? 'green' : '', // Set color conditionally
               },
             }}
+            checked={!!checkedImages[index]}
+            onClick={() => handleCheckBoxClick(index)}
             data-testid="checkbox"
           />
             <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
-              <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }}>
+              <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }} onClick={() => {handleClickLabel(image.name)}}>
                 {capitalize(image.name)}
               </Label>
             </span>

@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.config.from_object("config")
 
 
-# Get the CLIENT_URL environment variable, set a default if not found
-client_url = os.getenv('CLIENT_URL', 'http://localhost:5000')
+# Get the CLIENT_URL environment variable, set a default to 80
+client_url = os.getenv('CLIENT_URL', 'http://localhost')
 
 
 # Set the folder to save uploaded files
@@ -127,11 +127,15 @@ def save_active_image_info():
         return jsonify({"status": "error", "message": "An error occurred while processing the request"}), 500
 
 
-def create_json_response(image_name):
+def create_json_response(image_name, color_map=None):
     imagesName = []
     base_url = request.host_url + 'uploads/'
     # Initialize the main dictionary for storing image information
     main_dict = {'image-name': image_name, 'regions': []}
+
+    if color_map:
+        main_dict['color-map'] = color_map
+
     added_region_ids = set()  # Set to track added region IDs
     
     for (root, dirs, files) in os.walk(path):
@@ -240,10 +244,12 @@ def download_configuration():
         data = request.get_json()
         # Ensure the expected structure of the JSON data
         image_name = data.get('image_name')
+        color_map = data.get("colorMap", None)
+        
         if not image_name:
             raise ValueError("Invalid JSON data format: 'image_name' not found.")
 
-        json_bytes, download_filename = create_json_response(image_name)
+        json_bytes, download_filename = create_json_response(image_name, color_map)
 
         return send_file(json_bytes, mimetype='application/json', as_attachment=True, download_name=download_filename)
 

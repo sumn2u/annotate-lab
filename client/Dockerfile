@@ -2,6 +2,8 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+ENV VITE_SERVER_URL=http://127.0.0.1:5001
+
 COPY package*.json ./
 RUN npm install
 
