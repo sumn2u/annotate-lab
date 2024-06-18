@@ -105,8 +105,8 @@ One can configure the tools, tags, upload images and do many more from the setti
     ```sh
    python3 -m venv venv
 
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
 3. Install the dependencies:
 ```sh
    pip install -r requirements.txt
@@ -197,8 +197,17 @@ This command discovers and runs all test files (`test_*.py`) in the `server/test
 2. Use the user interface to upload and annotate images.
 3. The annotations and other interactions will be handled by the Flask server running at [http://localhost:5000](http://localhost:5000).
 
+## Configurations (Optional)
+You can customize some aspects of Annotate-Lab through configuration settings. 
+To do this, modify the `config.py` file in the `server` directory:
+```python
+# config.py
+MASK_BACKGROUND_COLOR = (0, 0, 0)  # Black background for masks
+OUTLINE_THICKNESS = 5  # Thicker outlines (5 pixels)
+```
+
 ## Outputs
-Sample of annotated image  along with its mask and settings is show below.
+Sample of annotated image along with its mask and settings is show below.
 
 ![orange_annotation](./sample_images/orange_annotated-image.png)
 ![orange_annotation_mask](./sample_images/orange_masked-image.png)
