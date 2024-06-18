@@ -101,10 +101,12 @@ export const FilesListMenu = ({
                 fontSize: 14, // Set size
                 color: image.processed ? 'green' : '', // Set color conditionally
               },
+              cursor: selectedImage !== null && selectedImage !== index ? 'not-allowed' : 'pointer',
             }}
             checked={!!checkedImages[index]}
             onClick={() => handleCheckBoxClick(index)}
             data-testid="checkbox"
+            disabled={selectedImage !== null && selectedImage !== index}
           />
             <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
               <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }} onClick={() => {handleClickLabel(image.name)}}>
