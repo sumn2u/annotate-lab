@@ -855,22 +855,6 @@ export default (state, action) => {
     case "HEADER_BUTTON_CLICKED": {
       const buttonName = action.buttonName.toLowerCase()
       switch (buttonName) {
-        case "prev": {
-          if (currentImageIndex === null) return state
-          if (currentImageIndex === 0) return state
-          return setNewImage(
-            state.images[currentImageIndex - 1],
-            currentImageIndex - 1
-          )
-        }
-        case "next": {
-          if (currentImageIndex === null) return state
-          if (currentImageIndex === state.images.length - 1) return state
-          return setNewImage(
-            state.images[currentImageIndex + 1],
-            currentImageIndex + 1
-          )
-        }
         case "clone": {
           if (currentImageIndex === null) return state
           if (currentImageIndex === state.images.length - 1) return state

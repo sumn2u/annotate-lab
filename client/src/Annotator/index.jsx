@@ -14,7 +14,6 @@ import videoReducer from "./reducers/video-reducer.js"
 import PropTypes from "prop-types"
 import noopReducer from "./reducers/noop-reducer.js"
 import {useTranslation} from "react-i18next"
-import getActiveImage from "./reducers/get-active-image.js"
 import { saveActiveImage, saveData, splitRegionData, getImageData} from "../utils/send-data-to-server"
 import { useSnackbar} from "../SnackbarContext/index.jsx"
 export const Annotator = ({
@@ -46,18 +45,13 @@ export const Annotator = ({
   videoTime = 0,
   videoName,
   onExit,
-  onNextImage,
   showMask,
   settings,
-  onPrevImage,
   keypointDefinitions,
   onSelectJump,
   openDocs,
   hideHeader,
   hideHeaderText,
-  hideNext,
-  hidePrev,
-  disabledNextAndPrev,
   hideClone,
   hideSettings,
   hideSave,
@@ -164,10 +158,6 @@ export const Annotator = ({
         } else {
           return onExit(without(state, "history"));
         }
-      } else if (action.buttonName === "Next" && onNextImage) {
-        return onNextImage(without(state, "history"));
-      } else if (action.buttonName === "Prev" && onPrevImage) {
-        return onPrevImage(without(state, "history"));
       } else if (action.buttonName === "Docs" ) {
         return openDocs();
       }
@@ -198,16 +188,11 @@ export const Annotator = ({
   return (
         <MainLayout
           RegionEditLabel={RegionEditLabel}
-          alwaysShowNextButton={Boolean(onNextImage)}
-          alwaysShowPrevButton={Boolean(onPrevImage)}
           state={state}
           dispatch={dispatch}
           onRegionClassAdded={onRegionClassAdded}
           hideHeader={hideHeader}
           hideHeaderText={hideHeaderText}
-          hideNext={hideNext}
-          hidePrev={hidePrev}
-          disabledNextAndPrev={disabledNextAndPrev}
           hideClone={hideClone}
           hideSettings={hideSettings}
           hideSave={hideSave}
@@ -246,15 +231,10 @@ Annotator.propTypes = {
   videoTime: PropTypes.number,
   videoName: PropTypes.string,
   onExit: PropTypes.func.isRequired,
-  onNextImage: PropTypes.func,
-  onPrevImage: PropTypes.func,
   openDocs: PropTypes.func.isRequired,
   keypointDefinitions: PropTypes.object,
   hideHeader: PropTypes.bool,
   hideHeaderText: PropTypes.bool,
-  hideNext: PropTypes.bool,
-  hidePrev: PropTypes.bool,
-  disabledNextAndPrev: PropTypes.bool,
   hideClone: PropTypes.bool,
   hideSettings: PropTypes.bool,
   settings: PropTypes.object,

@@ -178,17 +178,8 @@ export default () => {
       onSelectJump={onSelectJumpHandle}
       showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}
-      onNextImage={() => {
-        const updatedIndex = (selectedImageIndex + 1) % imageNames.length
-        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
-      }}
-      onPrevImage={() => {
-        const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
-        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
-      }}
       openDocs={() => window.open(config.DOCS_URL, '_blank')}
       hideSettings={true}
-      disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}
     />)}
     </>
