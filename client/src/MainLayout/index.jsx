@@ -44,14 +44,9 @@ export const MainLayout = ({
   onRegionClassAdded,
   hideHeader,
   hideHeaderText,
-  hideNext = false,
-  hidePrev = false,
-  disabledNextAndPrev,
-  hideClone = false,
+  hideClone = true,
   hideSettings = false,
-  downloadImage = false,
   hideSave = false,
-  allImages = [],
   onSelectJump,
   saveActiveImage,
   enabledRegionProps,
@@ -240,8 +235,6 @@ export const MainLayout = ({
               ].filter(Boolean)}
               headerItems={[
                 { name: "Download", label:t("btn.download"), disabled: !state.enabledDownload, hasInnerMenu: true},
-                !hidePrev && {name: "Prev", label: t("btn.previous"), disabled: disabledNextAndPrev},
-                !hideNext && {name: "Next", label: t("btn.next"), disabled: disabledNextAndPrev},
                 state.annotationType !== "video"
                   ? null
                   : !state.videoPlaying
