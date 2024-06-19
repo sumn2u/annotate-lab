@@ -8,7 +8,7 @@ describe("RegionSelectorSidebarBox", () => {
     {
       id: "1",
       color: "#ff0000",
-      locked: false,
+      locked: true,
       visible: true,
       minimized: false,
       name: "Region 1",
@@ -19,7 +19,7 @@ describe("RegionSelectorSidebarBox", () => {
       id: "2",
       color: "#00ff00",
       locked: true,
-      visible: false,
+      visible: true,
       minimized: true,
       name: "Region 2",
       highlighted: true,
@@ -94,6 +94,46 @@ describe("RegionSelectorSidebarBox", () => {
       fireEvent.click(screen.getByTestId(`DeleteIcon-${region.id}`));
       expect(mockOnDeleteRegion).toHaveBeenCalledWith(region);
     });
+  });
+
+  it("calls onChangeRegion when the visibility icon in the header is clicked", () => {
+    const visibleIconHeader = screen.getByTestId(
+      "VisibleIcon-header"
+    );
+
+    fireEvent.click(visibleIconHeader);
+
+    expect(mockOnChangeRegion).toHaveBeenCalledTimes(mockRegions.length);
+
+    mockRegions.forEach((region) => {
+      expect(mockOnChangeRegion).toHaveBeenCalledWith({
+        ...region,
+        visible: !region.visible,
+      });
+    });
+  });
+
+  it("calls onChangeRegion when the lock icon in the header is clicked", () => {
+    const lockIconHeader = screen.getByTestId(
+      "LockIcon-header"
+    );
+    fireEvent.click(lockIconHeader);
+    
+    expect(mockOnChangeRegion).toHaveBeenCalledTimes(4);
+    mockRegions.forEach((region) => {
+      expect(mockOnChangeRegion).toHaveBeenCalledWith({
+        ...region,
+        locked: !region.locked,
+      });
+    });
+  });
+
+  it("calls onDeleteRegion when the delete icon in the header is clicked", () => {
+    const deleteIconHeader = screen.getByTestId(
+      "DeleteIcon-header"
+    );
+    fireEvent.click(deleteIconHeader);
+    expect(mockOnDeleteRegion).toHaveBeenCalledTimes(4);
   });
 
 });
