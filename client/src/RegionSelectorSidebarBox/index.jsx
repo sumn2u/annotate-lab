@@ -81,7 +81,10 @@ const RowLayout = ({
   )
 }
 
-const RowHeader = () => {
+const RowHeader = ({ regions, onChangeRegion, onDeleteRegion }) => {
+  const visible = regions.find(r => r.visible === false) == null;
+  const locked = regions.find(r => r.locked === false) == null;
+  console.log(visible, locked)
   const {t} = useTranslation();
   return (
     <RowLayout
@@ -90,9 +93,61 @@ const RowHeader = () => {
       order={<ReorderIcon className="icon" />}
       name={<div style={{paddingLeft: 10}}>{t("desc.class")}</div>}
       area={<PieChartIcon className="icon" />}
-      trash={<TrashIcon className="icon" />}
-      lock={<LockIcon className="icon" />}
-      visible={<VisibleIcon className="icon" />}
+      trash={
+        <TrashIcon className="icon"  
+          onClick={() => {
+              regions.forEach(r => {
+                onDeleteRegion(r);
+              });
+          }} 
+          data-testid="DeleteIcon-header"
+        />}
+      lock={
+        locked === true ? (
+          <LockIcon
+            onClick={() => {
+              regions.forEach(r => {
+                onChangeRegion({ ...r, locked: false });
+              });
+            }}
+            className="icon"
+            data-testid="LockIcon-header"
+          />
+        ) : (
+          <UnlockIcon
+            onClick={() => {
+              regions.forEach(r => {
+                onChangeRegion({ ...r, locked: true });
+              });
+            }}
+            className="icon"
+            data-testid="UnlockIcon-header"
+          />
+        )    
+      }
+      visible={
+          visible ? (
+            <VisibleIcon
+              onClick={() => {
+                regions.forEach(r => {
+                  onChangeRegion({ ...r, visible: false });
+                });
+              }}
+              className="icon"
+              data-testid="VisibleIcon-header"
+            />
+          ) : (
+            <VisibleOffIcon
+              onClick={() => {
+                regions.forEach(r => {
+                  onChangeRegion({ ...r, visible: true });
+                });
+              }}
+              className="icon"
+              data-testid="InvisibleIcon-header"
+            />
+          )
+      }
     />
   )
 }
@@ -205,7 +260,11 @@ export const RegionSelectorSidebarBox = ({
         noScroll={true}
       >
         <ContainerDiv>
-          <MemoRowHeader />
+        <MemoRowHeader 
+            regions={regions}
+            onChangeRegion={onChangeRegion}
+            onDeleteRegion={onDeleteRegion}
+          />
           <HeaderSep />
           {regions.map((r, i) => (
             <MemoRow
