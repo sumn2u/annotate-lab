@@ -295,7 +295,7 @@ def download_image_with_annotations():
                     points = region['points']
                     scaled_points = [(x * width, y * height) for x, y in points]
                     # Draw polygon with thicker outline
-                    draw.line(scaled_points + [scaled_points[0]], fill=color, width=app.config['OUTLINE_THICKNESS'])  # Change width as desired
+                    draw.line(scaled_points + [scaled_points[0]], fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['POLYGON'])  # Change width as desired
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
                     try:
                         x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
@@ -305,7 +305,7 @@ def download_image_with_annotations():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle with thicker outline
-                    draw.rectangle([x, y, x + w, y + h], outline=color, width=app.config['OUTLINE_THICKNESS'])
+                    draw.rectangle([x, y, x + w, y + h], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['BOUNDING_BOX'])
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
                     try:
                         rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
@@ -315,7 +315,7 @@ def download_image_with_annotations():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS']) 
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['CIRCLE']) 
 
 
             
@@ -375,7 +375,7 @@ def download_image_mask():
                 if 'points' in region and region['points']:
                     points = region['points']
                     scaled_points = [(int(x * width), int(y * height)) for x, y in points]
-                    draw.polygon(scaled_points, outline=color, fill=color, width=app.config['OUTLINE_THICKNESS'])
+                    draw.polygon(scaled_points, outline=color, fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['POLYGON'])
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
                     try:
                         x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
@@ -385,7 +385,7 @@ def download_image_mask():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle for bounding box
-                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=app.config['OUTLINE_THICKNESS'])
+                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['BOUNDING_BOX'])
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
                     try:
                         rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
@@ -395,7 +395,7 @@ def download_image_mask():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS'], fill=color)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['CIRCLE'], fill=color)
 
             mask_byte_arr = BytesIO()
             mask.save(mask_byte_arr, format='PNG')
