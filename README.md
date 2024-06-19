@@ -35,7 +35,7 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 - [Contributing](#contributing)
 - [License](#license)
 
-## Project Structure
+## Project Structure [[link]](https://annotate-docs.dwaste.live/overview/project-structure)
 ```sh
 
 annotation-lab/
@@ -85,7 +85,7 @@ One can configure the tools, tags, upload images and do many more from the setti
 - pandas
 - Other dependencies as listed in `requirements.txt`
 
-## Setup and Installation
+## Setup and Installation [[link]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run)
 
 ### Client Setup
 1. Navigate to the `client` directory:
@@ -197,7 +197,7 @@ This command discovers and runs all test files (`test_*.py`) in the `server/test
 2. Use the user interface to upload and annotate images.
 3. The annotations and other interactions will be handled by the Flask server running at [http://localhost:5000](http://localhost:5000).
 
-## Configurations (Optional)
+## Configurations (Optional) [[link]](https://annotate-docs.dwaste.live/overview/customization)
 You can customize some aspects of Annotate-Lab through configuration settings. 
 To do this, modify the `config.py` file in the `server` directory:
 ```python
@@ -305,7 +305,7 @@ Sample of annotated image along with its mask and settings is show below.
 
 ```
 
-## Troubleshooting
+## Troubleshooting [[link]](https://annotate-docs.dwaste.live/troubleshooting)
 
 - Ensure that both the client and server are running.
 - Check the browser console and terminal for any errors and troubleshoot accordingly.
