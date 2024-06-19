@@ -283,6 +283,11 @@ def download_image_with_annotations():
         
         for image_info in images:
             image_url = image_info.get("regions", [])[0].get("image-src")
+
+            # Docker container uses port 5000, so replace 5001 with 5000
+            if "127.0.0.1:5001" in image_url:
+                image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+
             response = requests.get(image_url)
             image = Image.open(BytesIO(response.content))
             draw = ImageDraw.Draw(image)
@@ -365,6 +370,11 @@ def download_image_mask():
 
         for image_info in images:
             image_url = image_info.get("regions", [])[0].get("image-src")
+
+            # Docker container uses port 5000, so replace 5001 with 5000
+            if "127.0.0.1:5001" in image_url:
+                image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+
             response = requests.get(image_url)
             image = Image.open(BytesIO(response.content))
             width, height = image.size
