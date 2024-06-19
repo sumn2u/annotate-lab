@@ -11,6 +11,7 @@ import { useSnackbar} from "../../SnackbarContext/index.jsx"
 import { hexToRgbTuple } from "../../utils/color-utils.js";
 import HeaderButton from "../HeaderButton/index.jsx";
 import { useTranslation } from "react-i18next"
+import config from "../../config.js";
 
 const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -34,6 +35,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}
     const config_data = {}
     config_data['image_name'] = selectedImageName
     config_data['colorMap'] = classColorMap
+    config_data['outlineThickness'] = config.OUTLINE_THICKNESS_CONFIG
     let url = ""
     switch (format) {
         case "configuration":

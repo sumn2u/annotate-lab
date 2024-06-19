@@ -73,6 +73,9 @@
     "semi": false
   },
   "jest":{
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "^color-alpha$": "<rootDir>/node_modules/color-alpha"
+    }
   }
 }

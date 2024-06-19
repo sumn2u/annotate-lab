@@ -57,8 +57,6 @@ test('should change setting and update state', () => {
 const TestComponent = () => {
   const settings = React.useContext(SettingsContext);
 
-  console.log(settings, 'masimis'); // Check what 'settings' actually contains
-
   return (
     <div>
       <span data-testid="showCrosshairs">{settings && settings.showCrosshairs?.toString()}</span>

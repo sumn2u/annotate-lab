@@ -198,12 +198,23 @@ This command discovers and runs all test files (`test_*.py`) in the `server/test
 3. The annotations and other interactions will be handled by the Flask server running at [http://localhost:5000](http://localhost:5000).
 
 ## Configurations (Optional)
-You can customize some aspects of Annotate-Lab through configuration settings. 
-To do this, modify the `config.py` file in the `server` directory:
+You can customize various aspects of Annotate-Lab through configuration settings. To do this, modify the `config.py` file in the `server` directory or the `config.js` file in the `client` directory.
 ```python
 # config.py
 MASK_BACKGROUND_COLOR = (0, 0, 0)  # Black background for masks
-OUTLINE_THICKNESS = 5  # Thicker outlines (5 pixels)
+```
+
+```Javascript
+# config.js
+const config = {
+    SERVER_URL, # url of server
+    UPLOAD_LIMIT: 5, # image upload limit
+    OUTLINE_THICKNESS_CONFIG : { # outline thickness of tools
+      POLYGON: 2,
+      CIRCLE: 2,
+      BOUNDING_BOX: 2
+    }
+  };
 ```
 
 ## Outputs

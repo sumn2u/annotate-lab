@@ -11,6 +11,11 @@ const config = {
     DOCS_URL:"https://annotate-docs.dwaste.live/",
     SERVER_URL,
     UPLOAD_LIMIT: 5,
+    OUTLINE_THICKNESS_CONFIG : {
+      POLYGON: 2,
+      CIRCLE: 2,
+      BOUNDING_BOX: 2
+    }
   };
   
 export default config;
