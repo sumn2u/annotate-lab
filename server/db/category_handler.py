@@ -1,5 +1,4 @@
 import os
-import sys
 from pathlib import Path
 from shutil import copyfile
 from urllib.parse import urlparse
@@ -8,15 +7,6 @@ images_folder = Path('./uploads').resolve()
 categories_folder = Path('./uploads/categories')
 
 def get_filename_from_url(url):
-    """
-    Extracts the filename from a URL after the '/uploads/' part.
-    
-    Args:
-        url (str): The full URL.
-    
-    Returns:
-        str: The filename part of the URL.
-    """
     # Parse the URL
     parsed_url = urlparse(url)
     
@@ -50,7 +40,7 @@ def create_categories(labels):
 def add_image_folder(label, image_name, image_src):
     image_src = get_filename_from_url(image_src)
     image_name = os.path.splitext(image_src)
-    print(f"Adding image {image_name} to category {label} with base name {image_src}")
+    print(f"adding image {image_name} to category {label} with base name {image_src}")
     base_name = os.path.basename(image_src)
     try:
         if image_name not in os.listdir(categories_folder / label):
@@ -70,6 +60,7 @@ def remove_image_folder(label, image_name):
     try: 
         if image_name in os.listdir(categories_folder / label):
             os.remove(categories_folder / label / image_name)
-    except:
-        print('nothing there')    
+    except Exception as e:
+        print('error in removing image ' + image_name + ' from category ' + label)
+        print('Error:', e)    
     return

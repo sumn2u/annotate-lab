@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import numpy as np
 import uuid
 from db.category_handler import create_categories, remove_image_folder, add_image_folder
 
