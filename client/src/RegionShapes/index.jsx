@@ -3,6 +3,7 @@
 import React, {memo} from "react"
 import colorAlpha from "color-alpha"
 import clamp from "../utils/clamp"
+import config from "../config.js"
 
 const RegionComponents = {
   point: memo(({region, iw, ih}) => (
@@ -15,12 +16,12 @@ const RegionComponents = {
       />
     </g>
   )),
-  line: memo(({region, iw, ih}) => {
+  line: memo(({region, iw, ih, strokeWidth}) => {
     return (
       <g transform={`translate(${region.x1 * iw} ${region.y1 * ih})`}>
         <path
           id={region.id}
-          strokeWidth={3}
+          strokeWidth={strokeWidth}
           d={`M0,0 L${(region.x2 - region.x1) * iw},${(region.y2 - region.y1) * ih}`}
           stroke={colorAlpha(region.color, 0.9)}
           fill={colorAlpha(region.color, 0.25)}
@@ -33,10 +34,10 @@ const RegionComponents = {
         </text>
       </g>
   )}),
-  box: memo(({region, iw, ih}) => (
+  box: memo(({region, iw, ih, strokeWidth}) => (
     <g transform={`translate(${region.x * iw} ${region.y * ih})`}>
       <rect
-        strokeWidth={2}
+        strokeWidth={strokeWidth}
         x={0}
         y={0}
         width={Math.max(region.w * iw, 0)}
@@ -46,10 +47,10 @@ const RegionComponents = {
       />
     </g>
   )),
-  circle: memo(({ region, iw, ih }) => (
+  circle: memo(({ region, iw, ih , strokeWidth}) => (
     <g transform={`translate(${region.x * iw} ${region.y * ih})`}>
       <ellipse
-        strokeWidth={2}
+        strokeWidth={strokeWidth}
         cx={Math.max(region.w * iw / 2, 0)}
         cy={Math.max(region.h * ih / 2, 0)}
         rx={Math.max(region.w * iw / 2, 0)}
@@ -59,7 +60,7 @@ const RegionComponents = {
       />
     </g>
   )),
-  polygon: memo(({region, iw, ih, fullSegmentationMode}) => {
+  polygon: memo(({region, iw, ih,  strokeWidth, fullSegmentationMode}) => {
     const Component = region.open ? "polyline" : "polygon"
     return (
       <Component
@@ -67,7 +68,7 @@ const RegionComponents = {
           .map(([x, y]) => [x * iw, y * ih])
           .map((a) => a.join(" "))
           .join(" ")}
-        strokeWidth={2}
+        strokeWidth={strokeWidth}
         stroke={colorAlpha(region.color, 0.75)}
         fill={colorAlpha(region.color, 0.25)}
       />
@@ -189,6 +190,13 @@ const RegionComponents = {
   pixel: () => null,
 }
 
+export const getStrokeWidth = (region) => {
+  const { type } = region;
+  if(type === 'box') {
+    return config.OUTLINE_THICKNESS_CONFIG.BOUNDING_BOX || 2;
+  }
+  return config.OUTLINE_THICKNESS_CONFIG[type.toUpperCase()] || 2;
+};
 export const WrappedRegionList = memo(
   ({regions, keypointDefinitions, iw, ih, fullSegmentationMode}) => {
     return regions
@@ -201,13 +209,14 @@ export const WrappedRegionList = memo(
             region={r}
             iw={iw}
             ih={ih}
+            strokeWidth = {getStrokeWidth(r)}
             keypointDefinitions={keypointDefinitions}
             fullSegmentationMode={fullSegmentationMode}
           />
         )
       })
   },
-  (n, p) => n.regions === p.regions && n.iw === p.iw && n.ih === p.ih
+  (n, p) => n.regions === p.regions && n.iw === p.iw && n.ih === p.ih && n.strokeWidth === p.strokeWidth
 )
 
 export const RegionShapes = ({

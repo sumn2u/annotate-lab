@@ -275,6 +275,7 @@ def download_image_with_annotations():
         images = json.loads(json_str).get("configuration", [])
 
         color_map = data.get("colorMap", {})
+        outlineThickness = data.get("outlineThickness",  {})
         
         # Convert color map values to tuples
         for key in color_map.keys():
@@ -295,7 +296,7 @@ def download_image_with_annotations():
                     points = region['points']
                     scaled_points = [(x * width, y * height) for x, y in points]
                     # Draw polygon with thicker outline
-                    draw.line(scaled_points + [scaled_points[0]], fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['POLYGON'])  # Change width as desired
+                    draw.line(scaled_points + [scaled_points[0]], fill=color, width=outlineThickness.get('POLYGON', 2))  # Change width as desired
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
                     try:
                         x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
@@ -305,7 +306,7 @@ def download_image_with_annotations():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle with thicker outline
-                    draw.rectangle([x, y, x + w, y + h], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['BOUNDING_BOX'])
+                    draw.rectangle([x, y, x + w, y + h], outline=color, width=outlineThickness.get('BOUNDING_BOX', 2))
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
                     try:
                         rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
@@ -315,7 +316,7 @@ def download_image_with_annotations():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['CIRCLE']) 
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=outlineThickness.get('CIRCLE', 2)) 
 
 
             
@@ -356,6 +357,7 @@ def download_image_mask():
         images = json.loads(json_str).get("configuration", [])
 
         color_map = data.get("colorMap", {})
+        outlineThickness = data.get("outlineThickness",  {})
 
         # Convert color map values to tuples
         for key in color_map.keys():
@@ -375,7 +377,7 @@ def download_image_mask():
                 if 'points' in region and region['points']:
                     points = region['points']
                     scaled_points = [(int(x * width), int(y * height)) for x, y in points]
-                    draw.polygon(scaled_points, outline=color, fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['POLYGON'])
+                    draw.polygon(scaled_points, outline=color, fill=color,  width=outlineThickness.get('POLYGON', 2)) 
                 elif all(key in region for key in ('x', 'y', 'w', 'h')):
                     try:
                         x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
@@ -385,7 +387,7 @@ def download_image_mask():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw rectangle for bounding box
-                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['BOUNDING_BOX'])
+                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=outlineThickness.get('BOUNDING_BOX', 2))
                 elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
                     try:
                         rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
@@ -395,7 +397,7 @@ def download_image_mask():
                     except (ValueError, TypeError) as e:
                         raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
                     # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=app.config['OUTLINE_THICKNESS_CONFIG']['CIRCLE'], fill=color)
+                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color,width=outlineThickness.get('CIRCLE', 2), fill=color)
 
             mask_byte_arr = BytesIO()
             mask.save(mask_byte_arr, format='PNG')
