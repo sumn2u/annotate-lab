@@ -96,7 +96,14 @@ The downloaded configurations provides the regions information along with co-ord
                   0.5781758957654723
                ]
             }
-         ]
+         ],
+         "color-map":{
+            "Tyre":[
+               244,
+               67,
+               54
+            ]
+         }
       }
    ]
 }
