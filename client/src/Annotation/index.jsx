@@ -4,6 +4,7 @@ import SetupPage from "../SetupPage";
 import { useSettings } from "../SettingsProvider";
 import {setIn} from "seamless-immutable"
 import config from '../config.js';
+import { useSnackbar } from '../SnackbarContext'
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
@@ -50,6 +51,7 @@ export default () => {
   const [showLabel, setShowLabel] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const settingsConfig = useSettings()
+  const { showSnackbar } = useSnackbar();
   const [settings, setSettings] =  useState({
     taskDescription: "",
     taskChoice: "image_classification",
@@ -114,6 +116,24 @@ export default () => {
     }
   };
 
+  const fetchImages = async (imageUrls) => {
+    try {
+      const fetchPromises = imageUrls.map(url =>
+        fetch(url.src).then(response => response.blob())
+          .then(blob => ({ ...url, src: URL.createObjectURL(blob) }))
+      );
+      const images = await Promise.all(fetchPromises);
+      setSettings(prevSettings => ({
+        ...prevSettings,
+        images
+      }));
+      setImageNames(images);
+    } catch (error) {
+      showSnackbar(error.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
   
   const getToolSelectionType = (toolName) => {
     const regions = [ {name: "Polygon", value: "create-polygon"}, {name: "Bounding Box", value: "create-box"}, {name: "Point", value: "create-point"}] 
@@ -129,9 +149,14 @@ export default () => {
   }
 
   useEffect(() => {
-    preloadConfiguration()
-    setLoading(false);
-  }, []);
+    preloadConfiguration();
+    if (settings.images.length > 0) {
+      fetchImages(settings.images);
+    } else {
+      setLoading(false);
+    }
+  }, [settingsConfig.settings, showLabel]);
+
 
   return (
     <>
@@ -153,17 +178,8 @@ export default () => {
       onSelectJump={onSelectJumpHandle}
       showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}
-      onNextImage={() => {
-        const updatedIndex = (selectedImageIndex + 1) % imageNames.length
-        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
-      }}
-      onPrevImage={() => {
-        const updatedIndex = (selectedImageIndex - 1 + imageNames.length) % imageNames.length
-        changeSelectedImageIndex(isNaN(updatedIndex ) ? 0 : updatedIndex)
-      }}
       openDocs={() => window.open(config.DOCS_URL, '_blank')}
       hideSettings={true}
-      disabledNextAndPrev={settings.images.length <= 1}
       selectedImageIndex={selectedImageIndex}
     />)}
     </>
