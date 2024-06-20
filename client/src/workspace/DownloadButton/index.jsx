@@ -4,6 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import DownloadIcon from "@mui/icons-material/Download";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ImageIcon from "@mui/icons-material/Image";
+import LabelIcon from '@mui/icons-material/Label';
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import colors from "../../colors.js";
 import { getImageFile } from "../../utils/get-data-from-server.js";
@@ -47,6 +48,9 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}
         case "annotated-image":
             url = "download_image_with_annotations"
             break;
+        case "yolo-annotations":
+            url = "download_yolo_annotations"
+            break;
         default:
             url = "imagesName"
         }
@@ -58,6 +62,8 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}
                 link.href = response;
                 if (format === "configuration") {
                     link.setAttribute('download', `config_${withoutExtension}.json`); 
+                } else if (format === "yolo-annotations") {
+                    link.setAttribute('download', `yolo_${withoutExtension}.txt`);
                 } else {
                     link.setAttribute('download', `${withoutExtension}_${format}.png`);
                 }
@@ -97,6 +103,14 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}
         >
           <DescriptionIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
           {t("download.configuration")}
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => handleDownload("yolo-annotations")}
+          sx={{ fontSize: "0.775rem", padding: "4px 8px" }}
+        >
+          <LabelIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
+          {t("yolo_annotations")}
         </MenuItem>
         <MenuItem
           onClick={() => handleDownload("masked-image")}
