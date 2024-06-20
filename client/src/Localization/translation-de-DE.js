@@ -64,6 +64,7 @@ const translationDeDE = {
   "note": "Hinweis",
   "here": "hier",
   "more_info": "Weitere Informationen finden Sie in unserer Dokumentation",
+  "yolo_annotations": "YOLO-Annotationen",
 };
 
 export default translationDeDE;
