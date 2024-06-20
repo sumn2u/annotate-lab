@@ -208,20 +208,32 @@ class Module:
             arguman[1].to_csv(arguman[0], index=False)
 
     def handleNewData(self, data):
-        try: 
+        try:
             imageData = self.getImageData(data)
             self.imagesInfo = self.saveRegionInDB(self.imagesInfo, 'image-src', imageData['image-src'][0], imageData, 0)
-            
-            for region in data['regions']: #TODO: ADD Regions as region for each image -> for deletion process
+
+            existingCircleRegions = self.imageCircleRegions[self.imageCircleRegions['image-src'] == data['src']]
+            existingBoxRegions = self.imageBoxRegions[self.imageBoxRegions['image-src'] == data['src']]
+            existingPolygonRegions = self.imagePolygonRegions[self.imagePolygonRegions['image-src'] == data['src']]
+
+            newRegionIds = {region['id'] for region in data['regions']}
+            existingRegionIds = set(existingCircleRegions['region-id']).union(set(existingBoxRegions['region-id'])).union(set(existingPolygonRegions['region-id']))
+
+            # Remove regions that are not present in the new data
+            regionsToRemove = existingRegionIds - newRegionIds
+            self.imageCircleRegions = self.imageCircleRegions[~self.imageCircleRegions['region-id'].isin(regionsToRemove)]
+            self.imageBoxRegions = self.imageBoxRegions[~self.imageBoxRegions['region-id'].isin(regionsToRemove)]
+            self.imagePolygonRegions = self.imagePolygonRegions[~self.imagePolygonRegions['region-id'].isin(regionsToRemove)]
+
+            # Add or update regions
+            for region in data['regions']:
                 self.saveRegionInfo(region['type'], data['src'], region)
-            
-            print(f"Self.imagesInfo: {self.imagesInfo} and imageInfoName: {imageInfoName}")
-            # save data automatically 
+
             self.saveDataAutomatically(((imageInfoName, self.imagesInfo), (circleRegionInfo, self.imageCircleRegions), (boxRegionInfo, self.imageBoxRegions), (polygonInfo, self.imagePolygonRegions)))
-            return True  # Return True if data was successfully handled
+            return True
         except Exception as e:
             print('Error:', e)
-            return False  #
+            return False
             
     def handleActiveImageData(self, data):
         try:
