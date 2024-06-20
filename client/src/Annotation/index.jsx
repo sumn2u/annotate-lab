@@ -49,6 +49,7 @@ const userReducer = (state, action) => {
 export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
   const [showLabel, setShowLabel] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const settingsConfig = useSettings()
   const { showSnackbar } = useSnackbar();
@@ -112,6 +113,7 @@ export default () => {
           images: payload
         };
       });
+      changeSelectedImageIndex(0)
       setImageNames(payload)
     }
   };
@@ -125,7 +127,7 @@ export default () => {
       const images = await Promise.all(fetchPromises);
       setSettings(prevSettings => ({
         ...prevSettings,
-        images
+        imagesBlob: images
       }));
       setImageNames(images);
     } catch (error) {
@@ -144,24 +146,24 @@ export default () => {
      const savedConfiguration = settingsConfig.settings|| {};
      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
-       setShowLabel(true)
+       if (settings.images.length > 0) {
+          fetchImages(settings.images);
+        }
      }
   }
-
+  
+  const showAnnotationLab = () => {
+    preloadConfiguration();
+  }
   useEffect(() => {
     preloadConfiguration();
-    if (settings.images.length > 0) {
-      fetchImages(settings.images);
-    } else {
-      setLoading(false);
-    }
-  }, [settingsConfig.settings, showLabel]);
+  }, [ ]);
 
 
   return (
     <>
     { !showLabel ? ( // Render loading indicator if loading is true
-        <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel}/>
+        <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel} showAnnotationLab={showAnnotationLab}/>
       ) : (
     <Annotator
       taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
@@ -179,7 +181,11 @@ export default () => {
       showTags={true}
       selectedTool= {getToolSelectionType(settings.configuration.regions)}
       openDocs={() => window.open(config.DOCS_URL, '_blank')}
-      hideSettings={true}
+      hideSettings={false}
+      onShowSettings = {() => {
+        setIsSettingsOpen(!isSettingsOpen)
+        setShowLabel(false)
+      }}
       selectedImageIndex={selectedImageIndex}
     />)}
     </>

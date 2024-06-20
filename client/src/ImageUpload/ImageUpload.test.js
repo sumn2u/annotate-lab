@@ -13,6 +13,23 @@ jest.mock('../config.js', () => ({
 
 jest.mock('axios')
 
+const images = [
+  {
+    src: 'http://127.0.0.1:5000/uploads/clothes.jpeg',
+    name: 'clothes',
+    selectedClsList: '',
+    comment: '',
+    processed: false,
+  },
+  {
+    src: 'http://127.0.0.1:5000/uploads/shoes.jpeg',
+    name: 'shoes',
+    selectedClsList: '',
+    comment: '',
+    processed: false,
+  },
+];
+
 // Mock the useTranslation hook
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
@@ -33,7 +50,7 @@ useSnackbar.mockReturnValue({ showSnackbar: mockShowSnackbar })
 
 const renderComponent = (props = {}) =>
   render(
-    <ImageUpload {...props} />
+    <ImageUpload  settingsImages={images} {...props} />
   )
 
 describe('ImageUpload', () => {

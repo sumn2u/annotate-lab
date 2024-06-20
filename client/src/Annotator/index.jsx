@@ -49,6 +49,7 @@ export const Annotator = ({
   settings,
   keypointDefinitions,
   onSelectJump,
+  onShowSettings,
   openDocs,
   hideHeader,
   hideHeaderText,
@@ -160,6 +161,8 @@ export const Annotator = ({
         }
       } else if (action.buttonName === "Docs" ) {
         return openDocs();
+      } else if (action.buttonName === "Settings") {
+        return onShowSettings();
       }
     }
     dispatchToReducer(action);
@@ -241,7 +244,8 @@ Annotator.propTypes = {
   hideSave: PropTypes.bool,
   enabledRegionProps: PropTypes.arrayOf(PropTypes.string),
   userReducer: PropTypes.func,
-  onSelectJump: PropTypes.func
+  onSelectJump: PropTypes.func,
+  onShowSettings: PropTypes.func
 }
 
 export default Annotator

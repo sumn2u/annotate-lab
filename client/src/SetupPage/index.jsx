@@ -50,7 +50,8 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   }));
   
 
-export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
+export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotationLab}) => {
+  const { configuration } = settings;
   const [currentTab, setTab] = useState("datatype");
   const [hasConfig, setHasConfig] = useState(false);
   const settingsConfig = useSettings()
@@ -63,13 +64,15 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
 
   const handleImageUpload = (images) => {
     const extractedNames = images.map(image => {
-      const src = image.preview;
-      const selectedClsList = ''; // Assuming 'cls' information is not present
-      const comment = ''; // Assuming 'comment' information is not present
-      const processed = false; // Assuming 'processed' information is not present
-      const name = image.filename.split('.')[0]; // Remove file extension from image name
+      const src = image.preview || image.src;
+      const selectedClsList = '' || image.selectedClsList; // Assuming 'cls' information is not present
+      const comment = '' || image.comment; // Assuming 'comment' information is not present
+      const processed = false || image.processed; // Assuming 'processed' information is not present
+      const name = image.filename?.split('.')[0] || image.name; // Remove file extension from image name
       return { src, name, selectedClsList, comment, processed };
     });
+    settings.images = extractedNames;
+    settingsConfig.changeSetting('settings',settings);
     setConfiguration({type: "UPDATE_IMAGES", payload: extractedNames})
   };
 
@@ -78,11 +81,11 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
   }
   
   const showLab = ()=> {
-    const { configuration } = settings;
     const hasLabels = configuration.labels.length > 0;
     setShowLabel(hasLabels)
     if(hasLabels) {
       settingsConfig.changeSetting('settings',settings);
+      showAnnotationLab()
     }
   }
 
@@ -93,7 +96,6 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
   const isTaskInfoComplete = settings.taskDescription.trim().length > 0;
   const isConfigComplete = settings.configuration.labels.length > 0;
   const isImagesUploaded = settings.images.length > 0;
-
 
   return (
     <Box display="flex"  justifyContent="center"  minHeight="100vh" marginTop={"5rem"}>
@@ -153,7 +155,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel}) => {
                 <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>
                   {t("btn.upload_images")}
                 </Typography>
-                <ImageUpload onImageUpload={handleImageUpload} />
+                <ImageUpload onImageUpload={handleImageUpload} settingsImages={settings.images} />
               </Box>
               <Box display="flex"  justifyContent="end">
                 <Button variant="contained" disabled={!isImagesUploaded} onClick={showLab} disableElevation>
