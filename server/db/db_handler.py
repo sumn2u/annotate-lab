@@ -240,16 +240,23 @@ class Module:
 
 
     def clear_db(self):
-        # Clear CSV files
-        empty_images_info = pd.DataFrame(columns=['image-name', 'selected-classes', 'comment', 'image-original-height', 'image-original-width', 'image-src', 'processed'])
-        empty_circle_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'rx', 'ry', 'rw', 'rh'])
-        empty_box_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'x', 'y', 'w', 'h'])
-        empty_polygon_regions = pd.DataFrame(columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'points'])
-
-        empty_images_info.to_csv(imageInfoName, index=False)
-        empty_circle_regions.to_csv(circleRegionInfo, index=False)
-        empty_box_regions.to_csv(boxRegionInfo, index=False)
-        empty_polygon_regions.to_csv(polygonInfo, index=False)
+        try:
+            # Drop all rows from DataFrames
+            self.imagesInfo.drop(self.imagesInfo.index, inplace=True)
+            self.imageCircleRegions.drop(self.imageCircleRegions.index, inplace=True)
+            self.imageBoxRegions.drop(self.imageBoxRegions.index, inplace=True)
+            self.imagePolygonRegions.drop(self.imagePolygonRegions.index, inplace=True)
+            
+            # Save updated DataFrames back to CSV files
+            self.imagesInfo.to_csv(imageInfoName, index=False)
+            self.imageCircleRegions.to_csv(circleRegionInfo, index=False)
+            self.imageBoxRegions.to_csv(boxRegionInfo, index=False)
+            self.imagePolygonRegions.to_csv(polygonInfo, index=False)
+            
+            print("DataFrames cleared and CSV files updated.")
+            
+        except Exception as e:
+            print(f"Error occurred: {e}")
 
     def __str__(self):
         return 'database'  
