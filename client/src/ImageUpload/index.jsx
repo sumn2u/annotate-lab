@@ -7,10 +7,10 @@ import { useSnackbar } from '../SnackbarContext';
 import { useTranslation } from "react-i18next"
 import config from '../config.js';
 
-const ImageUpload = ({ onImageUpload }) => {
+const ImageUpload = ({ onImageUpload, settingsImages }) => {
   const { t } = useTranslation(); 
   const { showSnackbar } = useSnackbar();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(settingsImages);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -102,7 +102,18 @@ const ImageUpload = ({ onImageUpload }) => {
 
   const handleRemoveImage = (index) => {
     const imageToRemove = images[index];
-    deleteImage(imageToRemove.filename);
+    if (imageToRemove && !imageToRemove.filename) {
+      if (imageToRemove.src) {
+        let parts = imageToRemove.src.split('/');
+        let filename = parts[parts.length - 1];
+        imageToRemove.filename = filename;
+      }
+    }
+    if (imageToRemove && imageToRemove.filename) {
+      deleteImage(imageToRemove.filename);
+    } else {
+      console.error('Error deleting image: imageToRemove or imageToRemove.filename is undefined');
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -165,7 +176,7 @@ const ImageUpload = ({ onImageUpload }) => {
             alignItems="center"
           >
             <img
-              src={image.preview}
+              src={image.preview || image.src}
               alt="preview"
               style={{
                 width: '100px',

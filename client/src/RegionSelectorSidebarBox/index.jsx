@@ -84,7 +84,6 @@ const RowLayout = ({
 const RowHeader = ({ regions, onChangeRegion, onDeleteRegion }) => {
   const visible = regions.find(r => r.visible === false) == null;
   const locked = regions.find(r => r.locked === false) == null;
-  console.log(visible, locked)
   const {t} = useTranslation();
   return (
     <RowLayout
