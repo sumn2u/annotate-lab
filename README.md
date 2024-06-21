@@ -322,11 +322,11 @@ Sample of annotated image along with its mask and settings is show below.
 
 ## Contributing
 
-If you would like to contribute to this project, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
+If you would like to contribute to this project, please fork the repository and submit a pull request. For major changes, open an issue first to discuss your proposed changes. Additionally, please adhere to the [code of conduct](CODE_OF_CONDUCT.md). More information about contributing can be found [here](./CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](./LICENSE).
 
 ## Acknowledgment
 
