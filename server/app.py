@@ -483,7 +483,7 @@ def create_yolo_annotations(image_name, color_map=None):
 
     # Process box regions
     if boxRegions is not None:
-        for region in boxRegions.iterrows():
+        for index, region in boxRegions.iterrows():
             class_name = region.get('class', 'unknown')
             try:
                 x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
