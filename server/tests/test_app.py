@@ -97,7 +97,12 @@ class FlaskTestCase(unittest.TestCase):
         response = self.app.post('/download_image_mask', data=json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"'image_name' not found", response.data)
-
+    
+    def test_download_yolo_annotations_no_image_name(self):
+        response = self.app.post('/download_yolo_annotations', data=json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"'image_name' not found", response.data)
+        
     # def test_get_images_info_no_path(self):
     #     app.config['UPLOAD_FOLDER'] = '/nonexistent_path'
     #     response = self.app.get('/imagesInfo')
