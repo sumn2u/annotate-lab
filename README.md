@@ -215,7 +215,7 @@ const config = {
   };
 ```
 
-## Outputs
+## Outputs [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs)
 Sample of annotated image along with its mask and settings is show below.
 
 ![orange_annotation](./sample_images/orange_annotated-image.png)
