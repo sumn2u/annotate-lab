@@ -39,7 +39,7 @@ export const saveActiveImage = (activeImage) => {
   }
 
   return new Promise((resolve, reject) => {
-    axios.post(`${config.SERVER_URL}/activeImage`, imageData)
+    axios.post(`${config.SERVER_URL}/save`, imageData)
       .then(response => {
         resolve(response.data); // Resolve with response data
       })
