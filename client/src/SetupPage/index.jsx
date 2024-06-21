@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
@@ -52,12 +53,20 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
 
 export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotationLab}) => {
   const { configuration } = settings;
-  const [currentTab, setTab] = useState("datatype");
+  const [currentTab, setTab] = useState(false);
   const [hasConfig, setHasConfig] = useState(false);
   const settingsConfig = useSettings()
   const updateConfiguration = (newConfig) => {
     const {labels} = newConfig
     setHasConfig(labels.length > 0)
+    const newSettings = {
+      ...settings,
+      configuration: {
+        ...settings.configuration,
+        labels
+      }
+    };
+    settingsConfig.changeSetting('settings',newSettings);
     setConfiguration({type: "UPDATE_CONFIGURATION", payload: newConfig})
   }
   const {t} = useTranslation();
@@ -79,6 +88,10 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   const updateTaskInfo = (newTaskInfo) => {
     setConfiguration({type: "UPDATE_TASK_INFO", payload: newTaskInfo})
   }
+
+  useEffect(() => {
+    setTab("datatype");
+  }, []);
   
   const showLab = ()=> {
     const hasLabels = configuration.labels.length > 0;
