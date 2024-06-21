@@ -65,7 +65,7 @@ const translationEnEN = {
   "note": "Note",
   "here": "here",
   "more_info": "More information can be found in our documentation",
-  "yolo_annotations": "Yolo Annotations",
+  "yolo_annotations": "YOLO Annotations",
 };
 
 export default translationEnEN;
