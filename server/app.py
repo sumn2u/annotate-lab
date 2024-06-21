@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, url_for,send_from_directory,send_file, after_this_request
+from flask import Flask, jsonify, request, url_for,send_from_directory,send_file
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
 from io import BytesIO
@@ -543,11 +543,11 @@ def download_yolo_annotations():
                 f.write(annotation + "\n")
 
         # Send the file as a downloadable response
-        @after_this_request
-        def cleanup(response):
-            if temp_file and os.path.exists(temp_file):
-                os.remove(temp_file)
-            return response
+        # @after_this_request # Cleanup the temporary file after the response is sent
+        # def cleanup(response):
+        #     if temp_file and os.path.exists(temp_file):
+        #         os.remove(temp_file)
+        #     return response
 
         return send_file(temp_file, as_attachment=True, download_name=temp_file), 200
     except ValueError as e:
