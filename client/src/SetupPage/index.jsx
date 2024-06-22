@@ -82,7 +82,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
       const comment = '' || image.comment; // Assuming 'comment' information is not present
       const processed = false || image.processed; // Assuming 'processed' information is not present
       const name = image.filename?.split('.')[0] || image.name; // Remove file extension from image name
-      return { src, name, selectedClsList, comment, processed };
+      const selected = image.selected || false;
+      return { src, name, selectedClsList, comment, processed, selected};
     });
     settings.images = extractedNames;
     settingsConfig.changeSetting('settings',settings);

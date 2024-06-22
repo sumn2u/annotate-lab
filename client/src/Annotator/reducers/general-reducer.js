@@ -158,6 +158,11 @@ export default (state, action) => {
       if(!activeImage) return state
       return setIn(state, [...pathToActiveImage, 'processed'], true)
     }
+    case "SELECT_FILE": {
+      const { selected } = action
+      if(!activeImage) return state
+      return setIn(state, [...pathToActiveImage, 'selected'], selected)
+    }
     
     case "SELECT_REGION": {
       const {region} = action
