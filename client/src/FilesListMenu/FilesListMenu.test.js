@@ -795,13 +795,14 @@ describe('FilesListMenu', () => {
     const onSelectJumpMock = jest.fn();
     const saveActiveImageMock = jest.fn();
     const onClickMock = jest.fn();
-    
+    const onSelectFileMock = jest.fn();
     const { getByText, getAllByTestId } = render(
       <FilesListMenu
         state={state}
         selectedImage={'image1'}
         allImages={mockAllImages}
         onSelectJump={onSelectJumpMock}
+        onSelectFile={onSelectFileMock}
         saveActiveImage={saveActiveImageMock}
         onClick={onClickMock}
       />
