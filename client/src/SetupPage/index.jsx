@@ -52,18 +52,22 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   
 
 export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotationLab}) => {
-  const { configuration } = settings;
+  const { configuration, taskChoice } = settings;
   const [currentTab, setTab] = useState(false);
   const [hasConfig, setHasConfig] = useState(false);
   const settingsConfig = useSettings()
+
   const updateConfiguration = (newConfig) => {
-    const {labels} = newConfig
-    setHasConfig(labels.length > 0)
+    const {labels, regionTypesAllowed, multipleRegionLabels, multipleRegions} = newConfig
+    setHasConfig(labels?.length > 0)
     const newSettings = {
       ...settings,
       configuration: {
         ...settings.configuration,
-        labels
+        labels,
+        regionTypesAllowed,
+        multipleRegionLabels,
+        multipleRegions
       }
     };
     settingsConfig.changeSetting('settings',newSettings);
@@ -87,9 +91,16 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
 
   const updateTaskInfo = (newTaskInfo) => {
     setConfiguration({type: "UPDATE_TASK_INFO", payload: newTaskInfo})
+    settings.taskDescription = newTaskInfo.taskDescription;
+    settings.taskChoice = newTaskInfo.taskChoice;
+    settingsConfig.changeSetting('settings',settings);
   }
 
   useEffect(() => {
+    const { labels } = configuration
+    if (labels.length > 0) {
+      setHasConfig(true)
+    }
     setTab("datatype");
   }, []);
   

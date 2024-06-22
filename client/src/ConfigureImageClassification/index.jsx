@@ -57,14 +57,14 @@ export default ({ config, onChange }) => {
 
   const defaultAnswers = useMemo(
     () => ({
-      multipleRegions:  Boolean(config.multipleRegions ? config.multipleRegions : true),
+      multipleRegions: config.multipleRegions ?? false,
+      multipleRegionLabels: config.multipleRegionLabels ?? false,
       regionTypesAllowed: config.regionTypesAllowed ? config.regionTypesAllowed : [],
-      multipleRegionLabels: Boolean(config.multipleRegionLabels ? config.multipleRegionLabels : true),
       labels:
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a
         }) || [],
-        regions: config.regions ? config.regions : "Polygon"
+        regions: config.regions ??  "Polygon"
     }),
     [config.labels, config.multipleRegions]
   )
