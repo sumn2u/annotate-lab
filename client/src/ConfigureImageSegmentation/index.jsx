@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 
 export default ({ config, onChange }) => {
   const { t } = useTranslation();
-
+  
   const form = {
     questions: [
       {
@@ -50,10 +50,8 @@ export default ({ config, onChange }) => {
     () =>
       asMutable(
         {
-          multipleRegions: Boolean(
-            config.multipleRegions ? config.multipleRegions : true
-          ),
-          multipleRegionLabels: Boolean(config.multipleRegionLabels ? config.multipleRegionLabels : true),
+          multipleRegions: config.multipleRegions ?? false,
+          multipleRegionLabels: config.multipleRegionLabels ?? false,
           regionTypesAllowed: config.regionTypesAllowed,
           labels:
             (config.labels || []).map((a) =>
