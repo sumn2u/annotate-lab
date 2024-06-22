@@ -95,14 +95,17 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     settings.taskChoice = newTaskInfo.taskChoice;
     settingsConfig.changeSetting('settings',settings);
   }
+  
+  useEffect(() => {
+    setTab("datatype");
+  }, []);
 
   useEffect(() => {
     const { labels } = configuration
     if (labels.length > 0) {
       setHasConfig(true)
     }
-    setTab("datatype");
-  }, []);
+  }, [currentTab]);
   
   const showLab = ()=> {
     const hasLabels = configuration.labels.length > 0;
