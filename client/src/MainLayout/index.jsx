@@ -336,6 +336,7 @@ export const MainLayout = ({
                     selectedImage={state.selectedImage}
                     allImages={state.images}
                     onSelectJump={onSelectJump}
+                    onSelectFile={action("SELECT_FILE", "selected")}
                     saveActiveImage={saveActiveImage}
                     onClick={action("CHANGE_2_COMPLETE", "activeImage")}
                   />

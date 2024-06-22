@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { styled } from "@mui/material/styles"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Box from "@mui/material/Box"
@@ -61,22 +61,21 @@ export const FilesListMenu = ({
   selectedImage,
   allImages,
   onSelectJump,
+  onSelectFile,
   saveActiveImage,
   onClick
 }) => {
   const { t } = useTranslation();
-  const [checkedImages, setCheckedImages] = useState({});
-
   const handleClickLabel = (label) => {
     onClick(getActiveImage(state))
     onSelectJump(label)
   }
 
-  const handleCheckBoxClick = (index) => {
-    if (!checkedImages[index]) {
-      setCheckedImages(prevState => ({ ...prevState, [index]: true }))
+  const handleCheckBoxClick = (image) => {
+    if(!image.selected){
+      saveActiveImage(getActiveImage(state).activeImage)
     }
-    saveActiveImage(getActiveImage(state).activeImage)
+    onSelectFile(!image.selected)
   }
 
   return (
@@ -103,8 +102,8 @@ export const FilesListMenu = ({
               },
               cursor: selectedImage !== null && selectedImage !== index ? 'not-allowed' : 'pointer',
             }}
-            checked={!!checkedImages[index]}
-            onClick={() => handleCheckBoxClick(index)}
+            checked={image.selected}
+            onClick={() => handleCheckBoxClick(image, index)}
             data-testid="checkbox"
             disabled={selectedImage !== null && selectedImage !== index}
           />
