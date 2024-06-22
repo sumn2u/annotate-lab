@@ -1,7 +1,7 @@
 // @flow
 import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
-import { setIn } from "seamless-immutable"
+import { setIn, asMutable } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material";
 import { useTranslation } from "react-i18next"
 
@@ -21,12 +21,12 @@ export default ({ config, onChange }) => {
         type: "boolean",
       },
       {
-          name: "regionTypesAllowed",
-          title: t("configuration.region_types_allowed"),
-          description: t("configuration.region_types_allowed.description"),
-          type: "checkbox",
-          choices: ["bounding-box", "polygon", "circle"],
-        },
+        name: "regionTypesAllowed",
+        title: t("configuration.region_types_allowed"),
+        description: t("configuration.region_types_allowed.description"),
+        type: "multiple-dropdown",
+        choices: ["bounding-box", "polygon", "circle"],
+      },
       {
         name: "labels",
         title: t("configuration.labels"),
@@ -40,23 +40,12 @@ export default ({ config, onChange }) => {
             title: t("configuration.labels.option.id"),
           },
         ],
-      },
-      {
-          name: "regions",
-          title: t("configuration.regions"),
-          description: t("configuration.regions.description"),
-          type: "dropdown",
-          choices: [
-              "Polygon",
-              "Bounding Box",
-              "Point",
-            ],
       }
     ],
   }
 
   const defaultAnswers = useMemo(
-    () => ({
+    () => asMutable({
       multipleRegions: config.multipleRegions ?? false,
       multipleRegionLabels: config.multipleRegionLabels ?? false,
       regionTypesAllowed: config.regionTypesAllowed ? config.regionTypesAllowed : [],
@@ -64,8 +53,9 @@ export default ({ config, onChange }) => {
         (config.labels || []).map((a) => {
           return typeof a === "string" ? { id: a, description: a } : a
         }) || [],
-        regions: config.regions ??  "Polygon"
-    }),
+    }, 
+     {deep: true}
+    ),
     [config.labels, config.multipleRegions]
   )
   return (
@@ -97,16 +87,16 @@ export default ({ config, onChange }) => {
         variant="flat"
         defaultAnswers={defaultAnswers}
         onQuestionChange={(questionId, newValue) => {
-            if(questionId !=="regionTypesAllowed" && questionId !=="multipleRegions" && questionId !=="multipleRegionLabels"){
-                let arrayId = []
-                if (Array.isArray(newValue)){
-                    newValue = newValue.filter((json) => {
-                        if (arrayId.includes(json.id)) return false
-                        arrayId.push(json.id)
-                        return true
-                    })
-                    onChange(setIn(config, [questionId], newValue))
-                }
+          if(questionId !=="regionTypesAllowed" && questionId !=="multipleRegions" && questionId !=="multipleRegionLabels"){
+            let arrayId = []
+            if (Array.isArray(newValue)){
+                newValue = newValue.filter((json) => {
+                    if (arrayId.includes(json.id)) return false
+                    arrayId.push(json.id)
+                    return true
+                })
+                onChange(setIn(config, [questionId], newValue))
+            }
             }else {
                 onChange(setIn(config, [questionId], newValue))
             }

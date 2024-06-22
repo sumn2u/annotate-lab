@@ -81,7 +81,6 @@ describe('ConfigureImageClassification', () => {
         expect(screen.getByText('Multiple Region Labels')).toBeInTheDocument();
         expect(screen.getByText('Region Types Allowed')).toBeInTheDocument();
         expect(screen.getByText('Labels')).toBeInTheDocument();
-        expect(screen.getByText('Regions')).toBeInTheDocument();
 
         // Assert checkboxes are rendered
         const multipleRegionsCheckbox = screen.getByTestId('checkbox-multipleRegions');
