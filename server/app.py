@@ -8,6 +8,7 @@ import json
 from PIL import Image, ImageDraw
 import os
 import traceback
+import tempfile
 import shutil
 
 app = Flask(__name__)
@@ -535,25 +536,28 @@ def download_yolo_annotations():
 
         print(f"Annotations: {annotations}")
         # Create a temporary text file with YOLO annotations
-        temp_file = f"{image_name.split('.')[0]}.txt"
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
 
         print(f"Temp file: {temp_file}")
-        with open(temp_file, 'w') as f:
+        with open(temp_file.name, 'w') as f:
             for annotation in annotations:
                 f.write(annotation + "\n")
-
-        # Send the file as a downloadable response
-        # @after_this_request # Cleanup the temporary file after the response is sent
-        # def cleanup(response):
-        #     if temp_file and os.path.exists(temp_file):
-        #         os.remove(temp_file)
-        #     return response
-
-        return send_file(temp_file, as_attachment=True, download_name=temp_file), 200
+            
+        # Set a meaningful download name
+        download_name = f"{image_name.split('.')[0]}.txt"
+            
+        return send_file(temp_file.name, as_attachment=True, download_name=download_name), 200
+        
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    finally:
+        if temp_file and os.path.exists(temp_file.name):
+            try:
+                os.remove(temp_file.name)
+            except OSError as e:
+                print(f"Error deleting temporary file: {e}")
 
 @app.route('/imagesInfo', methods=['GET'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
