@@ -35,8 +35,7 @@ export const Header = ({
 
   const{ t } = useTranslation()
   const downloadMenu = items.find((item) => item.name === "Download")
-  const isDownloadDisabled= downloadMenu && downloadMenu.disabled && selectedImages && selectedImages.length <= 0
-
+  const isDownloadDisabled= (downloadMenu && downloadMenu.disabled) || (selectedImages && selectedImages.length <= 0)
   return (
     <ThemeProvider theme={theme}>
       <Container data-testid="header">
