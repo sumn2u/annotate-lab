@@ -15,7 +15,7 @@ export const getImageFile = (api, configuration) => {
     return new Promise((resolve, reject) => {      
       axios.post(`${config.SERVER_URL}/${api}`, configuration, { responseType: 'blob' })
         .then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: response.data.type }));
             resolve(url);
         })
         .catch(error => {

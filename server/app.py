@@ -11,6 +11,7 @@ import os
 import traceback
 import tempfile
 import shutil
+import zipfile
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -366,69 +367,85 @@ def download_image_mask():
     try:
         data = request.get_json()
         # Ensure the expected structure of the JSON data
-        image_name = data.get('image_name')
-        if not image_name:
-            raise ValueError("Invalid JSON data format: 'image_name' not found.")
+        image_names = data.get('image_names', [])
+        if not image_names:
+            raise ValueError("Invalid JSON data format: 'image_names' not found.")
 
-        json_bytes, download_filename = create_json_response(image_name)
-            # Convert BytesIO to string and return as JSON
-        json_str = json_bytes.getvalue().decode('utf-8')
-        
-        images = json.loads(json_str).get("configuration", [])
+        # Initialize a temporary directory to store mask images
+        temp_dir = tempfile.mkdtemp()
 
-        color_map = data.get("colorMap", {})
-        outlineThickness = data.get("outlineThickness",  {})
+        # Process each image and create masks
+        zip_filename = 'image_masks.zip'
+        zip_file_path = os.path.join(temp_dir, zip_filename)
 
-        # Convert color map values to tuples
-        for key in color_map.keys():
-            color_map[key] = tuple(color_map[key])
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            for image_name in image_names:
+                json_bytes, download_filename = create_json_response(image_name)
+                json_str = json_bytes.getvalue().decode('utf-8')
+                images = json.loads(json_str).get("configuration", [])
 
-        for image_info in images:
-            image_url = image_info.get("regions", [])[0].get("image-src")
+                color_map = data.get("colorMap", {})
+                outlineThickness = data.get("outlineThickness", {})
 
-            # Docker container uses port 5000, so replace 5001 with 5000
-            if "127.0.0.1:5001" in image_url:
-                image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+                # Convert color map values to tuples
+                for key in color_map.keys():
+                    color_map[key] = tuple(color_map[key])
+                for image_info in images:
+                    regions = image_info.get("regions", [])
+                    if not regions:
+                        continue  # Skip if no regions are present
 
-            response = requests.get(image_url)
-            image = Image.open(BytesIO(response.content))
-            width, height = image.size
-            mask = Image.new('RGB', (width, height), app.config["MASK_BACKGROUND_COLOR"])  # 'RGB' mode for colored masks
-            draw = ImageDraw.Draw(mask)
-            
-            for region in image_info.get("regions", []):
-                label = region.get("class")
-                color = color_map.get(label, (255, 255, 255))  # Default to white if label not in color_map
-                if 'points' in region and region['points']:
-                    points = region['points']
-                    scaled_points = [(int(x * width), int(y * height)) for x, y in points]
-                    draw.polygon(scaled_points, outline=color, fill=color,  width=outlineThickness.get('POLYGON', 2)) 
-                elif all(key in region for key in ('x', 'y', 'w', 'h')):
-                    try:
-                        x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
-                        y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
-                        w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
-                        h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
-                    except (ValueError, TypeError) as e:
-                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
-                    # Draw rectangle for bounding box
-                    draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=outlineThickness.get('BOUNDING_BOX', 2))
-                elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
-                    try:
-                        rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
-                        ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
-                        rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
-                        rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
-                    except (ValueError, TypeError) as e:
-                        raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
-                    # Draw ellipse (circle if rw and rh are equal)
-                    draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color,width=outlineThickness.get('CIRCLE', 2), fill=color)
+                    region = regions[0]  # Take the first region (assuming there is at least one)
+                    image_url = region.get("image-src")
+                    # Docker container uses port 5000, so replace 5001 with 5000
+                    if "127.0.0.1:5001" in image_url:
+                        image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
 
-            mask_byte_arr = BytesIO()
-            mask.save(mask_byte_arr, format='PNG')
-            mask_byte_arr.seek(0)
+                    response = requests.get(image_url)
+                    response.raise_for_status()
+                    image = Image.open(BytesIO(response.content))
+                    width, height = image.size
+                    mask = Image.new('RGB', (width, height), app.config["MASK_BACKGROUND_COLOR"])  # 'RGB' mode for colored masks
+                    draw = ImageDraw.Draw(mask)
 
-            return send_file(mask_byte_arr, mimetype='image/png', as_attachment=True, download_name=f"mask_{image_info.get('image-name')}")
+                    for region in image_info.get("regions", []):
+                        label = region.get("class")
+                        color = color_map.get(label, (255, 255, 255))  # Default to white if label not in color_map
+                        if 'points' in region and region['points']:
+                            points = region['points']
+                            scaled_points = [(int(x * width), int(y * height)) for x, y in points]
+                            draw.polygon(scaled_points, outline=color, fill=color, width=outlineThickness.get('POLYGON', 2))
+                        elif all(key in region for key in ('x', 'y', 'w', 'h')):
+                            try:
+                                x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
+                                y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
+                                w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
+                                h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
+                            except (ValueError, TypeError) as e:
+                                raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
+                            # Draw rectangle for bounding box
+                            draw.rectangle([x, y, x + w, y + h], outline=color, fill=color, width=outlineThickness.get('BOUNDING_BOX', 2))
+                        elif all(key in region for key in ('rx', 'ry', 'rw', 'rh')):
+                            try:
+                                rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
+                                ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
+                                rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
+                                rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
+                            except (ValueError, TypeError) as e:
+                                raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
+                            # Draw ellipse (circle if rw and rh are equal)
+                            draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=outlineThickness.get('CIRCLE', 2), fill=color)
+
+                    # Save mask image to temporary directory
+                    mask_filename = f"mask_{image_info.get('image-name').split('.')[0]}.png"
+                    mask_path = os.path.join(temp_dir, mask_filename)
+                    mask.save(mask_path, format='PNG')
+
+                    # Add mask image to zip file
+                    zipf.write(mask_path, arcname=mask_filename)
+
+        # Send zip file as response
+        return send_file(zip_file_path, mimetype='application/zip', as_attachment=True, download_name=zip_filename)
         
     except ValueError as ve:
         print('ValueError:', ve)
@@ -442,6 +459,17 @@ def download_image_mask():
         print('General error:', e)
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+    finally:
+         # Clean up temporary directory
+        try:
+            if temp_dir:
+                for file in os.listdir(temp_dir):
+                    file_path = os.path.join(temp_dir, file)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                os.rmdir(temp_dir)
+        except Exception as e:
+            print(f"Error cleaning up temporary directory: {e}")
 
 def create_yolo_annotations(image_names, color_map=None):
     base_url = request.host_url + 'uploads/'

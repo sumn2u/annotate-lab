@@ -68,6 +68,8 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled,
                     link.setAttribute('download', `config_${withoutExtension}.json`); 
                 } else if (format === "yolo-annotations") {
                     link.setAttribute('download', `yolo_${withoutExtension}.txt`);
+                } else if (format === "masked-image") {
+                    link.setAttribute('download', `${withoutExtension}_mask`);
                 } else {
                     link.setAttribute('download', `${withoutExtension}_${format}.png`);
                 }
