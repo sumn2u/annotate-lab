@@ -91,7 +91,7 @@ class FlaskTestCase(unittest.TestCase):
     def test_download_image_with_annotations_no_image_name(self):
         response = self.app.post('/download_image_with_annotations', data=json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"'image_name' not found", response.data)
+        self.assertIn(b"'image_names' not found", response.data)
 
     def test_download_image_mask_no_image_name(self):
         response = self.app.post('/download_image_mask', data=json.dumps({}), content_type='application/json')
