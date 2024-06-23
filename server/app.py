@@ -373,7 +373,7 @@ def download_image_with_annotations():
         zip_byte_arr = BytesIO()
         with zipfile.ZipFile(zip_byte_arr, 'w') as zip_file:
             for img_info in img_byte_arrs:
-                zip_file.writestr(f"{img_info['download_name']}.png", img_info['data'].read())
+                zip_file.writestr(f"{img_info['download_name']}", img_info['data'].read())
 
         zip_byte_arr.seek(0)
 
@@ -484,9 +484,9 @@ def download_image_mask():
                             draw.ellipse([rx, ry, rx + rw, ry + rh], outline=color, width=outlineThickness.get('CIRCLE', 2), fill=color)
 
                     # Save mask image to temporary directory
-                    mask_filename = f"mask_{image_info.get('image-name').split('.')[0]}.png"
+                    mask_filename = image_info.get('image-name')
                     mask_path = os.path.join(temp_dir, mask_filename)
-                    mask.save(mask_path, format='PNG')
+                    mask.save(mask_path)
 
                     # Add mask image to zip file
                     zipf.write(mask_path, arcname=mask_filename)
