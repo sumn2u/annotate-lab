@@ -32,7 +32,7 @@ describe('DownloadButton', () => {
     const mockHandleDownload = jest.fn();
     const selectedImageName = 'example.png';
     const classList = ['class1', 'class2', 'class3']; // Example class list
-
+    const selectedImages = [{ src: 'example.png' }]
     const getImageFileSpy = jest.spyOn(require('../../utils/get-data-from-server.js'), 'getImageFile');
 
     const { getByText } = render(
@@ -41,6 +41,7 @@ describe('DownloadButton', () => {
         classList={classList}
         hideHeaderText={false}
         disabled={false}
+        selectedImages= {selectedImages}
         handleDownload={mockHandleDownload}
       />
     );

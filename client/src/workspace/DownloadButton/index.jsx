@@ -14,8 +14,11 @@ import HeaderButton from "../HeaderButton/index.jsx";
 import { useTranslation } from "react-i18next"
 import config from "../../config.js";
 
-const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}) => {
+const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled, selectedImages}) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const getImageNames = () => { 
+    return selectedImages.map(image => image.src.split('/').pop())
+  }
   const { showSnackbar } = useSnackbar();
   const {t} = useTranslation();
   const handleClick = (event) => {
@@ -35,6 +38,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled}
   const handleDownload = (format) => {
     const config_data = {}
     config_data['image_name'] = selectedImageName
+    config_data['image_names'] = getImageNames()
     config_data['colorMap'] = classColorMap
     config_data['outlineThickness'] = config.OUTLINE_THICKNESS_CONFIG
     let url = ""

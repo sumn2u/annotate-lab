@@ -1,3 +1,4 @@
+import io
 from flask import Flask, jsonify, request, url_for,send_from_directory,send_file
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
@@ -244,15 +245,28 @@ def download_configuration():
     try:
         data = request.get_json()
         # Ensure the expected structure of the JSON data
-        image_name = data.get('image_name')
         color_map = data.get("colorMap", None)
+        image_names = data.get('image_names', [])
         
-        if not image_name:
-            raise ValueError("Invalid JSON data format: 'image_name' not found.")
+        # Iterate through each image name
+        all_data = {}
+        if not image_names:
+            raise ValueError("Invalid JSON data format: 'image_names' not found.")
 
-        json_bytes, download_filename = create_json_response(image_name, color_map)
+        for img_name in image_names:
+            json_bytes, download_filename = create_json_response(img_name, color_map)
+            json_data = json_bytes.getvalue().decode('utf-8')
+            all_data[img_name] = json.loads(json_data)
 
-        return send_file(json_bytes, mimetype='application/json', as_attachment=True, download_name=download_filename)
+        # Convert accumulated data to JSON string
+        json_str = json.dumps(all_data, indent=4)
+        
+        return send_file(
+            io.BytesIO(json_str.encode('utf-8')),
+            mimetype='application/json',
+            as_attachment=True,
+            download_name='merged_configuration.json'
+        )
 
     except Exception as e:
         print('Error:', e)
