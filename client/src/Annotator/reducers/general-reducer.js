@@ -893,8 +893,6 @@ export default (state, action) => {
       if (action.selectedTool === "show-tags") {
         setInLocalStorage("showTags", !state.showTags)
         return setIn(state, ["showTags"], !state.showTags)
-      } else if (action.selectedTool === "show-mask") {
-        return setIn(state, ["showMask"], !state.showMask)
       }
       if (action.selectedTool === "modify-allowed-area" && !state.allowedArea) {
         state = setIn(state, ["allowedArea"], {x: 0, y: 0, w: 1, h: 1})
