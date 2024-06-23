@@ -72,9 +72,6 @@ export const FilesListMenu = ({
   }
 
   const handleCheckBoxClick = (image) => {
-    if(!image.selected){
-      saveActiveImage(getActiveImage(state).activeImage)
-    }
     onSelectFile(!image.selected)
   }
 
