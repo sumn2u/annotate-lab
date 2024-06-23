@@ -42,6 +42,7 @@ export default ({
   hideHeader = false,
   hideHeaderText = false,
   children,
+  selectedImages = emptyAr,
   selectedImageName,
   classList
 }) => {
@@ -58,6 +59,7 @@ export default ({
               items={headerItems}
               selectedImageName={selectedImageName}
               classList={classList}
+              selectedImages={selectedImages}
             />
           )}
           <SidebarsAndContent ref={sidebarAndContentRef}>

@@ -31,8 +31,7 @@ describe("Header", () => {
   ];
 
   const mockClass = ['class1', 'class2', 'class3']
-
-
+  const selectedImages = []
   beforeEach(() => {
     render(
       <Header
@@ -40,6 +39,7 @@ describe("Header", () => {
         onClickItem={mockOnClickItem}
         selectedImageName="image1"
         classList={mockClass}
+        selectedImages={selectedImages}
       />
     );
   });
@@ -79,6 +79,7 @@ describe("Header", () => {
         onClickItem={mockOnClickItem}
         selectedImageName="image1"
         classList={mockClass}
+        selectedImages={selectedImages}
       />
     );
 

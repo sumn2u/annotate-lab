@@ -202,7 +202,7 @@ export const MainLayout = ({
   const debugModeOn = Boolean(window.localStorage.$ANNOTATE_DEBUG_MODE && state)
   const nextImageHasRegions =
     !nextImage || (nextImage.regions && nextImage.regions.length > 0)
-
+  const selectedImages = state.images.filter((image) => image.selected)
   return (
     <ThemeProvider theme={theme}>
           <HotkeyDiv
@@ -220,6 +220,7 @@ export const MainLayout = ({
               hideHeaderText={hideHeaderText}
               selectedImageName={state.images[currentImageIndex]?.src.split('/').pop()}
               classList = {state.regionClsList}
+              selectedImages={selectedImages}
               headerLeftSide={[
                 state.annotationType === "video" ? (
                   <KeyframeTimeline
