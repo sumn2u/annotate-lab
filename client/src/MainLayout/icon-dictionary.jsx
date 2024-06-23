@@ -9,7 +9,6 @@ import {
   faEdit,
   faGripLines,
   faHandPaper,
-  faMask,
   faMousePointer,
   faSearch,
   faCircleDot,
@@ -69,9 +68,6 @@ export const iconDictionary = {
   ),
   "create-line": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faChartLine} />
-  ),
-  "show-mask": () => (
-    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faMask} />
   ),
   "modify-allowed-area": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faEdit} />

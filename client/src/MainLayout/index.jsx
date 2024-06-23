@@ -120,7 +120,6 @@ export const MainLayout = ({
         !["select", "pan", "zoom"].includes(state.selectedTool)
       }
       key={state.selectedImage}
-      showMask={state.showMask}
       autoSegmentationOptions={state.autoSegmentationOptions}
       showTags={state.showTags}
       allowedArea={state.allowedArea}
@@ -254,7 +253,6 @@ export const MainLayout = ({
               selectedTools={[
                 state.selectedTool,
                 state.showTags && "show-tags",
-                state.showMask && "show-mask",
               ].filter(Boolean)}
               iconSidebarItems={[
                 {
@@ -308,14 +306,6 @@ export const MainLayout = ({
                 {
                   name: "create-expanding-line",
                   helperText: "Add Expanding Line",
-                },
-                {
-                  name: "create-keypoints",
-                  helperText: "Add Keypoints (Pose)",
-                },
-                state.fullImageSegmentationMode && {
-                  name: "show-mask",
-                  helperText: "Show / Hide Mask",
                 },
                 {
                   name: "modify-allowed-area",

@@ -411,7 +411,6 @@ ImageCanvas.propTypes = {
   showTags: PropTypes.bool,
   realSize: PropTypes.shape({width: PropTypes.number, height: PropTypes.number, unitName: PropTypes.string}),
   showCrosshairs: PropTypes.bool,
-  showMask: PropTypes.bool,
   showHighlightBox: PropTypes.bool,
   showPointDistances: PropTypes.bool,
   pointDistancePrecision: PropTypes.number,
