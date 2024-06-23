@@ -443,110 +443,114 @@ def download_image_mask():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-def create_yolo_annotations(image_name, color_map=None):
+def create_yolo_annotations(image_names, color_map=None):
     base_url = request.host_url + 'uploads/'
-    annotations = []
+    all_annotations = []
 
-    # Fetch image and its annotations
-    image_path = None
-    for root, dirs, files in os.walk(path):
-        for f in files:
-            if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
-                image_path = os.path.join(root, f)
+    for image_name in image_names:
+        # Fetch image and its annotations
+        image_path = None
+        for root, dirs, files in os.walk(path):
+            for f in files:
+                if f.lower().endswith(('.png', '.jpg', '.jpeg')) and f.lower() == image_name.lower():
+                    image_path = os.path.join(root, f)
+                    break
+            if image_path:
                 break
-        if image_path:
-            break
-    
-    if not image_path:
-        raise ValueError(f"Image '{image_name}' not found in the upload directory.")
+        
+        if not image_path:
+            raise ValueError(f"Image '{image_name}' not found in the upload directory.")
 
-    # Fetch annotations from database or other source based on image_path
-    image_url = base_url + image_name
-    imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', image_url)
-    polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', image_url)
-    boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', image_url)
-    circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, 'image-src', image_url)
+        # Fetch annotations from database or other source based on image_path
+        image_url = base_url + image_name
+        imageIndex = dbModule.findInfoInDb(dbModule.imagesInfo, 'image-src', image_url)
+        polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, 'image-src', image_url)
+        boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, 'image-src', image_url)
+        circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, 'image-src', image_url)
 
-    # Initialize YOLO annotations
-    width, height = Image.open(image_path).size
-    annotations = []
+        # Initialize YOLO annotations for current image
+        width, height = Image.open(image_path).size
+        annotations = []
 
-    # Process polygon regions
-    if polygonRegions is not None:
-        for index, region in polygonRegions.iterrows():
-            class_name = region.get('class', 'unknown')
-            points_str = region.get('points', '')
-            
-            # Split points string into individual points
-            points_list = points_str.split(';')
-            
-            # Convert points to list of tuples
-            points = []
-            for point_str in points_list:
-                x, y = map(float, point_str.split('-'))
-                points.append((x, y))
-            
-            # Convert points to normalized YOLO format
-            if points:
-                xmin = min(point[0] for point in points) / width
-                ymin = min(point[1] for point in points) / height
-                xmax = max(point[0] for point in points) / width
-                ymax = max(point[1] for point in points) / height
+        # Process polygon regions
+        if polygonRegions is not None:
+            for index, region in polygonRegions.iterrows():
+                class_name = region.get('class', 'unknown')
+                points_str = region.get('points', '')
                 
+                # Split points string into individual points
+                points_list = points_str.split(';')
+                
+                # Convert points to list of tuples
+                points = []
+                for point_str in points_list:
+                    x, y = map(float, point_str.split('-'))
+                    points.append((x, y))
+                
+                # Convert points to normalized YOLO format
+                if points:
+                    xmin = min(point[0] for point in points) / width
+                    ymin = min(point[1] for point in points) / height
+                    xmax = max(point[0] for point in points) / width
+                    ymax = max(point[1] for point in points) / height
+                    
+                    # YOLO format: class_index x_center y_center width height (all normalized)
+                    annotations.append(f"{class_name} {(xmin + xmax) / 2} {(ymin + ymax) / 2} {xmax - xmin} {ymax - ymin}")
+
+        # Process box regions
+        if boxRegions is not None:
+            for index, region in boxRegions.iterrows():
+                class_name = region.get('class', 'unknown')
+                try:
+                    x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
+                    y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
+                    w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
+                    h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
+                except (ValueError, TypeError) as e:
+                    raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
+
                 # YOLO format: class_index x_center y_center width height (all normalized)
-                annotations.append(f"{class_name} {(xmin + xmax) / 2} {(ymin + ymax) / 2} {xmax - xmin} {ymax - ymin}")
+                annotations.append(f"{class_name} {x + w / 2} {y + h / 2} {w} {h}")
 
-    # Process box regions
-    if boxRegions is not None:
-        for index, region in boxRegions.iterrows():
-            class_name = region.get('class', 'unknown')
-            try:
-                x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
-                y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
-                w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
-                h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
-            except (ValueError, TypeError) as e:
-                raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
+        # Process circle/ellipse regions
+        if circleRegions is not None:
+            for index, region in circleRegions.iterrows():
+                class_name = region.get('class', 'unknown')
+                try:
+                    rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
+                    ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
+                    rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
+                    rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
+                except (ValueError, TypeError) as e:
+                    raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
 
-            # YOLO format: class_index x_center y_center width height (all normalized)
-            annotations.append(f"{class_name} {x + w / 2} {y + h / 2} {w} {h}")
+                # For YOLO, if width and height are equal, it represents a circle
+                if rw == rh:
+                    annotations.append(f"{class_name} {rx} {ry} {rw} {rw}")  # Treat as circle
+                else:
+                    # Treat as ellipse (YOLO does not directly support ellipse, so treat as box)
+                    annotations.append(f"{class_name} {rx + rw / 2} {ry + rh / 2} {rw} {rh}")
 
-    # Process circle/ellipse regions
-    if circleRegions is not None:
-        for index, region in circleRegions.iterrows():
-            class_name = region.get('class', 'unknown')
-            try:
-                rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
-                ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
-                rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
-                rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
-            except (ValueError, TypeError) as e:
-                raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
+        # Append annotations for current image to all_annotations list
+        all_annotations.extend(annotations)
 
-            # For YOLO, if width and height are equal, it represents a circle
-            if rw == rh:
-                annotations.append(f"{class_name} {rx} {ry} {rw} {rw}")  # Treat as circle
-            else:
-                # Treat as ellipse (YOLO does not directly support ellipse, so treat as box)
-                annotations.append(f"{class_name} {rx + rw / 2} {ry + rh / 2} {rw} {rh}")
-
-    print(f"Annotations: {annotations}")
-    return annotations
+    print(f"Annotations: {all_annotations}")
+    return all_annotations
 
 
 @app.route('/download_yolo_annotations', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def download_yolo_annotations():
     data = request.get_json()
-    image_name = data.get('image_name')
+    image_names = data.get('image_names')
 
-    if not image_name:
-        return jsonify({'error': "Invalid JSON data format: 'image_name' not found."}), 400
+    if not image_names:
+        return jsonify({'error': "Invalid JSON data format: 'image_names' not found."}), 400
 
     temp_file = None
 
     try:
-        annotations = create_yolo_annotations(image_name)
+        annotations = create_yolo_annotations(image_names)
 
         print(f"Annotations: {annotations}")
         # Create a temporary text file with YOLO annotations
@@ -558,7 +562,7 @@ def download_yolo_annotations():
                 f.write(annotation + "\n")
             
         # Set a meaningful download name
-        download_name = f"{image_name.split('.')[0]}.txt"
+        download_name = 'yolo_annotations.txt'
             
         return send_file(temp_file.name, as_attachment=True, download_name=download_name), 200
         
