@@ -278,7 +278,7 @@ export const MainLayout = ({
                 {
                   name: "show-tags",
                   helperText: t("helptext_tags"),
-                  alwaysShowing: true,
+                  alwaysShowing: false,
                 },
                 {
                   name: "create-point",
