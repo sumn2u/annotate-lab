@@ -65,13 +65,13 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled,
                 const link = document.createElement('a');
                 link.href = response;
                 if (format === "configuration") {
-                    link.setAttribute('download', `config_${withoutExtension}.json`); 
+                    link.setAttribute('download', `configuration`); 
                 } else if (format === "yolo-annotations") {
-                    link.setAttribute('download', `yolo_${withoutExtension}.txt`);
+                    link.setAttribute('download', `yolo_annotations.txt`);
                 } else if (format === "masked-image") {
-                    link.setAttribute('download', `${withoutExtension}_mask`);
+                    link.setAttribute('download', "image_masks");
                 } else if (format == "annotated-image"){
-                    link.setAttribute('download', `${withoutExtension}_annotated`);
+                    link.setAttribute('download', "images_with_annotations");
                 } else {
                     link.setAttribute('download', `${withoutExtension}_${format}.png`);
                 }
