@@ -15,16 +15,16 @@ def generateUid(id):
 class Module:
     def __init__(self):
         self.imagesInfo = pd.DataFrame(
-            columns=['image-name', 'selected-classes', 'comment', 'image-original-height', 'image-original-width', 'image-src', 'processed']
+            columns=['image-name', 'selected-classes', 'comment', 'image-original-height', 'image-original-width', 'image-src', 'processed', 'rotation-angle']
         )
         self.imageCircleRegions = pd.DataFrame(
-            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'rx', 'ry', 'rw', 'rh']
+            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'rx', 'ry', 'rw', 'rh', 'rotation-angle']
         )
         self.imageBoxRegions = pd.DataFrame(
-            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'x', 'y', 'w', 'h']
+            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'x', 'y', 'w', 'h', 'rotation-angle']
         )
         self.imagePolygonRegions = pd.DataFrame(
-            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'points']
+            columns=['region-id', 'image-src', 'class', 'comment', 'tags', 'points', 'rotation-angle']
         )
 
         self.readDataFromDatabase()
@@ -45,7 +45,7 @@ class Module:
             if not os.path.exists(arguman[0]):
                 arguman[1].to_csv(arguman[0], index=False)
     
-    def saveRegionInfo(self, type, imageSrc, data):
+    def saveRegionInfo(self, type, imageSrc, data, rotationAngle):
         def regionType(type):
             if type == 'circle':
                 return self.circleRegion
@@ -62,7 +62,7 @@ class Module:
         regionData['class']     = data['cls']
         regionData['comment']   = data['comment'] if 'comment' in data else ''
         regionData['tags']      = ';'.join(data.get('tags', []))
-
+        regionData['rotation-angle'] = rotationAngle
         regionFunction = regionType(type)
         regionFunction(regionData, data)
 
@@ -173,6 +173,7 @@ class Module:
         imageData['image-original-height'] = [pixelSize['h']] if pixelSize != {} else []
         imageData['image-original-width'] = [pixelSize['w']] if pixelSize != {} else []
         imageData['processed'] = [1]
+        imageData['rotation-angle'] = [data['rotationAngle']] if 'rotationAngle' in data else []
         return imageData
     
     def findInfoInDb(self, database, uid_columns, uid):
@@ -227,7 +228,7 @@ class Module:
 
             # Add or update regions
             for region in data['regions']:
-                self.saveRegionInfo(region['type'], data['src'], region)
+                self.saveRegionInfo(region['type'], data['src'], region, data['rotationAngle'] if 'rotationAngle' in data else 0)
 
             self.saveDataAutomatically(((imageInfoName, self.imagesInfo), (circleRegionInfo, self.imageCircleRegions), (boxRegionInfo, self.imageBoxRegions), (polygonInfo, self.imagePolygonRegions)))
             return True

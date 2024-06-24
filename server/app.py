@@ -309,13 +309,15 @@ def download_image_with_annotations():
                     continue  # Skip if no regions are present
 
                 region = regions[0]  # Take the first region (assuming there is at least one)
+                rotation_angle = region.get("rotation-angle", 0)
                 image_url = region.get("image-src")
                 # Docker container uses port 5000, so replace 5001 with 5000
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
 
                 response = requests.get(image_url)
-                image = Image.open(BytesIO(response.content))
+                old_image = Image.open(BytesIO(response.content))
+                image = old_image.rotate(-rotation_angle)
                 draw = ImageDraw.Draw(image)
 
                 for region in image_info.get("regions", []):
@@ -442,7 +444,8 @@ def download_image_mask():
                     if not regions:
                         continue  # Skip if no regions are present
 
-                    region = regions[0]  # Take the first region (assuming there is at least one)
+                    region = regions[0] 
+                    rotation_angle = region.get("rotation-angle", 0)
                     image_url = region.get("image-src")
                     # Docker container uses port 5000, so replace 5001 with 5000
                     if "127.0.0.1:5001" in image_url:
@@ -450,7 +453,8 @@ def download_image_mask():
 
                     response = requests.get(image_url)
                     response.raise_for_status()
-                    image = Image.open(BytesIO(response.content))
+                    old_image = Image.open(BytesIO(response.content))
+                    image = old_image.rotate(-rotation_angle)
                     width, height = image.size
                     mask = Image.new('RGB', (width, height), app.config["MASK_BACKGROUND_COLOR"])  # 'RGB' mode for colored masks
                     draw = ImageDraw.Draw(mask)
