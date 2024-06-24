@@ -66,6 +66,7 @@ const translationEnEN = {
   "here": "here",
   "more_info": "More information can be found in our documentation",
   "yolo_annotations": "YOLO Annotations",
+  "rotate_image": "Rotate Image",
 };
 
 export default translationEnEN;

@@ -65,6 +65,7 @@ const translationDeDE = {
   "here": "hier",
   "more_info": "Weitere Informationen finden Sie in unserer Dokumentation",
   "yolo_annotations": "YOLO-Annotationen",
+  "rotate_image": "Bild drehen"
 };
 
 export default translationDeDE;

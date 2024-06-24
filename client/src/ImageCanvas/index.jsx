@@ -60,6 +60,7 @@ export const ImageCanvas = ({
   onBeginBoxTransform,
   onBeginMoveLinePoint,
   onBeginMovePolygonPoint,
+  rotationAngle,
   onAddPolygonPoint,
   onBeginMoveKeypoint,
   onSelectRegion,
@@ -380,6 +381,7 @@ export const ImageCanvas = ({
               mouseEvents={mouseEvents}
               onLoad={onVideoOrImageLoaded}
               videoTime={videoTime}
+              rotationAngle={rotationAngle}
               videoSrc={videoSrc}
               imageSrc={imageSrc}
               useCrossOrigin={false}
@@ -426,6 +428,8 @@ ImageCanvas.propTypes = {
   onBeginRegionEdit: PropTypes.func.isRequired,
   onCloseRegionEdit: PropTypes.func.isRequired,
   onDeleteRegion: PropTypes.func.isRequired,
+  showSpins: PropTypes.bool,
+  rotationAngle: PropTypes.number,
   onBeginBoxTransform: PropTypes.func.isRequired,
   onBeginMovePolygonPoint: PropTypes.func.isRequired,
   onBeginMoveKeypoint: PropTypes.func.isRequired,

@@ -893,6 +893,22 @@ export default (state, action) => {
       if (action.selectedTool === "show-tags") {
         setInLocalStorage("showTags", !state.showTags)
         return setIn(state, ["showTags"], !state.showTags)
+      } else if (action.selectedTool === "show-spins") {
+        const { images } = state;
+        const rotationAngle = images[currentImageIndex]?.rotationAngle || 0; // Access rotationAngle from images array
+        const newAngle = (rotationAngle + 90) % 360;
+        const isInOriginalCondition = newAngle === 0;
+        const updatedImage = {
+          ...images[currentImageIndex],
+          rotationAngle: newAngle,
+        };
+        const updatedImages = [...images];
+        updatedImages[currentImageIndex] = updatedImage;
+        return {
+          ...state,
+          images: updatedImages,
+          showSpins: !isInOriginalCondition,
+        };
       }
       if (action.selectedTool === "modify-allowed-area" && !state.allowedArea) {
         state = setIn(state, ["allowedArea"], {x: 0, y: 0, w: 1, h: 1})

@@ -7,14 +7,16 @@ import {useSettings} from "../SettingsProvider"
 import {useTranslation} from "react-i18next";
 
 const theme = createTheme()
-const Video = styled("video")(({theme}) => ({
+const Video = styled("video")(({theme, rotationAngle}) => ({
   zIndex: 0,
   position: "absolute",
+  transform: `rotate(${rotationAngle}deg)`
 }))
 
-const StyledImage = styled("img")(({theme}) => ({
+const StyledImage = styled("img")(({theme, rotationAngle}) => ({
   zIndex: 0,
   position: "absolute",
+  transform: `rotate(${rotationAngle}deg)`
 }))
 
 const Error = styled("div")(({theme}) => ({
@@ -38,6 +40,7 @@ export default ({
   videoSrc,
   imageSrc,
   onLoad,
+  rotationAngle,
   useCrossOrigin = false,
   videoPlaying,
   onChangeVideoTime,
@@ -48,6 +51,7 @@ export default ({
   const imageRef = useRef()
   const [error, setError] = useState()
 
+  console.log(rotationAngle, 'rotationAngle')
   useEffect(() => {
     if (!videoPlaying && videoRef.current) {
       videoRef.current.currentTime = (videoTime || 0) / 1000
@@ -148,7 +152,7 @@ export default ({
           {...mouseEvents}
           src={imageSrc}
           ref={imageRef}
-          style={stylePosition}
+          style={{ ...stylePosition, transform: `rotate(${rotationAngle}deg)` }}
           onLoad={onImageLoaded}
           onError={onImageError}
           crossOrigin={useCrossOrigin ? "anonymous" : undefined}
@@ -157,7 +161,7 @@ export default ({
         <Video
           {...mouseEvents}
           ref={videoRef}
-          style={stylePosition}
+          style={{ ...stylePosition, transform: `rotate(${rotationAngle}deg)` }}
           onLoadedMetadata={onLoadedVideoMetadata}
           src={videoSrc || imageSrc}
         />

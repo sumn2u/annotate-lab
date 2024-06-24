@@ -122,6 +122,8 @@ export const MainLayout = ({
       key={state.selectedImage}
       autoSegmentationOptions={state.autoSegmentationOptions}
       showTags={state.showTags}
+      showSpins={state.showSpins}
+      rotationAngle={state.images[state.selectedImage]?.rotationAngle || 0}
       allowedArea={state.allowedArea}
       modifyingAllowedArea={state.selectedTool === "modify-allowed-area"}
       regionClsList={state.regionClsList}
@@ -253,6 +255,7 @@ export const MainLayout = ({
               selectedTools={[
                 state.selectedTool,
                 state.showTags && "show-tags",
+                state.showSpins && "show-spins",
               ].filter(Boolean)}
               iconSidebarItems={[
                 {
@@ -311,6 +314,11 @@ export const MainLayout = ({
                   name: "modify-allowed-area",
                   helperText: "Modify Allowed Area",
                 },
+                state.images?.length >= 1 && {
+                  name: "show-spins",
+                  helperText: t("rotate_image") + getHotkeyHelpText("rotate_image"),
+                  alwaysShowing: true,
+                }
               ]
                 .filter(Boolean)
                 .filter(

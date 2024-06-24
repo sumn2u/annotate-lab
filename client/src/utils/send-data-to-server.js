@@ -7,6 +7,7 @@ export const getImageData = (activeImage) => {
   imageData['name'] = activeImage.name
   imageData['cls'] = activeImage.selectedClsList || []
   imageData['comment'] = activeImage.comment || ""
+  imageData['rotationAngle'] = activeImage.rotationAngle || 0
 
   if (activeImage.pixelSize !== undefined)
     imageData['pixelSize'] = {'h': activeImage.pixelSize.h, 'w': activeImage.pixelSize.w}

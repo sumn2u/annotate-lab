@@ -11,6 +11,7 @@ import {
   faHandPaper,
   faMousePointer,
   faSearch,
+  faArrowsSpin,
   faCircleDot,
   faTag,
   faVectorSquare
@@ -68,6 +69,9 @@ export const iconDictionary = {
   ),
   "create-line": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faChartLine} />
+  ),
+  "show-spins": () => (
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faArrowsSpin} />
   ),
   "modify-allowed-area": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faEdit} />
