@@ -14,6 +14,7 @@ import { grey } from "@mui/material/colors"
 import isEqual from "lodash/isEqual"
 import { useTranslation } from "react-i18next"
 import { Grid } from "@mui/material"
+import Tooltip from "@mui/material/Tooltip";
 
 const theme = createTheme()
 const EmptyTextDiv = styled('div')(() => ({
@@ -57,7 +58,9 @@ export const HistorySidebarBox = ({
               {i === 0 && (
                 <ListItemSecondaryAction onClick={() => onRestoreHistory()}>
                   <Grid item xs={1}  onClick={() => onRestoreHistory()}>
+                  <Tooltip title={t("undo_last_action")} placement="left">
                     <UndoIcon sx={{ fontSize: 14 }}  data-testid="undo-icon"/>
+                    </Tooltip>
                   </Grid>
                 </ListItemSecondaryAction>
               )}

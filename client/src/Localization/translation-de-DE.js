@@ -65,6 +65,20 @@ const translationDeDE = {
   "here": "hier",
   "more_info": "Weitere Informationen finden Sie in unserer Dokumentation",
   "yolo_annotations": "YOLO-Annotationen",
+  "download_checkbox_select": "Wähle dieses Bild für den Download aus",
+  "undo_last_action": "Letzte Aktion rückgängig machen",
+  "delete_regions": "Regionen löschen",
+  "lock_regions": "Regionen sperren",
+  "unlock_regions": "Regionen entsperren",
+  "hide_regions": "Regionen ausblenden",
+  "show_regions": "Regionen anzeigen",
+  "delete_region": "Region löschen",
+  "lock_region": "Region sperren",
+  "unlock_region": "Region entsperren",
+  "hide_region": "Region ausblenden",
+  "show_region": "Region anzeigen",
+  "expand_selection": "Auswahl erweitern",
+  "collapse_selection": "Auswahl verkleinern"
 };
 
 export default translationDeDE;
