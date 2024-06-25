@@ -66,6 +66,20 @@ const translationEnEN = {
   "here": "here",
   "more_info": "More information can be found in our documentation",
   "yolo_annotations": "YOLO Annotations",
+  "download_checkbox_select": "Select this image for download",
+  "undo_last_action": "Undo last action",
+  "delete_regions": "Delete regions",
+  "lock_regions": "Lock regions",
+  "unlock_regions": "Unlock regions",
+  "hide_regions": "Hide regions",
+  "show_regions": "Show regions",
+  "delete_region": "Delete region",
+  "lock_region": "Lock region",
+  "unlock_region": "Unlock region",
+  "hide_region": "Hide region",
+  "show_region": "Show region",
+  "expand_selection": "Expand selection",
+  "collapse_selection": "Collapse selection",
 };
 
 export default translationEnEN;

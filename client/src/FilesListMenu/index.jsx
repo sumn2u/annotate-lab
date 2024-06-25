@@ -10,6 +10,7 @@ import classnames from "classnames"
 import Checkbox from "@mui/material/Checkbox"
 import getActiveImage from "../Annotator/reducers/get-active-image"
 import { useTranslation } from "react-i18next"
+import Tooltip from "@mui/material/Tooltip";
 
 const theme = createTheme()
 const LabelContainer = styled("div")(({ theme }) => ({
@@ -76,7 +77,7 @@ export const FilesListMenu = ({
   }
   
   const hasRegions = (imageIndex) => {
-    return allImages.length > 0 && allImages[imageIndex].regions.length > 0
+    return allImages?.length > 0 && allImages[imageIndex].regions?.length > 0
   }
 
   return (
@@ -93,6 +94,7 @@ export const FilesListMenu = ({
             className={classnames({ selected: image.name === selectedImage })}
             key = {index}
           >
+        <Tooltip title={t("download_checkbox_select")} placement="left">
           <Checkbox
             sx={{
               padding: 0, 
@@ -107,6 +109,7 @@ export const FilesListMenu = ({
             data-testid="checkbox"
             disabled={(selectedImage !== null && selectedImage !== index) || !hasRegions(index)}
           />
+          </Tooltip>
             <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
               <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }} onClick={() => {handleClickLabel(image.name)}}>
                 {capitalize(image.name)}

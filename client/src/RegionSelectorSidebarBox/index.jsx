@@ -19,6 +19,7 @@ import isEqual from "lodash/isEqual"
 import {useTranslation} from "react-i18next";
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import Tooltip from "@mui/material/Tooltip";
 
 const theme = createTheme()
 
@@ -93,58 +94,69 @@ const RowHeader = ({ regions, onChangeRegion, onDeleteRegion }) => {
       name={<div style={{paddingLeft: 10}}>{t("desc.class")}</div>}
       area={<PieChartIcon className="icon" />}
       trash={
-        <TrashIcon className="icon"  
-          onClick={() => {
-              regions.forEach(r => {
-                onDeleteRegion(r);
-              });
-          }} 
-          data-testid="DeleteIcon-header"
-        />}
+        <Tooltip title={t("delete_regions")}>
+          <TrashIcon className="icon"  
+            onClick={() => {
+                regions.forEach(r => {
+                  onDeleteRegion(r);
+                });
+            }} 
+            data-testid="DeleteIcon-header"
+          />
+        </Tooltip>
+        }
       lock={
         locked === true ? (
-          <LockIcon
-            onClick={() => {
-              regions.forEach(r => {
-                onChangeRegion({ ...r, locked: false });
-              });
-            }}
-            className="icon"
-            data-testid="LockIcon-header"
-          />
+          <Tooltip title={t("lock_regions")}>
+            <LockIcon
+              onClick={() => {
+                regions.forEach(r => {
+                  onChangeRegion({ ...r, locked: false });
+                });
+              }}
+              className="icon"
+              data-testid="LockIcon-header"
+            />
+          </Tooltip>
         ) : (
-          <UnlockIcon
-            onClick={() => {
-              regions.forEach(r => {
-                onChangeRegion({ ...r, locked: true });
-              });
-            }}
-            className="icon"
-            data-testid="UnlockIcon-header"
-          />
+          <Tooltip title={t("unlock_regions")}>
+            <UnlockIcon
+              onClick={() => {
+                regions.forEach(r => {
+                  onChangeRegion({ ...r, locked: true });
+                });
+              }}
+              className="icon"
+              data-testid="UnlockIcon-header"
+            />
+          </Tooltip>
         )    
       }
       visible={
           visible ? (
-            <VisibleIcon
-              onClick={() => {
-                regions.forEach(r => {
-                  onChangeRegion({ ...r, visible: false });
-                });
-              }}
-              className="icon"
-              data-testid="VisibleIcon-header"
-            />
+            <Tooltip title={t("show_regions")}>
+              <VisibleIcon
+                onClick={() => {
+                  regions.forEach(r => {
+                    onChangeRegion({ ...r, visible: false });
+                  });
+                }}
+                className="icon"
+                data-testid="VisibleIcon-header"
+              />
+            </Tooltip>
           ) : (
-            <VisibleOffIcon
-              onClick={() => {
-                regions.forEach(r => {
-                  onChangeRegion({ ...r, visible: true });
-                });
-              }}
-              className="icon"
-              data-testid="InvisibleIcon-header"
-            />
+            <Tooltip title={t("hide_regions")}>
+              <VisibleOffIcon
+                onClick={() => {
+                  regions.forEach(r => {
+                    onChangeRegion({ ...r, visible: true });
+                  });
+                }}
+                className="icon"
+                data-testid="InvisibleIcon-header"
+              />
+            </Tooltip>
           )
       }
     />
@@ -166,6 +178,7 @@ const Row = ({
   name,
   index,
 }) => {
+  const {t} = useTranslation();
   return (
     <RowLayout
       header={false}
@@ -175,48 +188,60 @@ const Row = ({
       name={<Chip text={name || cls || ""} color={color || "#ddd"} />}
       minimize={
         r.minimized ? (
-          <OpenInFullIcon
-            onClick={() => onChangeRegion({...r, minimized: false})}
-            className="icon2"
-            data-testid={`OpenInFullIcon-${r.id}`}
-          />
+          <Tooltip title={t("expand_selection")}>
+            <OpenInFullIcon
+              onClick={() => onChangeRegion({...r, minimized: false})}
+              className="icon2"
+              data-testid={`OpenInFullIcon-${r.id}`}
+            />
+          </Tooltip>
         ) : (
-          <CloseFullscreenIcon
-            onClick={() => onChangeRegion({...r, minimized: true})}
-            className="icon2"
-            data-testid={`CloseFullscreenIcon-${r.id}`}
-          />
+          <Tooltip title={t("collapse_selection")}>
+            <CloseFullscreenIcon
+              onClick={() => onChangeRegion({...r, minimized: true})}
+              className="icon2"
+              data-testid={`CloseFullscreenIcon-${r.id}`}
+            />
+          </Tooltip>
         )
       }
-      trash={<TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} />}
+      trash={<Tooltip title={t("delete_region")}><TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} /> </Tooltip>}
       lock={
         r.locked ? (
-          <LockIcon
-            onClick={() => onChangeRegion({...r, locked: false})}
-            className="icon2"
-            data-testid={`LockIcon-${r.id}`}
-          />
+          <Tooltip title={t("lock_region")}>
+            <LockIcon
+              onClick={() => onChangeRegion({...r, locked: false})}
+              className="icon2"
+              data-testid={`LockIcon-${r.id}`}
+            />
+          </Tooltip>
         ) : (
-          <UnlockIcon
-            onClick={() => onChangeRegion({...r, locked: true})}
-            className="icon2"
-            data-testid={`UnlockIcon-${r.id}`}
-          />
+          <Tooltip title={t("unlock_region")}>
+            <UnlockIcon
+              onClick={() => onChangeRegion({...r, locked: true})}
+              className="icon2"
+              data-testid={`UnlockIcon-${r.id}`}
+            />
+          </Tooltip>
         )
       }
       visible={
         r.visible || r.visible === undefined ? (
-          <VisibleIcon
-            onClick={() => onChangeRegion({...r, visible: false})}
-            className="icon2"
-            data-testid={`VisibleIcon-${r.id}`}
-          />
+          <Tooltip title={t("show_region")}>
+            <VisibleIcon
+              onClick={() => onChangeRegion({...r, visible: false})}
+              className="icon2"
+              data-testid={`VisibleIcon-${r.id}`}
+            />
+          </Tooltip>
         ) : (
-          <VisibleOffIcon
-            onClick={() => onChangeRegion({...r, visible: true})}
-            className="icon2"
-            data-testid={`InvisibleIcon-${r.id}`}
-          />
+          <Tooltip title={t("hide_region")}>
+            <VisibleOffIcon
+              onClick={() => onChangeRegion({...r, visible: true})}
+              className="icon2"
+              data-testid={`InvisibleIcon-${r.id}`}
+            />
+          </Tooltip>
         )
       }
     />
