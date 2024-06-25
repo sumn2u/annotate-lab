@@ -6,6 +6,7 @@
   "files": [
     "dist"
   ],
+  "license": "MIT",
   "main": "dist/react-image-annotate.js",
   "dependencies": {
     "@emotion/react": "^11.11.4",
