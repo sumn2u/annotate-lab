@@ -57,13 +57,15 @@ const mockRegions = [
   describe('WrappedRegionList Component', () => {
     it('renders without crashing', () => {
       const { container } = render(
-        <WrappedRegionList
-          regions={mockRegions}
-          iw={100}
-          ih={100}
-          keypointDefinitions={{}}
-          fullSegmentationMode={false}
-        />
+        <svg>
+          <WrappedRegionList
+            regions={mockRegions}
+            iw={100}
+            ih={100}
+            keypointDefinitions={{}}
+            fullSegmentationMode={false}
+          />
+        </svg>
       );
       expect(container).toBeInTheDocument();
     });
