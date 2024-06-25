@@ -52,12 +52,6 @@ describe("Header", () => {
     items.filter((item) => item.name !== "Download").forEach((item) => {
       // Adjust the label to match the actual rendered text content
       const expectedButtonText = `Mock Icon ${item.name === "Item1" ? 1 : 2} ${item.label}`;
-      
-      // Print out the roles and names for debugging
-      const buttons = screen.getAllByRole("button");
-      buttons.forEach((button) => {
-        console.log(`Role: ${button.getAttribute("role")}, Name: ${button.textContent}`);
-      });
 
       expect(screen.getByRole("button", { name: expectedButtonText })).toBeInTheDocument();
       expect(screen.getByText(item.label)).toBeInTheDocument();
