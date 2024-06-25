@@ -68,7 +68,7 @@ export const PointDistances = ({
                     ).toFixed(pointDistancePrecision) + "%"
                 }
                 return (
-                  <Fragment>
+                  <Fragment key={`${pr1}-${pr2}`}>
                     <path
                       d={`M${pr1.x + pr1.w / 2},${pr1.y + pr1.h / 2} L${
                         pr2.x + pr2.w / 2
