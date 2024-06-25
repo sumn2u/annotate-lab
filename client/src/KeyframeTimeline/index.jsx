@@ -1,6 +1,6 @@
 // @flow weak
 
-import React, {useEffect, useMemo, useState} from "react"
+import React, {Fragment, useEffect, useMemo, useState} from "react"
 import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
 import range from "lodash/range"
 import * as colors from "@mui/material/colors"
@@ -173,7 +173,7 @@ export default ({
     <ThemeProvider theme={theme}>
       <Container onMouseMove={onMouseMove} onMouseUp={onMouseUp} ref={ref}>
         {range(0, duration, majorInterval).map((a) => (
-          <>
+          <Fragment key={a}>
             <Tick
               key={a}
               style={{left: (a / duration) * bounds.width, height: "50%"}}
@@ -186,7 +186,7 @@ export default ({
             >
               {getTimeString(a)}
             </TickText>
-          </>
+          </Fragment>
         ))}
         {range(0, duration, minorInterval)
           .filter((a) => !Number.isInteger(a / majorInterval))
