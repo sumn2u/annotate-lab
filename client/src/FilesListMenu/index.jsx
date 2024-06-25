@@ -74,6 +74,10 @@ export const FilesListMenu = ({
   const handleCheckBoxClick = (image) => {
     onSelectFile(!image.selected)
   }
+  
+  const hasRegions = (imageIndex) => {
+    return allImages.length > 0 && allImages[imageIndex].regions.length > 0
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -89,7 +93,6 @@ export const FilesListMenu = ({
             className={classnames({ selected: image.name === selectedImage })}
             key = {index}
           >
-
           <Checkbox
             sx={{
               padding: 0, 
@@ -102,7 +105,7 @@ export const FilesListMenu = ({
             checked={image.selected}
             onClick={() => handleCheckBoxClick(image, index)}
             data-testid="checkbox"
-            disabled={selectedImage !== null && selectedImage !== index}
+            disabled={(selectedImage !== null && selectedImage !== index) || !hasRegions(index)}
           />
             <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
               <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }} onClick={() => {handleClickLabel(image.name)}}>
