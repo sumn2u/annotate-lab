@@ -29,7 +29,7 @@ const translationEnEN = {
   "region.no.name" : "Enter a Name",
   "setup.tabs.taskinfo": "Task Info",
   "setup.tabs.configure": "Configure",
-  "setup.tabs.image": "Image",
+  "setup.tabs.images": "Images",
   "setup.tabs.taskinfo.task_info": "Task Information",
   "setup.tabs.taskinfo.task_choice": "Choice of Task",
   "setup.tabs.taskinfo.task_choice_classification": "Image Classification",

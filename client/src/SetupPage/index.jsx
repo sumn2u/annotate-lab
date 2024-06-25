@@ -132,7 +132,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
             <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={handleTabChange}>
               <Tab icon={<CategoryIcon />} label={t("setup.tabs.taskinfo")} value="datatype" />
               <Tab disabled={!isTaskInfoComplete} icon={<BuildIcon />} label={t("setup.tabs.configure")} value="configure" />
-              <Tab disabled={!isConfigComplete} icon={<AddPhotoAlternateIcon />} label={t("setup.tabs.image")} value="image" />
+              <Tab disabled={!isConfigComplete} icon={<AddPhotoAlternateIcon />} label={t("setup.tabs.images")} value="images" />
             </Tabs>
           </Box>
             {currentTab === "datatype" && (
@@ -157,7 +157,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
                       <Box display="flex"  justifyContent="end" paddingBottom="6rem">
-                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
+                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("images")} disableElevation>
                             {t("btn.next")}
                         </Button>
                       </Box>
@@ -168,7 +168,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                     <>
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
                       <Box display="flex"  justifyContent="end" paddingBottom="6rem">
-                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("image")} disableElevation>
+                        <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("images")} disableElevation>
                             {t("btn.next")}
                         </Button>
                       </Box>
@@ -177,7 +177,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                   )}
                 </Container>
             )}
-            {currentTab === "image" && (
+            {currentTab === "images" && (
               <>
                <Box sx={{ padding: '2rem' }}>
                 <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>

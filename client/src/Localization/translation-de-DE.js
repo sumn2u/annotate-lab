@@ -28,7 +28,7 @@ const translationDeDE = {
   "region.no.name": "Namen eingeben",
   "setup.tabs.taskinfo": "Aufgabeninfo",
   "setup.tabs.configure": "Konfigurieren",
-  "setup.tabs.image": "Bild",
+  "setup.tabs.images": "Bilder",
   "setup.tabs.taskinfo.task_info": "Aufgabeninformation",
   "setup.tabs.taskinfo.task_choice": "Aufgabenwahl",
   "setup.tabs.taskinfo.task_choice_classification": "Bildklassifikation",
