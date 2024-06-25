@@ -60,7 +60,7 @@ describe('SetupPage', () => {
     // Check tabs
     expect(screen.getByText('setup.tabs.taskinfo')).toBeInTheDocument();
     expect(screen.getByText('setup.tabs.configure')).toBeInTheDocument();
-    expect(screen.getByText('setup.tabs.image')).toBeInTheDocument();
+    expect(screen.getByText('setup.tabs.images')).toBeInTheDocument();
 
     // Check default content (datatype tab)
     expect(screen.getByTestId('ConfigurationTask')).toBeInTheDocument();
