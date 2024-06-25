@@ -3,6 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { RegionSelectorSidebarBox } from "./index";
 
+// Mock the useTranslation hook
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: key => key }),
+}));
+
 describe("RegionSelectorSidebarBox", () => {
   const mockRegions = [
     {
