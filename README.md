@@ -14,8 +14,8 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 
 ![example](./sample_images/example.png)
 
-# Demo [V1.0]
-[![Annotate Lab](https://img.youtube.com/vi/gR17uHbfoU4/0.jpg)](https://www.youtube.com/watch?v=gR17uHbfoU4)
+# Demo [V2.0]
+[![Annotate Lab](https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg)](https://www.youtube.com/watch?v=iUI6MKWqCeg)
 
 
 <br/>
@@ -361,4 +361,4 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ## Acknowledgment
 
-This project uses some part of work from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate) and [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).
+This project is detached from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9) and uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master). 
