@@ -205,7 +205,11 @@ const Row = ({
           </Tooltip>
         )
       }
-      trash={<Tooltip title={t("delete_region")}><TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} /> </Tooltip>}
+      trash={
+        <Tooltip title={t("delete_region")}>
+          <TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} />
+        </Tooltip>
+      }
       lock={
         r.locked ? (
           <Tooltip title={t("lock_region")}>
