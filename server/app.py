@@ -564,13 +564,13 @@ def create_yolo_annotations(image_names, color_map=None):
                 
                 # Convert points to normalized YOLO format
                 if points:
-                    xmin = min(point[0] for point in points) / width
-                    ymin = min(point[1] for point in points) / height
-                    xmax = max(point[0] for point in points) / width
-                    ymax = max(point[1] for point in points) / height
+                    xmin = min(point[0] for point in points)
+                    ymin = min(point[1] for point in points)
+                    xmax = max(point[0] for point in points)
+                    ymax = max(point[1] for point in points)
                     
                     # YOLO format: class_index x_center y_center width height (all normalized)
-                    annotations.append(f"{class_name} {(xmin + xmax) / 2} {(ymin + ymax) / 2} {xmax - xmin} {ymax - ymin}")
+                    annotations.append(f"{class_name} {(xmin + xmax) / 2:.6f} {(ymin + ymax) / 2:.6f} {xmax - xmin:.6f} {ymax - ymin:.6f}")
 
         # Process box regions
         if boxRegions is not None:
@@ -591,19 +591,19 @@ def create_yolo_annotations(image_names, color_map=None):
             for index, region in circleRegions.iterrows():
                 class_name = region.get('class', 'unknown')
                 try:
-                    rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0]) * width
-                    ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0]) * height
-                    rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0]) * width
-                    rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0]) * height
+                    rx = float(region['rx'][1:-1]) * width if isinstance(region['rx'], str) else float(region['rx'][0])
+                    ry = float(region['ry'][1:-1]) * height if isinstance(region['ry'], str) else float(region['ry'][0])
+                    rw = float(region['rw'][1:-1]) * width if isinstance(region['rw'], str) else float(region['rw'][0])
+                    rh = float(region['rh'][1:-1]) * height if isinstance(region['rh'], str) else float(region['rh'][0])
                 except (ValueError, TypeError) as e:
                     raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
 
                 # For YOLO, if width and height are equal, it represents a circle
                 if rw == rh:
-                    annotations.append(f"{class_name} {rx} {ry} {rw} {rw}")  # Treat as circle
+                    annotations.append(f"{class_name} {rx:.6f} {ry:.6f} {rw:.6f} {rw:.6f}")  # Treat as circle
                 else:
                     # Treat as ellipse (YOLO does not directly support ellipse, so treat as box)
-                    annotations.append(f"{class_name} {rx + rw / 2} {ry + rh / 2} {rw} {rh}")
+                    annotations.append(f"{class_name} {rx + rw / 2:.6f} {ry + rh / 2:.6f} {rw:.6f} {rh:.6f}")
 
         # Append annotations for current image to all_annotations list
         all_annotations.extend(annotations)
