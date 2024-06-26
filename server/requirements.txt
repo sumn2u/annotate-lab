@@ -3,3 +3,4 @@ flask-cors
 pandas
 pillow
 requests
+cv2
