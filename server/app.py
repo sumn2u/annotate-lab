@@ -577,15 +577,14 @@ def create_yolo_annotations(image_names, color_map=None):
             for index, region in boxRegions.iterrows():
                 class_name = region.get('class', 'unknown')
                 try:
-                    x = float(region['x'][1:-1]) * width if isinstance(region['x'], str) else float(region['x'][0]) * width
-                    y = float(region['y'][1:-1]) * height if isinstance(region['y'], str) else float(region['y'][0]) * height
-                    w = float(region['w'][1:-1]) * width if isinstance(region['w'], str) else float(region['w'][0]) * width
-                    h = float(region['h'][1:-1]) * height if isinstance(region['h'], str) else float(region['h'][0]) * height
+                    x = float(region['x'][1:-1]) if isinstance(region['x'], str) else float(region['x'][0])
+                    y = float(region['y'][1:-1]) if isinstance(region['y'], str) else float(region['y'][0])
+                    w = float(region['w'][1:-1]) if isinstance(region['w'], str) else float(region['w'][0])
+                    h = float(region['h'][1:-1]) if isinstance(region['h'], str) else float(region['h'][0])
                 except (ValueError, TypeError) as e:
                     raise ValueError(f"Invalid format in region dimensions: {region}, Error: {e}")
-
                 # YOLO format: class_index x_center y_center width height (all normalized)
-                annotations.append(f"{class_name} {x + w / 2} {y + h / 2} {w} {h}")
+                annotations.append(f"{class_name} {x + w / 2:.6f} {y + h / 2:.6f} {w:.6f} {h:.6f}")
 
         # Process circle/ellipse regions
         if circleRegions is not None:
