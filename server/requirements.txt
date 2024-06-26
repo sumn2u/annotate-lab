@@ -1,4 +1,4 @@
-flask
+opencv-python
 flask-cors
 pandas
 pillow
