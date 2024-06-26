@@ -179,13 +179,13 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
             )}
             {currentTab === "images" && (
               <>
-               <Box sx={{ padding: '2rem' }}>
+               <Box sx={{ padding: '2rem' }} maxWidth={"600px"}>
                 <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>
                   {t("btn.upload_images")}
                 </Typography>
                 <ImageUpload onImageUpload={handleImageUpload} settingsImages={settings.images} />
               </Box>
-              <Box display="flex"  justifyContent="end">
+              <Box display="flex"  justifyContent="end" paddingBottom="6rem">
                 <Button variant="contained" disabled={!isImagesUploaded} onClick={showLab} disableElevation>
                   {t("btn.open_lab")}
                 </Button>
