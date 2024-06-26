@@ -340,10 +340,22 @@ Sample of annotated image along with its mask and settings is show below.
 }
 
 ```
-YOLO Format
+### YOLO Format 
+
+YOLO format is also supported by A.Lab. Below is an example of annotated ripe and unripe tomatoes. In this example, `0` represents ripe tomatoes and `1` represents unripe ones.
+
+![yolo_annotation_example](./sample_images/yolo_annotation_example.png)
+
+The label of the above image are as follows:
 ```
-Orange 0.0015012463401089847 0.0018903253731438908 0.0016967868433852144 0.0026982117835804955
+0 0.213673 0.474717 0.310212 0.498856
+0 0.554777 0.540507 0.306350 0.433638
+1 0.378432 0.681239 0.223970 0.268879
 ```
+
+Applying the generated labels we get following results.
+
+![yolo_with_generated_labels](./sample_images/yolo_applied_annotation.jpg)
 
 ## Troubleshooting [[documentation page]](https://annotate-docs.dwaste.live/troubleshooting)
 
