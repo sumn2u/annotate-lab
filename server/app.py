@@ -617,40 +617,45 @@ def create_yolo_annotations(image_names, color_map=None):
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def download_yolo_annotations():
     data = request.get_json()
-    image_names = data.get('image_names')
+    image_names = data.get('image_names', [])
 
     if not image_names:
         return jsonify({'error': "Invalid JSON data format: 'image_names' not found."}), 400
 
-    temp_file = None
+    temp_dir = tempfile.mkdtemp()
+    zip_filename = 'yolo_annotations.zip'
+    zip_file_path = os.path.join(temp_dir, zip_filename)
 
     try:
-        annotations = create_yolo_annotations(image_names)
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            for image_name in image_names:
+                annotations = create_yolo_annotations([image_name])
 
-        print(f"Annotations: {annotations}")
-        # Create a temporary text file with YOLO annotations
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
-
-        print(f"Temp file: {temp_file}")
-        with open(temp_file.name, 'w') as f:
-            for annotation in annotations:
-                f.write(annotation + "\n")
-            
-        # Set a meaningful download name
-        download_name = 'yolo_annotations.txt'
-            
-        return send_file(temp_file.name, as_attachment=True, download_name=download_name), 200
+                # Create a temporary text file with YOLO annotations for each image
+                annotation_filename = os.path.splitext(image_name)[0] + '.txt'
+                annotation_path = os.path.join(temp_dir, annotation_filename)
+                
+                with open(annotation_path, 'w') as f:
+                    for annotation in annotations:
+                        f.write(annotation + "\n")
+                
+                zipf.write(annotation_path, arcname=annotation_filename)
         
+        return send_file(zip_file_path, mimetype='application/zip', as_attachment=True, download_name=zip_filename)
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
-        if temp_file and os.path.exists(temp_file.name):
-            try:
-                os.remove(temp_file.name)
-            except OSError as e:
-                print(f"Error deleting temporary file: {e}")
+        try:
+            if temp_dir:
+                for file in os.listdir(temp_dir):
+                    file_path = os.path.join(temp_dir, file)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                os.rmdir(temp_dir)
+        except Exception as e:
+            print(f"Error cleaning up temporary directory: {e}")
 
 @app.route('/imagesInfo', methods=['GET'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
