@@ -17,7 +17,7 @@ import config from "../../config.js";
 const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled, selectedImages}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const getImageNames = () => { 
-    return selectedImages.map(image => image.src.split('/').pop())
+    return selectedImages.map(image => decodeURIComponent(image.src.split('/').pop()))
   }
   const { showSnackbar } = useSnackbar();
   const {t} = useTranslation();

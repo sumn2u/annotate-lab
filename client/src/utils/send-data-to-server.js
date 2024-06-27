@@ -3,8 +3,8 @@ import config from '../config.js'
 
 export const getImageData = (activeImage) => {
   let imageData = {}
-  imageData['src'] = activeImage.src
-  imageData['name'] = activeImage.name
+  imageData['src'] = decodeURIComponent(activeImage.src)
+  imageData['name'] = decodeURIComponent(activeImage.name)
   imageData['cls'] = activeImage.selectedClsList || []
   imageData['comment'] = activeImage.comment || ""
 
