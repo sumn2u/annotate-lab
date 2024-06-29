@@ -1,39 +1,43 @@
 import { createContext, useState, useContext } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-
+import { Box } from '@mui/material';
 
 const SnackbarContext = createContext({
-  open: false,
-  message: '',
-  severity: 'info',
-  handleClose: () => {},
+  showSnackbar: () => {},
 });
 
 export const SnackbarProvider = ({ children }) => {
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [severity, setSeverity] = useState('info');
+  const [messages, setMessages] = useState([]);
 
-  const handleClose = () => {
-    setOpen(false);
+  const showSnackbar = (message, severity = 'info') => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { id: new Date().getTime(), message, severity },
+    ]);
   };
 
-  const showSnackbar = (message, newSeverity = 'info') => {
-    setMessage(message);
-    setSeverity(newSeverity);
-    setOpen(true);
+  const handleClose = (index) => {
+    setMessages((prevMessages) => prevMessages.filter((msg, idx) => idx !== index));
   };
 
   return (
-    <SnackbarContext.Provider
-      value={{ open, message, severity, handleClose, showSnackbar }}
-    >
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
+    <SnackbarContext.Provider value={{ showSnackbar }}>
+      <Box sx={{ position: 'fixed', bottom: 16, left: 16 }}>
+        {messages.map((msg, index) => (
+          <Snackbar
+            key={msg.id+index}
+            open
+            autoHideDuration={6000}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            sx={{ mb: index * 8 }}
+          >
+            <Alert onClose={() => handleClose(index)} severity={msg.severity}>
+              {msg.message}
+            </Alert>
+          </Snackbar>
+        ))}
+      </Box>
       {children}
     </SnackbarContext.Provider>
   );

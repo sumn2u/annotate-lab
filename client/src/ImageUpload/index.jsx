@@ -81,23 +81,36 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
     }
   };
 
-  const deleteImage = async (filename) => {
+  const deleteImage = async (filename, isNotFound = false) => {
     try {
-      const response = await axios.delete(`${config.SERVER_URL}/uploads/${filename}`);
-      showSnackbar(response.data.message, 'success');
-
-      // Update the state to remove the deleted image
-      const updatedImages = images.filter((image) => image.filename !== filename);
-      setImages(updatedImages);
-      onImageUpload(updatedImages);
-    } catch (error) {
-      if (error?.response?.data) {
-        showSnackbar(error.response.data.message, 'error');
-      } else {
-        showSnackbar(t("error.server_connection"), 'error');
+        if (isNotFound) {
+          const updatedImages = images.filter((image) => image.filename !== filename);
+          setImages(updatedImages);
+          onImageUpload(updatedImages);
+        } else {
+          const response = await axios.delete(`${config.SERVER_URL}/uploads/${filename}`);
+          showSnackbar(response.data.message, 'success');
+          
+          // Update the state to remove the deleted image
+          const updatedImages = images.filter((image) => image.filename !== filename);
+          setImages(updatedImages);
+          onImageUpload(updatedImages);
+        }
+      } catch (error) {
+        if (error?.response?.data) {
+          showSnackbar(error.response.data.message, 'error');
+        } else {
+          showSnackbar(t("error.server_connection"), 'error');
+        }
+        console.error('Error deleting image:', error);
       }
-      console.error('Error deleting image:', error);
-    }
+  };
+
+  const handleImageError = (index) => {
+    const updatedImages = [...images];
+    updatedImages[index].isNotFound = true;
+    setImages(updatedImages);
+    showSnackbar(t("error.image_not_found"), 'error');
   };
 
   const handleRemoveImage = (index) => {
@@ -110,7 +123,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
       }
     }
     if (imageToRemove && imageToRemove.filename) {
-      deleteImage(imageToRemove.filename);
+      deleteImage(imageToRemove.filename, imageToRemove.isNotFound);
     } else {
       console.error('Error deleting image: imageToRemove or imageToRemove.filename is undefined');
     }
@@ -178,6 +191,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
             <img
               src={image.preview || image.src}
               alt="preview"
+              onError={() => handleImageError(index)}
               style={{
                 width: '100px',
                 height: '100px',
