@@ -342,7 +342,7 @@ Sample of annotated image along with its mask and settings is show below.
 ```
 ### YOLO Format 
 
-YOLO format is also supported by A.Lab. Below is an example of annotated ripe and unripe tomatoes. In this example, `0` represents ripe tomatoes and `1` represents unripe ones.
+YOLO format is also supported by A.Lab. Below is an example of annotated ripe and unripe tomatoes.The entire dataset can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). In this example, `0` represents ripe tomatoes and `1` represents unripe ones.
 
 ![yolo_annotation_example](./sample_images/yolo_annotation_example.png)
 
