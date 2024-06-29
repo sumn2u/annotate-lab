@@ -98,7 +98,11 @@ def upload_file():
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    else:
+        return jsonify({"status": "error", "message": "File not found"}), 404
 
 @app.route('/uploads/<filename>', methods=['DELETE'])
 def delete_file(filename):
@@ -697,6 +701,11 @@ def get_images_info():
     except Exception as e:
         print('Error:', e)
         return jsonify({'error': str(e)}), 500
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({"status": "error", "message": "Resource not found"}), 404
+
 
 @app.route('/', methods=['GET'])
 def main():
