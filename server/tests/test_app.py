@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 # import os
 import json
 from io import BytesIO
@@ -42,6 +43,14 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'configuration', response.data)
 
+    def test_uploaded_file_not_found(self):
+        with patch('os.path.exists') as mock_exists:
+            mock_exists.return_value = False
+            response = self.app.get('/uploads/example.png')
+            self.assertEqual(response.status_code, 404)
+            data = response.get_json()
+            self.assertEqual(data['status'], 'error')
+            self.assertEqual(data['message'], 'File not found')
     
     # def test_save_annotate_info_success(self):
     #     annotate_data = {
