@@ -78,7 +78,8 @@ const translationDeDE = {
   "hide_region": "Region ausblenden",
   "show_region": "Region anzeigen",
   "expand_selection": "Auswahl erweitern",
-  "collapse_selection": "Auswahl verkleinern"
+  "collapse_selection": "Auswahl verkleinern",
+  "error.image_not_found": "Bild nicht gefunden",
 };
 
 export default translationDeDE;

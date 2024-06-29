@@ -80,6 +80,7 @@ const translationEnEN = {
   "show_region": "Show region",
   "expand_selection": "Expand selection",
   "collapse_selection": "Collapse selection",
+  "error.image_not_found": "Image not found",
 };
 
 export default translationEnEN;
