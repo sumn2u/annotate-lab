@@ -188,7 +188,10 @@ export const MainLayout = ({
   )
 
   const onClickIconSidebarItem = useEventCallback((item) => {
-    dispatch({ type: "SELECT_TOOL", selectedTool: item.name })
+    const { selectedTool }  = state
+    if(selectedTool.length > 0 && item.name !== null){
+      dispatch({ type: "SELECT_TOOL", selectedTool: item.name })
+    }
   })
 
   const onClickHeaderItem = useEventCallback((item) => {

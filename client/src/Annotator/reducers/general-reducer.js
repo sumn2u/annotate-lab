@@ -808,6 +808,9 @@ export default (state, action) => {
           return state
       }
     }
+    case "DISABLE_SELECT_TOOL": {
+      return state.setIn(["selectedTool"], action.selectedTool);
+    }
     case "OPEN_REGION_EDITOR": {
       const regionIndex = getRegionIndex(action.region)
       if (regionIndex === null) return state

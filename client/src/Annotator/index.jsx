@@ -175,6 +175,16 @@ export const Annotator = ({
 
   useEffect(() => {
     if (selectedImage === undefined) return
+
+    const { multipleRegionLabels, multipleRegions } = settings?.configuration || {};
+    const hasSingleRegion = state.images?.[selectedImage]?.regions?.length === 1;
+    const disableSelection = (hasSingleRegion && !multipleRegionLabels) ||  (hasSingleRegion && !multipleRegions);
+
+    dispatchToReducer({
+      type: "DISABLE_SELECT_TOOL",
+      selectedTool: disableSelection ? [] : selectedTool
+    })
+   
     dispatchToReducer({
       type: "SELECT_IMAGE",
       imageIndex: selectedImage,
