@@ -4,6 +4,8 @@ import Box from "@mui/material/Box"
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import DownloadButton from "../DownloadButton"
 import { useTranslation } from "react-i18next"
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 const theme = createTheme()
 
 const Container = styled("div")(({ theme }) => ({
@@ -16,12 +18,12 @@ const Container = styled("div")(({ theme }) => ({
   boxSizing: "border-box",
 }))
 
-const BrandText = styled(Box)(({ theme }) => ({
-  fontSize: "1.5rem",
+const BrandText = styled(Box)(({ theme, isSmallDevice }) => ({
+  fontSize: isSmallDevice ? "1rem" : "1.5rem",
   marginLeft: "1rem",
   display: "flex",
   alignItems: "center",
-}))
+}));
 
 export const Header = ({
   leftSideContent = null,
@@ -34,15 +36,16 @@ export const Header = ({
 }) => {
 
   const{ t } = useTranslation()
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const downloadMenu = items.find((item) => item.name === "Download")
   const isDownloadDisabled= (downloadMenu && downloadMenu.disabled) || (selectedImages && selectedImages.length <= 0)
   return (
     <ThemeProvider theme={theme}>
       <Container data-testid="header">
-      <BrandText flexGrow={1}>
+        <BrandText flexGrow={1} isSmallDevice={isSmallDevice}>
           {t("labname")}
         </BrandText>
-        <Box flexGrow={1}>{leftSideContent}</Box>
+        {!isSmallDevice && <Box flexGrow={1}>{leftSideContent}</Box>}
         {downloadMenu && <DownloadButton selectedImageName={selectedImageName} classList={classList} hideHeaderText={hideHeaderText} 
                 onDownload={onClickItem} disabled={isDownloadDisabled} selectedImages={selectedImages}
                 />

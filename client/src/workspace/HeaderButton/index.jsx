@@ -6,6 +6,7 @@ import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import { useIconDictionary } from "../icon-dictionary.js"
 import { iconMapping } from "../icon-mapping.js"
 import { colors } from "@mui/material"
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const theme = createTheme()
 const defaultNameIconMapping = iconMapping
@@ -18,9 +19,10 @@ const getIcon = (name, customIconMapping) => {
   return <Icon />
 }
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme, isSmallDevice }) => ({
   textTransform: "none",
-  width: 60,
+  width: isSmallDevice ? 30:  60,
+  minWidth: isSmallDevice ? 32:  64,
   paddingTop: 8,
   paddingBottom: 4,
   marginLeft: 1,
@@ -58,14 +60,16 @@ export const HeaderButton = ({
   hideText = false,
 }) => {
   const customIconMapping = useIconDictionary()
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <ThemeProvider theme={theme}>
-      <StyledButton onClick={onClick} disabled={disabled}>
+      <StyledButton onClick={onClick} disabled={disabled} isSmallDevice={isSmallDevice}>
         <ButtonInnerContent>
           <IconContainer textHidden={hideText} disabled={disabled}>
             {icon || getIcon(name, customIconMapping)}
           </IconContainer>
-          {!hideText && (
+          {!hideText && !isSmallDevice && (
             <Text disabled={disabled}>
               <div>{label}</div>
             </Text>
