@@ -81,6 +81,7 @@ const translationEnEN = {
   "expand_selection": "Expand selection",
   "collapse_selection": "Collapse selection",
   "error.image_not_found": "Image not found",
+  "info": "Info",
 };
 
 export default translationEnEN;

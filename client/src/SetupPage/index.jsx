@@ -137,13 +137,13 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
           </Box>
             {currentTab === "datatype" && (
                <Box minWidth="35vw" paddingTop={"2rem"}>
-                  <ConfigurationTask config={settings} onChange={updateTaskInfo} />
+                  <ConfigurationTask config={settings} onChange={updateTaskInfo} />  
                   <NoteSection 
                   icon={Info} 
                   text={t("more_info")} 
                   link={config.DOCS_URL} 
                 />
-                  <Box display="flex" paddingTop="5rem" justifyContent="end">
+                  <Box display="flex" paddingTop="5rem" justifyContent="end" marginRight={"0.5rem"}>
                         <Button variant="contained" disabled={settings.taskDescription.trim().length <= 0} onClick={() => setTab("configure")} disableElevation>
                             {t("btn.next")}
                         </Button>
@@ -156,7 +156,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                   {settings.taskChoice === "image_classification" && (
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="end" paddingBottom="6rem">
+                      <Box display="flex"  justifyContent="end" paddingBottom="6rem" marginRight={"0.5rem"}>
                         <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("images")} disableElevation>
                             {t("btn.next")}
                         </Button>
@@ -167,7 +167,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                   {settings.taskChoice === "image_segmentation" && (
                     <>
                       <ConfigureImageSegmentation config={settings.configuration} onChange={updateConfiguration} />
-                      <Box display="flex"  justifyContent="end" paddingBottom="6rem">
+                      <Box display="flex"  justifyContent="end" paddingBottom="6rem" marginRight={"0.5rem"}>
                         <Button variant="contained" disabled={!hasConfig} onClick={() => setTab("images")} disableElevation>
                             {t("btn.next")}
                         </Button>
@@ -185,7 +185,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                 </Typography>
                 <ImageUpload onImageUpload={handleImageUpload} settingsImages={settings.images} />
               </Box>
-              <Box display="flex"  justifyContent="end" paddingBottom="6rem">
+              <Box display="flex"  justifyContent="end" paddingBottom="6rem" marginRight={"0.5rem"}>
                 <Button variant="contained" disabled={!isImagesUploaded} onClick={showLab} disableElevation>
                   {t("btn.open_lab")}
                 </Button>
