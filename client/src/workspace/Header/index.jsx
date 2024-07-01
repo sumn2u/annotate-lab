@@ -18,8 +18,8 @@ const Container = styled("div")(({ theme }) => ({
   boxSizing: "border-box",
 }))
 
-const BrandText = styled(Box)(({ theme, isSmallDevice }) => ({
-  fontSize: isSmallDevice ? "1rem" : "1.5rem",
+const BrandText = styled(Box)(({ theme }) => ({
+  fontSize: useMediaQuery(theme.breakpoints.down('sm')) ? "1rem" : "1.5rem",
   marginLeft: "1rem",
   display: "flex",
   alignItems: "center",
@@ -42,7 +42,7 @@ export const Header = ({
   return (
     <ThemeProvider theme={theme}>
       <Container data-testid="header">
-        <BrandText flexGrow={1} isSmallDevice={isSmallDevice}>
+        <BrandText flexGrow={1} >
           {t("labname")}
         </BrandText>
         {!isSmallDevice && <Box flexGrow={1}>{leftSideContent}</Box>}
