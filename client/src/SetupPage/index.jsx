@@ -106,6 +106,15 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   }, []);
 
   useEffect(() => {
+    const hasLabels = configuration.labels.length > 0;
+    if(hasLabels) {
+      const newSettings = {...settings, showLab: true}
+      settingsConfig.changeSetting('settings',newSettings);
+      showAnnotationLab()
+    }
+  }, [setShowLabel]);
+
+  useEffect(() => {
     const { labels } = configuration
     if (labels.length > 0) {
       setHasConfig(true)
@@ -116,7 +125,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     const hasLabels = configuration.labels.length > 0;
     setShowLabel(hasLabels)
     if(hasLabels) {
-      settingsConfig.changeSetting('settings',settings);
+      const newSettings = {...settings, showLab: true}
+      settingsConfig.changeSetting('settings',newSettings);
       showAnnotationLab()
     }
   }
