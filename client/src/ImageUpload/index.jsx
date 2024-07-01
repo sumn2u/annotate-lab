@@ -4,11 +4,11 @@ import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
 import config from '../config.js';
 
 const ImageUpload = ({ onImageUpload, settingsImages }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const { showSnackbar } = useSnackbar();
   const [images, setImages] = useState(settingsImages);
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
         onUploadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
           let percentCompleted = Math.floor((loaded * 100) / total);
-          setProgress(percentCompleted)
+          setProgress(percentCompleted);
         }
       });
       showSnackbar(response.data.message, 'success');
@@ -68,42 +68,41 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
       setImages(uploadedImages);
       onImageUpload(uploadedImages);
     } catch (error) {
-      const errorResponse = error?.response?.data
+      const errorResponse = error?.response?.data;
       if (errorResponse) {
         showSnackbar(errorResponse?.message, 'error');
-      }else {
-        showSnackbar(t("error.server_connection"), 'error')
+      } else {
+        showSnackbar(t("error.server_connection"), 'error');
       }
       console.error('Error uploading images:', error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
 
   const deleteImage = async (filename, isNotFound = false) => {
     try {
-        if (isNotFound) {
-          const updatedImages = images.filter((image) => image.filename !== filename);
-          setImages(updatedImages);
-          onImageUpload(updatedImages);
-        } else {
-          const response = await axios.delete(`${config.SERVER_URL}/uploads/${filename}`);
-          showSnackbar(response.data.message, 'success');
-          
-          // Update the state to remove the deleted image
-          const updatedImages = images.filter((image) => image.filename !== filename);
-          setImages(updatedImages);
-          onImageUpload(updatedImages);
-        }
-      } catch (error) {
-        if (error?.response?.data) {
-          showSnackbar(error.response.data.message, 'error');
-        } else {
-          showSnackbar(t("error.server_connection"), 'error');
-        }
-        console.error('Error deleting image:', error);
+      if (isNotFound) {
+        const updatedImages = images.filter((image) => image.filename !== filename);
+        setImages(updatedImages);
+        onImageUpload(updatedImages);
+      } else {
+        const response = await axios.delete(`${config.SERVER_URL}/uploads/${filename}`);
+        showSnackbar(response.data.message, 'success');
+
+        // Update the state to remove the deleted image
+        const updatedImages = images.filter((image) => image.filename !== filename);
+        setImages(updatedImages);
+        onImageUpload(updatedImages);
       }
+    } catch (error) {
+      if (error?.response?.data) {
+        showSnackbar(error.response.data.message, 'error');
+      } else {
+        showSnackbar(t("error.server_connection"), 'error');
+      }
+      console.error('Error deleting image:', error);
+    }
   };
 
   const handleImageError = (index) => {
@@ -146,37 +145,37 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           textAlign: 'center',
           cursor: 'pointer',
           marginBottom: '1rem',
-          height: '250px', // Increase height
-          width: '400px',  // Increase width
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexDirection: 'column',
           borderRadius: '4px',
+          minHeight: '200px',
+          width: 'auto',
         }}
       >
-        <input {...getInputProps()}  data-testid="file-input"/>
+        <input {...getInputProps()} data-testid="file-input" />
         {isDragActive ? (
-          <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.file_drop")}</Typography>
+          <Typography sx={{ fontSize: "14px", color: "rgb(117, 117, 117)" }}>{t("configuration.image_upload.file_drop")}</Typography>
         ) : (
           <>
-          {loading ? (
-            <>
-              {progress > 0 && progress < 100 ? (
-                <>
-                  <progress value={progress} max={100} />
-                  <p>{progress}%</p>
-                </>
-              ) : (
-                <div className="loading">{t("loading")}</div>
-              )}
-            </>
-          ) : (
-            <Typography sx={{fontSize: "14px", color: "rgb(117, 117, 117)" }}>
-              {t("configuration.image_upload.description")} {config.UPLOAD_LIMIT}
-            </Typography>
-          )}
-        </>
+            {loading ? (
+              <>
+                {progress > 0 && progress < 100 ? (
+                  <>
+                    <progress value={progress} max={100} />
+                    <p>{progress}%</p>
+                  </>
+                ) : (
+                  <div className="loading">{t("loading")}</div>
+                )}
+              </>
+            ) : (
+              <Typography sx={{ fontSize: "14px", color: "rgb(117, 117, 117)" }}>
+                {t("configuration.image_upload.description")} {config.UPLOAD_LIMIT}
+              </Typography>
+            )}
+          </>
         )}
       </Box>
       <Box display="flex" flexWrap="wrap" gap="1rem">

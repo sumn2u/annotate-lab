@@ -80,6 +80,7 @@ const translationDeDE = {
   "expand_selection": "Auswahl erweitern",
   "collapse_selection": "Auswahl verkleinern",
   "error.image_not_found": "Bild nicht gefunden",
+  "info": "Die Info"
 };
 
 export default translationDeDE;
