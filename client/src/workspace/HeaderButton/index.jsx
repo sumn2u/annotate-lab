@@ -19,10 +19,10 @@ const getIcon = (name, customIconMapping) => {
   return <Icon />
 }
 
-const StyledButton = styled(Button)(({ theme, isSmallDevice }) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
   textTransform: "none",
-  width: isSmallDevice ? 30:  60,
-  minWidth: isSmallDevice ? 32:  64,
+  width: useMediaQuery(theme.breakpoints.down('sm')) ? 30:  60,
+  minWidth: useMediaQuery(theme.breakpoints.down('sm')) ? 32:  64,
   paddingTop: 8,
   paddingBottom: 4,
   marginLeft: 1,
@@ -64,7 +64,7 @@ export const HeaderButton = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <StyledButton onClick={onClick} disabled={disabled} isSmallDevice={isSmallDevice}>
+      <StyledButton onClick={onClick} disabled={disabled}>
         <ButtonInnerContent>
           <IconContainer textHidden={hideText} disabled={disabled}>
             {icon || getIcon(name, customIconMapping)}
