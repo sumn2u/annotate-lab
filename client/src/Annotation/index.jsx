@@ -57,7 +57,7 @@ export default () => {
     taskDescription: "",
     taskChoice: "image_classification",
     images: [],
-    dataTask: null,
+    showLab: false,
     configuration: {
       labels: [],
       multipleRegions: true,
@@ -150,6 +150,10 @@ export default () => {
           fetchImages(settings.images);
         }
      }
+     const showLab = settingsConfig.settings.showLab || false;
+     if(!isSettingsOpen && showLab) {
+      setShowLabel(showLab)
+     } 
   }
   
   const showAnnotationLab = () => {

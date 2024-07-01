@@ -11,7 +11,7 @@ const defaultSettings = {
     taskDescription: "",
     taskChoice: "image_classification",
     images: [],
-    dataTask: null,
+    showLab: false,
     configuration: {
       labels: [],
       multipleRegions: true,

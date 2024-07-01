@@ -45,7 +45,7 @@ describe('FilesListMenu', () => {
                 "processed": false
             }
         ],
-        "dataTask": null,
+        "showLab": false,
         "configuration": {
             "labels": [
                 {
@@ -108,7 +108,7 @@ describe('FilesListMenu', () => {
                             "processed": false
                         }
                     ],
-                    "dataTask": null,
+                    "showLab": false,
                     "configuration": {
                         "labels": [
                             {
@@ -256,7 +256,7 @@ describe('FilesListMenu', () => {
                             "processed": false
                         }
                     ],
-                    "dataTask": null,
+                    "showLab": false,
                     "configuration": {
                         "labels": [
                             {
@@ -382,7 +382,7 @@ describe('FilesListMenu', () => {
                             "processed": false
                         }
                     ],
-                    "dataTask": null,
+                    "showLab": false,
                     "configuration": {
                         "labels": [
                             {
@@ -508,7 +508,7 @@ describe('FilesListMenu', () => {
                             "processed": false
                         }
                     ],
-                    "dataTask": null,
+                    "showLab": false,
                     "configuration": {
                         "labels": [
                             {
@@ -633,7 +633,7 @@ describe('FilesListMenu', () => {
                             "processed": false
                         }
                     ],
-                    "dataTask": null,
+                    "showLab": false,
                     "configuration": {
                         "labels": [
                             {
