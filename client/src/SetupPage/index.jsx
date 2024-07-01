@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { styled } from "@mui/material/styles";
+import { createTheme, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -20,7 +20,10 @@ import { useSettings } from "../SettingsProvider";
 import { useTranslation } from "react-i18next"
 import { Info } from '@mui/icons-material';
 import NoteSection from "../NoteSection";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import config from '../config.js';
+
+const theme = createTheme()
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -56,6 +59,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   const [currentTab, setTab] = useState(false);
   const [hasConfig, setHasConfig] = useState(false);
   const settingsConfig = useSettings()
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   const updateConfiguration = (newConfig) => {
     const {labels, regionTypesAllowed, multipleRegionLabels, multipleRegions} = newConfig
@@ -126,7 +130,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   const isImagesUploaded = settings.images.length > 0;
 
   return (
-    <Box display="flex"  justifyContent="center"  minHeight="100vh" marginTop={"5rem"}>
+    <Box display="flex"  justifyContent="center"  minHeight="100vh" marginTop={isSmallDevice ? "": "5rem"}>
         <Box>
           <Box paddingBottom="0px">
             <Tabs sx={{ borderBottom: 1, borderColor: 'divider' }} value={currentTab} onChange={handleTabChange}>
