@@ -1,11 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { createTheme } from "@mui/material/styles";
 import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
 import { useTranslation } from "react-i18next";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import config from '../config.js';
+
+const theme = createTheme()
 
 const ImageUpload = ({ onImageUpload, settingsImages }) => {
   const { t } = useTranslation();
@@ -13,6 +17,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
   const [images, setImages] = useState(settingsImages);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
 
   const onDrop = useCallback((acceptedFiles, fileRejections) => {
     if (fileRejections.length) {
@@ -151,7 +156,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           flexDirection: 'column',
           borderRadius: '4px',
           minHeight: '200px',
-          width: 'auto',
+          width: isSmallDevice ? 'auto': '400px'
         }}
       >
         <input {...getInputProps()} data-testid="file-input" />
