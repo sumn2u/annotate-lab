@@ -1,7 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { Box } from '@mui/material';
 
 const SnackbarContext = createContext({
   showSnackbar: () => {},
@@ -23,21 +22,19 @@ export const SnackbarProvider = ({ children }) => {
 
   return (
     <SnackbarContext.Provider value={{ showSnackbar }}>
-      <Box sx={{ position: 'fixed', bottom: 16, left: 16 }}>
-        {messages.map((msg, index) => (
-          <Snackbar
-            key={msg.id+index}
-            open
-            autoHideDuration={6000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            sx={{ mb: index * 8 }}
-          >
-            <Alert onClose={() => handleClose(index)} severity={msg.severity}>
-              {msg.message}
-            </Alert>
-          </Snackbar>
-        ))}
-      </Box>
+      {messages.map((msg, index) => (
+        <Snackbar
+          key={msg.id+index}
+          open
+          autoHideDuration={6000}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          sx={{ mb: index * 8 }}
+        >
+          <Alert onClose={() => handleClose(index)} severity={msg.severity}>
+            {msg.message}
+          </Alert>
+        </Snackbar>
+      ))}
       {children}
     </SnackbarContext.Provider>
   );
