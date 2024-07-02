@@ -12,6 +12,7 @@ import traceback
 import tempfile
 import shutil
 import zipfile
+import math
 
 app = Flask(__name__)
 app.config.from_object("config")
@@ -411,7 +412,102 @@ def download_image_with_annotations():
             except Exception as cleanup_error:
                 print(f"Error cleaning up temporary directory: {cleanup_error}")
 
+def convert_nan(value):
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    elif isinstance(value, str) and value.lower() == 'nan':
+        return None
+    else:
+        return value
 
+def hex_to_rgb_tuple(hex_color):
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+def convert_bbox_points_to_hwxy(points):
+    x = points[0][0]
+    y = points[0][1]
+    w = points[1][0] - points[0][0]
+    h = points[3][1] - points[0][1]
+    return h, w, x, y
+
+def map_region_keys(region):
+    mapped_region = {}
+    mapped_region["type"] = "box"
+    print(f"Region: {region}")
+    for key, value in region.items():
+        if key == "class":
+            mapped_region["cls"] = convert_nan(value)
+        elif key == "region-id":
+            mapped_region["id"] = convert_nan(value)
+        elif key.startswith("r") and len(key) == 2 and key[1] in ["h", "w", "x", "y"]:
+            mapped_region[key[1:]] = float(value[1:-1]) if isinstance(value, str) and value.startswith("[") and value.endswith("]") else convert_nan(value)
+        
+        elif key == "points":  # Assuming regions with 4 points are bounding boxes
+            mapped_region["points"] = [[float(p[0]), float(p[1])] for p in value]
+
+        elif key == "color":
+            mapped_region['color'] = hex_to_rgb_tuple(value)
+        else:
+            mapped_region[key] = convert_nan(value)
+    
+    if all(k in region for k in ["rh", "rw", "rx", "ry"]):
+        mapped_region["type"] = "circle"
+    return mapped_region
+
+    
+@app.route('/get_image_annotations', methods=['POST'])
+@cross_origin(origin='*', headers=['Content-Type'])
+def get_image_annotations():
+    try:
+        data = request.get_json()
+        image_names = data.get('image_names', [])
+        if not image_names:
+            raise ValueError("Invalid JSON data format: 'image_names' not found.")
+
+        image_annotations = []
+
+        for image_name in image_names:
+            json_bytes, download_filename = create_json_response(image_name)
+            json_str = json_bytes.getvalue().decode('utf-8')
+            # print(f"JSON String: {json_str}")  # Debug: Print JSON string
+            images = json.loads(json_str).get("configuration", [])
+
+            for image_info in images:
+                regions = image_info.get("regions", [])
+                if not regions:
+                    continue
+
+                region = regions[0]
+                image_url = region.get("image-src")
+                if "127.0.0.1:5001" in image_url:
+                    image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+
+                # Handle NaN values in regions
+                cleaned_regions = cleaned_regions = [map_region_keys(region) for region in regions]
+
+                image_annotations.append({
+                    "image_name": image_info.get("image-name"),
+                    "image_source": image_url,
+                    "regions": cleaned_regions
+                })
+
+        print(f"Image Annotations: {image_annotations}")
+        return jsonify(image_annotations), 200
+
+    except ValueError as ve:
+        print('ValueError:', ve)
+        traceback.print_exc()
+        return jsonify({'error': str(ve)}), 400
+    except requests.exceptions.RequestException as re:
+        print('RequestException:', re)
+        traceback.print_exc()
+        return jsonify({'error': 'Error fetching image from URL'}), 500
+    except Exception as e:
+        print('General error:', e)
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+    
 @app.route('/download_image_mask', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def download_image_mask():
