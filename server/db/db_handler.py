@@ -64,7 +64,6 @@ class Module:
         tags = data.get('tags')
         if tags is None:
             tags = []
-        print(f"Tags: {tags}")
         regionData['tags'] = ';'.join(tags)
 
         regionFunction = regionType(type)
