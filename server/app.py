@@ -427,29 +427,30 @@ def hex_to_rgb_tuple(hex_color):
 
 def map_region_keys(region):
     mapped_region = {}
-    print(f"Region: {region}")
     for key, value in region.items():
         if key == "class":
             mapped_region["cls"] = convert_nan(value)
         elif key == "region-id":
             mapped_region["id"] = convert_nan(value)
         elif key.startswith("r") and len(key) == 2 and key[1] in ["h", "w", "x", "y"]:
-            mapped_region[key[1:]] = float(value[1:-1]) if isinstance(value, str) and value.startswith("[") and value.endswith("]") else convert_nan(value)
-        elif key in ["x", "y", "w", "h"]:
-            if isinstance(value, str) and value.startswith("[") and value.endswith("]"):
-                try:
-                    mapped_region[key] = float(value[1:-1])
-                except ValueError:
-                    mapped_region[key] = convert_nan(value)
+            if isinstance(value, list) and len(value) == 1 and isinstance(value[0], float):
+                mapped_region[key[1:]] = value[0]
+            elif isinstance(value, str) and value.startswith("[") and value.endswith("]"):
+                mapped_region[key[1:]] = float(value[1:-1])
+            else:
+                mapped_region[key[1:]] = convert_nan(value)
+        elif key in ["x", "y", "w", "h"] and region.get('type') == "box":
+            if isinstance(value, list) and len(value) == 1 and isinstance(value[0], float):
+                mapped_region[key] = value[0]
+            elif isinstance(value, str) and value.startswith("[") and value.endswith("]"):
+                mapped_region[key] = float(value[1:-1])  
             else:
                 mapped_region[key] = convert_nan(value)
         elif key == "color":
             mapped_region['color'] = hex_to_rgb_tuple(value)
         else:
             mapped_region[key] = convert_nan(value)
-    
-    if all(k in region for k in ["rh", "rw", "rx", "ry"]):
-        mapped_region["type"] = "circle"
+    print(f"Mapped Region: {mapped_region}")
     return mapped_region
 
     
