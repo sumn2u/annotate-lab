@@ -150,7 +150,7 @@ export default () => {
           fetchImages(settings.images);
         }
      }
-     const showLab = settingsConfig.settings.showLab || false;
+     const showLab = settingsConfig.settings?.showLab || false;
      if(!isSettingsOpen && showLab) {
       setShowLabel(showLab)
      } 
