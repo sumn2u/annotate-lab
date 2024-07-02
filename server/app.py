@@ -319,6 +319,8 @@ def download_image_with_annotations():
                 # Docker container uses port 5000, so replace 5001 with 5000
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+                elif "http://annotate-lab.onrender.com" in image_url:
+                    image_url = image_url.replace("http://annotate-lab.onrender.com", "https://annotate-lab.onrender.com")
 
                 response = requests.get(image_url)
                 image = Image.open(BytesIO(response.content))
@@ -480,7 +482,8 @@ def get_image_annotations():
                 image_url = region.get("image-src")
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
-
+                elif "http://annotate-lab.onrender.com" in image_url:
+                    image_url = image_url.replace("http://annotate-lab.onrender.com", "https://annotate-lab.onrender.com")
                 # Handle NaN values in regions
                 cleaned_regions = cleaned_regions = [map_region_keys(region) for region in regions]
 
@@ -545,6 +548,8 @@ def download_image_mask():
                     # Docker container uses port 5000, so replace 5001 with 5000
                     if "127.0.0.1:5001" in image_url:
                         image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+                    elif "http://annotate-lab.onrender.com" in image_url:
+                        image_url = image_url.replace("http://annotate-lab.onrender.com", "https://annotate-lab.onrender.com")
 
                     response = requests.get(image_url)
                     response.raise_for_status()
