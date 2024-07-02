@@ -26,6 +26,18 @@ export const saveData = (imageData) => {
   });
 };
 
+export const getImagesAnnotation = (imageData) => {
+  return new Promise((resolve, reject) => {
+    axios.post(`${config.SERVER_URL}/get_image_annotations`, imageData)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error.response.data);
+      });
+  });
+};
+
 export const saveActiveImage = (activeImage) => {
   if (activeImage === null)
     return

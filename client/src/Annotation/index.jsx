@@ -5,6 +5,10 @@ import { useSettings } from "../SettingsProvider";
 import {setIn} from "seamless-immutable"
 import config from '../config.js';
 import { useSnackbar } from '../SnackbarContext'
+import { getImagesAnnotation } from "../utils/send-data-to-server"
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import colors from "../colors.js";
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
@@ -52,6 +56,7 @@ export default () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const settingsConfig = useSettings()
+  const [isLoading, setIsLoading] = useState(true)
   const { showSnackbar } = useSnackbar();
   const [settings, setSettings] =  useState({
     taskDescription: "",
@@ -118,6 +123,18 @@ export default () => {
     }
   };
 
+  const mapRegionsColor = (regions) => {
+    if(regions === undefined) return []
+    return regions.map((region, index) => {
+      const classLabels = settingsConfig.settings.configuration.labels;
+      const clsIndex = classLabels.findIndex(label => label.id === region.cls);
+      const regionColor = clsIndex < classLabels.length ? colors[clsIndex]: colors[clsIndex %  colors.length]
+      return {
+        ...region,
+        color: regionColor
+      }
+    });
+  }
   const fetchImages = async (imageUrls) => {
     try {
       const fetchPromises = imageUrls.map(url =>
@@ -125,11 +142,27 @@ export default () => {
           .then(blob => ({ ...url, src: URL.createObjectURL(blob) }))
       );
       const images = await Promise.all(fetchPromises);
+      const imageURLSrcs = imageUrls.map(url => decodeURIComponent(url.src.split('/').pop()));
+      let image_annotations = await getImagesAnnotation({image_names: imageURLSrcs});
+      const imageMap = imageUrls.map((url, index) => {
+        const imageName = decodeURIComponent(url.src.split('/').pop());
+        const annotation = image_annotations.find(annotation => annotation.image_name === imageName)
+        const newRegions =  mapRegionsColor(annotation?.regions) || []
+        return {
+            ...images[index],
+            src: url.src,
+            regions: newRegions,
+        };
+      });
+  
       setSettings(prevSettings => ({
         ...prevSettings,
+        images: imageMap,
         imagesBlob: images
       }));
-      setImageNames(images);
+      changeSelectedImageIndex(0)
+      setImageNames(imageMap);
+      setIsLoading(false)
     } catch (error) {
       showSnackbar(error.message, 'error');
     } finally {
@@ -146,8 +179,8 @@ export default () => {
      const savedConfiguration = settingsConfig.settings|| {};
      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
-       if (settings.images.length > 0) {
-          fetchImages(settings.images);
+       if (savedConfiguration.images.length > 0) {
+          fetchImages(savedConfiguration.images);
         }
      }
      const showLab = settingsConfig.settings?.showLab || false;
@@ -166,33 +199,46 @@ export default () => {
 
   return (
     <>
-    { !showLabel ? ( // Render loading indicator if loading is true
-        <SetupPage setConfiguration={setConfiguration} settings={settings} setShowLabel={setShowLabel} showAnnotationLab={showAnnotationLab}/>
+      {!showLabel ? (
+        <SetupPage
+          setConfiguration={setConfiguration}
+          settings={settings}
+          setShowLabel={setShowLabel}
+          showAnnotationLab={preloadConfiguration}
+        />
       ) : (
-    <Annotator
-      taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
-      images={settings.images || []}
-      enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
-      regionClsList={settings.configuration.labels.map(label => label.id) || []}
-      selectedImage={selectedImageIndex}
-      enabledRegionProps= {["class", "comment"]}
-      userReducer= {userReducer}
-      onExit={(output) => {
-        console.log("Exiting!")
-      }}
-      settings={settings}
-      onSelectJump={onSelectJumpHandle}
-      showTags={true}
-      selectedTool= {getToolSelectionType(settings.configuration.regions)}
-      openDocs={() => window.open(config.DOCS_URL, '_blank')}
-      hideSettings={false}
-      onShowSettings = {() => {
-        setIsSettingsOpen(!isSettingsOpen)
-        setShowLabel(false)
-      }}
-      selectedImageIndex={selectedImageIndex}
-    />)}
+        <>
+          {isLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Annotator
+              taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
+              images={settings.images || []}
+              enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
+              regionClsList={settings.configuration.labels.map(label => label.id) || []}
+              selectedImage={selectedImageIndex}
+              enabledRegionProps={["class", "comment"]}
+              userReducer={userReducer}
+              onExit={(output) => {
+                console.log("Exiting!");
+              }}
+              settings={settings}
+              onSelectJump={onSelectJumpHandle}
+              showTags={true}
+              selectedTool={getToolSelectionType(settings.configuration.regions)}
+              openDocs={() => window.open(config.DOCS_URL, '_blank')}
+              hideSettings={false}
+              onShowSettings={() => {
+                setIsSettingsOpen(!isSettingsOpen);
+                setShowLabel(false);
+              }}
+              selectedImageIndex={selectedImageIndex}
+            />
+          )}
+        </>
+      )}
     </>
-
-  )
-}
+  );
+};
