@@ -81,7 +81,10 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
 
   const handleImageUpload = (images) => {
     const extractedNames = images.map(image => {
-      const src = image.preview || image.src;
+      let src = image.preview || image.src;
+      if (src.includes("http://annotate-lab.onrender.com")) {
+        src = src.replace("http://annotate-lab.onrender.com", "https://annotate-lab.onrender.com");
+      }
       const selectedClsList = '' || image.selectedClsList; // Assuming 'cls' information is not present
       const comment = '' || image.comment; // Assuming 'comment' information is not present
       const processed = false || image.processed; // Assuming 'processed' information is not present
