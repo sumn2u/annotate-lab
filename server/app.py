@@ -425,13 +425,6 @@ def hex_to_rgb_tuple(hex_color):
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
-def convert_bbox_points_to_hwxy(points):
-    x = points[0][0]
-    y = points[0][1]
-    w = points[1][0] - points[0][0]
-    h = points[3][1] - points[0][1]
-    return h, w, x, y
-
 def map_region_keys(region):
     mapped_region = {}
     print(f"Region: {region}")
