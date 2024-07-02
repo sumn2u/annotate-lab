@@ -162,7 +162,7 @@ def create_json_response(image_name, color_map=None):
                     main_dict['cls'] = main_dict['cls'] if main_dict['cls'] != "nan" else ''
                     main_dict['processed'] = True
 
-                def add_regions(regions):
+                def add_regions(regions, region_type=None):
                     if isinstance(regions, pd.DataFrame):
                         regions_list = regions.to_dict(orient='records')
                     else:
@@ -176,16 +176,17 @@ def create_json_response(image_name, color_map=None):
                                 points = region['points']
                                 decoded_points = [[float(coord) for coord in point.split('-')] for point in points.split(';')]
                                 region['points'] = decoded_points
+                            region['type'] = region_type
                             main_dict['regions'].append(region)
 
                 if polygonRegions is not None:
-                    add_regions(polygonRegions)
+                    add_regions(polygonRegions, 'polygon')
 
                 if boxRegions is not None:
-                    add_regions(boxRegions)
+                    add_regions(boxRegions, 'box')
 
                 if circleRegions is not None:
-                    add_regions(circleRegions)
+                    add_regions(circleRegions, 'circle')
 
     # Add the main dictionary to the list
     imagesName.append(main_dict)
@@ -433,7 +434,6 @@ def convert_bbox_points_to_hwxy(points):
 
 def map_region_keys(region):
     mapped_region = {}
-    mapped_region["type"] = "box"
     print(f"Region: {region}")
     for key, value in region.items():
         if key == "class":
@@ -442,10 +442,14 @@ def map_region_keys(region):
             mapped_region["id"] = convert_nan(value)
         elif key.startswith("r") and len(key) == 2 and key[1] in ["h", "w", "x", "y"]:
             mapped_region[key[1:]] = float(value[1:-1]) if isinstance(value, str) and value.startswith("[") and value.endswith("]") else convert_nan(value)
-        
-        elif key == "points":  # Assuming regions with 4 points are bounding boxes
-            mapped_region["points"] = [[float(p[0]), float(p[1])] for p in value]
-
+        elif key in ["x", "y", "w", "h"]:
+            if isinstance(value, str) and value.startswith("[") and value.endswith("]"):
+                try:
+                    mapped_region[key] = float(value[1:-1])
+                except ValueError:
+                    mapped_region[key] = convert_nan(value)
+            else:
+                mapped_region[key] = convert_nan(value)
         elif key == "color":
             mapped_region['color'] = hex_to_rgb_tuple(value)
         else:
