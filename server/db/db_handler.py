@@ -272,6 +272,17 @@ class Module:
             
         except Exception as e:
             print(f"Error occurred: {e}")
+    
+    def get_class_distribution(self):
+        class_counts = pd.Series(dtype=int)
+
+        # Count classes in each DataFrame
+        class_counts = class_counts.add(self.imageCircleRegions['class'].value_counts(), fill_value=0)
+        class_counts = class_counts.add(self.imageBoxRegions['class'].value_counts(), fill_value=0)
+        class_counts = class_counts.add(self.imagePolygonRegions['class'].value_counts(), fill_value=0)
+
+        # Convert the series to a dictionary and return
+        return class_counts.to_dict()
 
     def __str__(self):
         return 'database'  

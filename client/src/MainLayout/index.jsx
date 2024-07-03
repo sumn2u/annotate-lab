@@ -26,7 +26,8 @@ import {Save, ExitToApp} from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
 import { clear_db } from "../utils/get-data-from-server"
-import { useSnackbar} from "../SnackbarContext/index.jsx"
+import { useSnackbar} from "../SnackbarContext"
+import ClassDistributionSidebarBox from "../ClassDistributionSidebarBox"
 
 const emptyArr = []
 const theme = createTheme()
@@ -385,6 +386,10 @@ export const MainLayout = ({
                   history={state.history}
                   onRestoreHistory={action("RESTORE_HISTORY")}
                 />,
+                <ClassDistributionSidebarBox  
+                  key="ClassDistributionSidebarBox" 
+                  regionClsList= {state.regionClsList}
+                />
               ].filter(Boolean)}
             >
               {canvas}
