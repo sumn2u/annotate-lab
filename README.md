@@ -72,7 +72,7 @@ annotation-lab/
 One can configure the tools, tags, upload images and do many more from the settings.
 
 ![configuration](./sample_images/configuration.png)
-## Dependencies
+## Dependencies [[documentation page]](https://annotate-docs.dwaste.live/overview/project-structure#dependencies)
 
 ### Client
 - [React](https://react.dev/)
