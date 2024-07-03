@@ -103,11 +103,12 @@ class Module:
                 database.at[index, key] = _value
             
             add_, remove_ = get_lists_absolute(new_cat_set, old_cat_set)
-            for new_ in add_:
-                add_image_folder(new_, data['image-name'][0], data['image-src'][0])
+            if 'image-name' in data:
+                for new_ in add_:
+                    add_image_folder(new_, data['image-name'][0], data['image-src'][0])
             
-            for old_ in remove_:
-                remove_image_folder(old_, data['image-name'][0],)
+                for old_ in remove_:
+                    remove_image_folder(old_, data['image-name'][0],)
 
         else: # add whole cat
 
