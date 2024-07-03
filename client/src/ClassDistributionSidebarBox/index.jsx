@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next"
 import { BarChart } from '@mui/x-charts/BarChart';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
 import { getLabels } from "../utils/get-data-from-server";
 import colors from "../colors";
 
@@ -64,6 +65,15 @@ export const ClassDistributionSidebarBox = ({
     },
   }
 
+  const CustomItemTooltipContent = (props) => {
+    const { itemData, series } = props;
+    return (
+      <Paper sx={{ padding:1, backgroundColor: series.color,  fontSize:"10px"}}>
+         <p>{series.label}: {series.data} </p>
+      </Paper>
+    );
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
@@ -79,6 +89,7 @@ export const ClassDistributionSidebarBox = ({
               width={300}
               height={300}
               {...barChartsParams}
+              tooltip={{ trigger: "item", itemContent: CustomItemTooltipContent }}
             />
             <IconButton aria-label="refresh" onClick={handleRefreshClick}>
               <RefreshIcon />
