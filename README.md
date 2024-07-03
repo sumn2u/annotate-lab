@@ -75,14 +75,14 @@ One can configure the tools, tags, upload images and do many more from the setti
 ## Dependencies
 
 ### Client
-- React
-- Axios
+- [React](https://react.dev/)
+- [Axios](https://axios-http.com/)
 - Other dependencies as listed in `package.json`
 
 ### Server
-- Flask
-- Flask-CORS
-- pandas
+- [Flask](https://flask.palletsprojects.com/en/3.0.x/)
+- [Pandas](https://pandas.pydata.org/)
+- [NumPy](https://numpy.org/)
 - Other dependencies as listed in `requirements.txt`
 
 ## Setup and Installation [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run)
