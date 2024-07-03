@@ -17,7 +17,7 @@ export const colors = [
 
 const transparency = 0x88000000
 
-function reverseParseColor(rrggbb) {
+const reverseParseColor = (rrggbb) => {
   rrggbb = rrggbb.replace("#", "")
   const bbggrr = rrggbb.substr(4, 2) + rrggbb.substr(2, 2) + rrggbb.substr(0, 2)
   return parseInt(bbggrr, 16)
