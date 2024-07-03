@@ -2,6 +2,8 @@ const translationDeDE = {
   "menu.classifications": "Labels",
   "menu.history": "Verlauf",
   "menu.regions": "Regionen",
+  "menu.class_distribution": "Klassenverteilung",
+  "menu.class_distribution_count": "Anzahl",
   "menu.keyframes": "Schlüsselbilder",
   "menu.images": "Bilder",
   "error.image": "Bild konnte nicht geladen werden",

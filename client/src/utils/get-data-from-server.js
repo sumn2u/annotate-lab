@@ -24,6 +24,17 @@ export const getImageFile = (api, configuration) => {
     });
   };
 
+export const getLabels = () => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.SERVER_URL}/class_distribution`)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error?.response); // Reject with error data
+        });
+    })
+  }
 
 export const clear_db = () => {
   return new Promise((resolve, reject) => {

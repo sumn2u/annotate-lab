@@ -1,6 +1,8 @@
 const translationEnEN = {
   "menu.classifications": "Labels",
   "menu.history": "History",
+  "menu.class_distribution": "Class Distribution",
+  "menu.class_distribution_count": "Count",
   "menu.regions": "Regions",
   "menu.keyframes": "Keyframes",
   "menu.images": "Images",

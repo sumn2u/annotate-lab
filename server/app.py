@@ -279,6 +279,20 @@ def download_configuration():
         print('Error:', e)
         return jsonify({'error': str(e)}), 500
 
+@app.route('/class_distribution', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def class_distribution():
+    try:
+        class_data = dbModule.get_class_distribution()
+        response_data = [{'data': [count], 'class': class_name} for class_name, count in class_data.items()]
+        
+        return jsonify(response_data), 200
+    
+    except Exception as e:
+        print('Error:', e)
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/download_image_with_annotations', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def download_image_with_annotations():
