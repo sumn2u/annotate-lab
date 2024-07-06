@@ -156,7 +156,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           flexDirection: 'column',
           borderRadius: '4px',
           minHeight: '200px',
-          width: isSmallDevice ? 'auto': '400px'
+          width: isSmallDevice ? 'auto': '52vw'
         }}
       >
         <input {...getInputProps()} data-testid="file-input" />
