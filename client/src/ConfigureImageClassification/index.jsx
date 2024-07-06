@@ -37,7 +37,7 @@ export default ({ config, onChange }) => {
           {
             cellType: "text",
             name: "description",
-            title: t("configuration.labels.option.id"),
+            title: t("configuration.labels.option.description"),
           },
         ],
       }
