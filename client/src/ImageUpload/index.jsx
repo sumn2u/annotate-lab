@@ -141,12 +141,12 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
   });
 
   return (
-    <Box>
+    <>
       <Box
         {...getRootProps()}
         sx={{
           border: '2px dashed #ccc',
-          padding: '1rem',
+          padding: isSmallDevice ? '0.5rem' :'1rem',
           textAlign: 'center',
           cursor: 'pointer',
           marginBottom: '1rem',
@@ -156,7 +156,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           flexDirection: 'column',
           borderRadius: '4px',
           minHeight: '200px',
-          width: isSmallDevice ? 'auto': '52vw'
+          width: isSmallDevice ? 'auto': '52vw',
         }}
       >
         <input {...getInputProps()} data-testid="file-input" />
@@ -197,8 +197,8 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
               alt="preview"
               onError={() => handleImageError(index)}
               style={{
-                width: '100px',
-                height: '100px',
+                width: isSmallDevice ? '65px' : '82px', 
+                height: isSmallDevice ? '65px' : '82px',
                 objectFit: 'cover',
                 borderRadius: '4px',
                 marginBottom: '0.5rem',
@@ -214,7 +214,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           </Box>
         ))}
       </Box>
-    </Box>
+    </>
   );
 };
 
