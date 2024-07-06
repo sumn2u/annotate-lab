@@ -5,7 +5,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useSnackbar } from '../SnackbarContext';
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import config from '../config.js';
 
@@ -177,7 +177,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
               </>
             ) : (
               <Typography sx={{ fontSize: "14px", color: "rgb(117, 117, 117)" }}>
-                {t("configuration.image_upload.description")} {config.UPLOAD_LIMIT}
+                <Trans i18nKey="configuration.image_upload.description" values={{maxImages: config.UPLOAD_LIMIT}}/>
               </Typography>
             )}
           </>

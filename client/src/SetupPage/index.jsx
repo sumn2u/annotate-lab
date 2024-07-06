@@ -153,7 +153,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
             </Tabs>
           </Box>
             {currentTab === "datatype" && (
-               <Box minWidth="55vw" paddingTop={"2rem"}>
+               <Box minWidth="55vw" paddingTop={"1rem"}>
+                <>
                   <ConfigurationTask config={settings} onChange={updateTaskInfo} />  
                   <NoteSection 
                   icon={Info} 
@@ -165,11 +166,12 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                             {t("btn.next")}
                         </Button>
                       </Box>
+                      </>
                 </Box>
             )}
 
             {currentTab === "configure" && ( 
-                <Container>
+                <Box minWidth="55vw" paddingTop={"1rem"}>
                   {settings.taskChoice === "image_classification" && (
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
@@ -192,12 +194,19 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                     </>
                   
                   )}
-                </Container>
+                </Box>
             )}
             {currentTab === "images" && (
               <>
-               <Box sx={{ padding: '2rem' }} width={isSmallDevice ? "auto" : "55vw"}>
-                <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>
+               <Box sx={(theme) => ({
+                  paddingTop: isSmallDevice ? '0' : '0.5rem',
+                  padding: isSmallDevice ? '1.5rem' : '1rem',
+                  [theme.breakpoints.down('sm')]: {
+                    padding: '1rem',
+                  },
+                })} 
+                width={isSmallDevice ? "auto" : "55vw"}>
+                <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px', paddingBottom: '1rem', paddingTop: '0.5rem'}}>
                   {t("btn.upload_images")}
                 </Typography>
                 <ImageUpload onImageUpload={handleImageUpload} settingsImages={settings.images} />
