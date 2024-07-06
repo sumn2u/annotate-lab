@@ -196,7 +196,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
             )}
             {currentTab === "images" && (
               <>
-               <Box sx={{ padding: '2rem' }} width={"55vw"}>
+               <Box sx={{ padding: '2rem' }} width={isSmallDevice ? "auto" : "55vw"}>
                 <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>
                   {t("btn.upload_images")}
                 </Typography>
