@@ -63,6 +63,7 @@ export default () => {
     taskChoice: "image_classification",
     images: [],
     showLab: false,
+    lastSavedImageIndex: null,
     configuration: {
       labels: [],
       multipleRegions: true,
@@ -80,8 +81,14 @@ export default () => {
 
     let selectedImageIndex = imageNames.indexOf(selectedImage)
     if(selectedImageIndex != -1){
-    changeSelectedImageIndex(selectedImageIndex)
+      changeSelectedImageIndex(selectedImageIndex)
     }
+    const newSettings = {
+      ...settings,
+      lastSavedImageIndex: selectedImageIndex,
+    };
+    settingsConfig.changeSetting('settings',newSettings);
+
   }
   
   const getEnabledTools = (selectedTools) => {
@@ -135,7 +142,7 @@ export default () => {
       }
     });
   }
-  const fetchImages = async (imageUrls) => {
+  const fetchImages = async (imageUrls, lastOpenedImage) => {
     try {
       const fetchPromises = imageUrls.map(url =>
         fetch(url.src).then(response => response.blob())
@@ -160,7 +167,7 @@ export default () => {
         images: imageMap,
         imagesBlob: images
       }));
-      changeSelectedImageIndex(0)
+      changeSelectedImageIndex(lastOpenedImage)
       setImageNames(imageMap);
       setIsLoading(false)
     } catch (error) {
@@ -177,10 +184,11 @@ export default () => {
   const preloadConfiguration = () => {
      // get last saved configuration
      const savedConfiguration = settingsConfig.settings|| {};
+     const lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
        setSettings(savedConfiguration);
        if (savedConfiguration.images.length > 0) {
-          fetchImages(savedConfiguration.images);
+          fetchImages(savedConfiguration.images, lastSavedImageIndex);
         }
      }
      const showLab = settingsConfig.settings?.showLab || false;
