@@ -212,7 +212,7 @@ export default () => {
           setConfiguration={setConfiguration}
           settings={settings}
           setShowLabel={setShowLabel}
-          showAnnotationLab={preloadConfiguration}
+          showAnnotationLab={showAnnotationLab}
         />
       ) : (
         <>
