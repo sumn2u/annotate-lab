@@ -25,7 +25,6 @@ import {withHotKeys} from "react-hotkeys"
 import {Save, ExitToApp} from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
-import { clear_db } from "../utils/get-data-from-server"
 import { useSnackbar} from "../SnackbarContext"
 import ClassDistributionSidebarBox from "../ClassDistributionSidebarBox"
 
@@ -45,6 +44,7 @@ export const MainLayout = ({
   onRegionClassAdded,
   hideHeader,
   hideHeaderText,
+  onExit,
   hideClone = true,
   hideSettings = false,
   hideSave = false,
@@ -97,21 +97,6 @@ export const MainLayout = ({
     }
   }, [])
 
-  const reloadApp = () => {
-    settings.changeSetting('settings', null);
-    window.location.reload();
-  }
-  
-  const logout = async () => {
-    try {
-      const response = await clear_db();
-      showSnackbar(response.message, 'success');
-      await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 500 milliseconds
-    } catch (error) {
-      showSnackbar(error.message, 'error');
-    }
-    reloadApp()
-  };
 
   const canvas = (
     <ImageCanvas
@@ -197,7 +182,7 @@ export const MainLayout = ({
 
   const onClickHeaderItem = useEventCallback((item) => {
     if(item.name === "Exit"){
-      logout()
+      onExit()
     } else {
       dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
     }

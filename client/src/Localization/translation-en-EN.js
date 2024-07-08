@@ -84,6 +84,10 @@ const translationEnEN = {
   "collapse_selection": "Collapse selection",
   "error.image_not_found": "Image not found",
   "info": "Info",
+  "exit_alert_title": "Are you sure you want to exit?",
+  "exit_alert_description": "Do you really want to exit? This action will clear the storage and all data will be lost.",
+  "exit_alert_cancel": "Cancel",
+  "exit_alert_confirm": "Exit",
 };
 
 export default translationEnEN;
