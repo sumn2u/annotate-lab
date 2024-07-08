@@ -82,7 +82,11 @@ const translationDeDE = {
   "expand_selection": "Auswahl erweitern",
   "collapse_selection": "Auswahl verkleinern",
   "error.image_not_found": "Bild nicht gefunden",
-  "info": "Die Info"
+  "info": "Die Info",
+  "exit_alert_title": "Sind Sie sicher, dass Sie beenden möchten?",
+  "exit_alert_description": "Möchten Sie wirklich beenden? Diese Aktion wird den Speicher löschen und alle Daten werden verloren gehen.",
+  "exit_alert_cancel": "Abbrechen",
+  "exit_alert_confirm": "Zustimmen",
 };
 
 export default translationDeDE;

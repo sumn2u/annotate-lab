@@ -207,6 +207,7 @@ export const Annotator = ({
           hideSettings={hideSettings}
           hideSave={hideSave}
           allImages= {allImages}
+          onExit={onExit}
           enabledRegionProps={enabledRegionProps}
           onSelectJump={onSelectJump}
           saveActiveImage = {saveCurrentData}

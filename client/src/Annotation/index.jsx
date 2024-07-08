@@ -8,7 +8,10 @@ import { useSnackbar } from '../SnackbarContext'
 import { getImagesAnnotation } from "../utils/send-data-to-server"
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import AlertDialog from "../AlertDialog";
+import { clear_db } from "../utils/get-data-from-server"
 import colors from "../colors.js";
+import {useTranslation} from "react-i18next"
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
@@ -52,6 +55,8 @@ const userReducer = (state, action) => {
 
 export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
+  const [open, setOpen] = useState(false);
+  const {t} = useTranslation();
   const [showLabel, setShowLabel] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [imageNames, setImageNames] = useState([])
@@ -71,7 +76,18 @@ export default () => {
     }
   })
 
-  
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleExit = () => {
+    logout()
+    handleClose()
+  }
+
   const [loading, setLoading] = useState(true); // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
 
@@ -181,6 +197,23 @@ export default () => {
     const regions = [ {name: "Polygon", value: "create-polygon"}, {name: "Bounding Box", value: "create-box"}, {name: "Point", value: "create-point"}] 
     return regions.filter(region => region.name === toolName)[0]?.value || "create-polygon"
   }
+
+  const reloadApp = () => {
+    settingsConfig.changeSetting('settings', null);
+    window.location.reload();
+  }
+  
+  const logout = async () => {
+    try {
+      const response = await clear_db();
+      showSnackbar(response.message, 'success');
+      await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 500 milliseconds
+    } catch (error) {
+      showSnackbar(error.message, 'error');
+    }
+    reloadApp()
+  };
+
   const preloadConfiguration = () => {
      // get last saved configuration
      const savedConfiguration = settingsConfig.settings|| {};
@@ -221,29 +254,40 @@ export default () => {
               <CircularProgress />
             </Box>
           ) : (
-            <Annotator
-              taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
-              images={settings.images || []}
-              enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
-              regionClsList={settings.configuration.labels.map(label => label.id) || []}
-              selectedImage={selectedImageIndex}
-              enabledRegionProps={["class", "comment"]}
-              userReducer={userReducer}
-              onExit={(output) => {
-                console.log("Exiting!");
-              }}
-              settings={settings}
-              onSelectJump={onSelectJumpHandle}
-              showTags={true}
-              selectedTool={getToolSelectionType(settings.configuration.regions)}
-              openDocs={() => window.open(config.DOCS_URL, '_blank')}
-              hideSettings={false}
-              onShowSettings={() => {
-                setIsSettingsOpen(!isSettingsOpen);
-                setShowLabel(false);
-              }}
-              selectedImageIndex={selectedImageIndex}
-            />
+            <> 
+              <AlertDialog
+                open={open}
+                handleClose={handleClose}
+                title={t("exit_alert_title")}
+                description={t("exit_alert_description")}
+                exitConfirm={t("exit_alert_confirm")}
+                exitCancel={t("exit_alert_cancel")}
+                handleExit= {handleExit}
+              />
+              <Annotator
+                taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
+                images={settings.images || []}
+                enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
+                regionClsList={settings.configuration.labels.map(label => label.id) || []}
+                selectedImage={selectedImageIndex}
+                enabledRegionProps={["class", "comment"]}
+                userReducer={userReducer}
+                onExit={(output) => {
+                  handleClickOpen()
+                }}
+                settings={settings}
+                onSelectJump={onSelectJumpHandle}
+                showTags={true}
+                selectedTool={getToolSelectionType(settings.configuration.regions)}
+                openDocs={() => window.open(config.DOCS_URL, '_blank')}
+                hideSettings={false}
+                onShowSettings={() => {
+                  setIsSettingsOpen(!isSettingsOpen);
+                  setShowLabel(false);
+                }}
+                selectedImageIndex={selectedImageIndex}
+              />
+            </>
           )}
         </>
       )}
