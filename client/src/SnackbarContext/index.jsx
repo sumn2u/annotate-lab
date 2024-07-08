@@ -28,6 +28,7 @@ export const SnackbarProvider = ({ children }) => {
           open
           autoHideDuration={6000}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          onClose={() => handleClose(index)}
           sx={{ mb: index * 8 }}
         >
           <Alert onClose={() => handleClose(index)} severity={msg.severity}>
