@@ -116,7 +116,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     if(hasLabels) {
       const newSettings = {...settings, showLab: true}
       settingsConfig.changeSetting('settings',newSettings);
-      showAnnotationLab()
+      showAnnotationLab(newSettings)
     }
   }, [setShowLabel]);
 
@@ -133,7 +133,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     if(hasLabels) {
       const newSettings = {...settings, showLab: true}
       settingsConfig.changeSetting('settings',newSettings);
-      showAnnotationLab()
+      showAnnotationLab(newSettings)
     }
   }
 

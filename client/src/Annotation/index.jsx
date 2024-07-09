@@ -230,8 +230,12 @@ export default () => {
      } 
   }
   
-  const showAnnotationLab = () => {
-    preloadConfiguration();
+  const showAnnotationLab = (newSettings) => {
+    setSettings(newSettings);
+    const lastSavedImageIndex = newSettings.lastSavedImageIndex || 0;
+    if (newSettings.images.length > 0) {
+        fetchImages(newSettings.images, lastSavedImageIndex);
+      }
   }
   useEffect(() => {
     preloadConfiguration();
