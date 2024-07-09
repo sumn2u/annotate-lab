@@ -149,9 +149,12 @@ export default () => {
   const mapRegionsColor = (regions) => {
     if(regions === undefined) return []
     return regions.map((region, index) => {
-      const classLabels = settingsConfig.settings.configuration.labels;
+      const classLabels = settings.configuration.labels.length > 0 
+    ? settings.configuration.labels 
+    : settingsConfig.settings.configuration.labels;
+      
       const clsIndex = classLabels.findIndex(label => label.id === region.cls);
-      const regionColor = clsIndex < classLabels.length ? colors[clsIndex]: colors[clsIndex %  colors.length]
+      const regionColor = clsIndex !== -1 ?  (clsIndex < classLabels.length ? colors[clsIndex]: colors[clsIndex %  colors.length]) : colors[0]
       return {
         ...region,
         color: regionColor
