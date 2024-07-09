@@ -186,7 +186,11 @@ export default () => {
         images: imageMap,
         imagesBlob: images
       }));
-      changeSelectedImageIndex(lastOpenedImage)
+
+      // Ensure lastOpenedImage index is within bounds
+      const validImageIndex = lastOpenedImage >= images.length ? 0 : lastOpenedImage;
+
+      changeSelectedImageIndex(validImageIndex)
       setImageNames(imageMap);
       setIsLoading(false)
     } catch (error) {
