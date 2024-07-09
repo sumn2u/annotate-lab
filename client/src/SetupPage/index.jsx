@@ -78,8 +78,8 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
       }
     };
     settingsConfig.changeSetting('settings',newSettings);
-    showAnnotationLab(newSettings)
     setConfiguration({type: "UPDATE_CONFIGURATION", payload: newConfig})
+    showAnnotationLab(newSettings)
   }
   const {t} = useTranslation();
 
