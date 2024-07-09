@@ -66,7 +66,7 @@ const translationDeDE = {
   "note": "Hinweis",
   "here": "hier",
   "more_info": "Weitere Informationen finden Sie in unserer Dokumentation",
-  "yolo_annotations": "YOLO-Annotationen",
+  "yolo_annotations": "Anmerkungsetiketten",
   "download_checkbox_select": "Wähle dieses Bild für den Download aus",
   "undo_last_action": "Letzte Aktion rückgängig machen",
   "delete_regions": "Regionen löschen",

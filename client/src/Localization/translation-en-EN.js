@@ -67,7 +67,7 @@ const translationEnEN = {
   "note": "Note",
   "here": "here",
   "more_info": "More information can be found in our documentation",
-  "yolo_annotations": "YOLO Annotations",
+  "yolo_annotations": "Annotations Labels",
   "download_checkbox_select": "Select this image for download",
   "undo_last_action": "Undo last action",
   "delete_regions": "Delete regions",
