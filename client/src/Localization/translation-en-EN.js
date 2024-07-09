@@ -36,7 +36,7 @@ const translationEnEN = {
   "setup.tabs.taskinfo.task_choice": "Choice of Task",
   "setup.tabs.taskinfo.task_choice_classification": "Image Classification",
   "setup.tabs.taskinfo.task_choice_segmentation": "Image Segmentation",
-  "configuration.multiple_regions": "Can multiple regions be created?",
+  "configuration.multiple_regions": "Can Multiple Regions Be Created?",
   "configuration.multiple_region_labels": "Multiple Region Labels Allowed?",
   "configuration.region_types_allowed": "Region Types Allowed",
   "configuration.region_types_allowed.description": "What types of regions can be drawn on the image.",
