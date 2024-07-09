@@ -191,6 +191,9 @@ export const MainLayout = ({
   const nextImageHasRegions =
     !nextImage || (nextImage.regions && nextImage.regions.length > 0)
   const selectedImages = state.images.filter((image) => image.selected)
+  const hasRegions = state.images[state.selectedImage]?.regions?.length > 0
+  const disableRegion  = hasRegions ? false : !state.hasNewChange
+
   return (
     <ThemeProvider theme={theme}>
           <HotkeyDiv
@@ -232,7 +235,7 @@ export const MainLayout = ({
                 !hideClone && state.hasNewChange &&
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone", label: t("btn.clone")},
-                !hideSave && {name: "Save", label:t("btn.save"), disabled: !state.hasNewChange, icon: <Save />},
+                !hideSave && {name: "Save", label:t("btn.save"), disabled: disableRegion, icon: <Save />},
                 {name: "Docs", label: t("btn.docs")},
                 !hideSettings && {name: "Settings", label: t("btn.settings")},
                 {name: "Exit", label:t("btn.exit"), icon: <ExitToApp />}
