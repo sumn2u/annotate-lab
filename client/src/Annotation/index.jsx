@@ -163,10 +163,18 @@ export default () => {
   }
   const fetchImages = async (imageUrls, lastOpenedImage) => {
     try {
-      const fetchPromises = imageUrls.map(url =>
-        fetch(url.src).then(response => response.blob())
-          .then(blob => ({ ...url, src: URL.createObjectURL(blob) }))
-      );
+      const fetchPromises = imageUrls.map(async url => {
+        const response = await fetch(url.src);
+        if (!response.ok) {
+          if (response.status === 404) {
+            const errorMSG = `${t("error.image_not_found")}: ${url.src}`;
+            throw new Error(errorMSG);
+          }
+        }
+        const blob = await response.blob();
+        return { ...url, src: URL.createObjectURL(blob) };
+      });
+  
       const images = await Promise.all(fetchPromises);
       const imageURLSrcs = imageUrls.map(url => decodeURIComponent(url.src.split('/').pop()));
       let image_annotations = await getImagesAnnotation({image_names: imageURLSrcs});
@@ -195,6 +203,7 @@ export default () => {
       setIsLoading(false)
     } catch (error) {
       showSnackbar(error.message, 'error');
+      setIsLoading(false);
     } finally {
       setLoading(false);
     }
