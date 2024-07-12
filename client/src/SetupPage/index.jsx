@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import PropTypes from "prop-types"
 import ConfigureImageClassification from "../ConfigureImageClassification";
 import ConfigureImageSegmentation from "../ConfigureImageSegmentation";
@@ -20,6 +21,7 @@ import { useSettings } from "../SettingsProvider";
 import { useTranslation } from "react-i18next"
 import { Info } from '@mui/icons-material';
 import NoteSection from "../NoteSection";
+import CloseIcon from "@mui/icons-material/Close";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import config from '../config.js';
 
@@ -60,6 +62,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   const [hasConfig, setHasConfig] = useState(false);
   const settingsConfig = useSettings()
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('md'));
 
   const updateConfiguration = (newConfig) => {
     const {labels, regionTypesAllowed, multipleRegionLabels, multipleRegions} = newConfig
@@ -76,6 +79,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     };
     settingsConfig.changeSetting('settings',newSettings);
     setConfiguration({type: "UPDATE_CONFIGURATION", payload: newConfig})
+    showAnnotationLab(newSettings)
   }
   const {t} = useTranslation();
 
@@ -113,7 +117,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     if(hasLabels) {
       const newSettings = {...settings, showLab: true}
       settingsConfig.changeSetting('settings',newSettings);
-      showAnnotationLab()
+      showAnnotationLab(newSettings)
     }
   }, [setShowLabel]);
 
@@ -130,7 +134,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     if(hasLabels) {
       const newSettings = {...settings, showLab: true}
       settingsConfig.changeSetting('settings',newSettings);
-      showAnnotationLab()
+      showAnnotationLab(newSettings)
     }
   }
 
@@ -141,6 +145,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
   const isTaskInfoComplete = settings.taskDescription.trim().length > 0;
   const isConfigComplete = settings.configuration.labels.length > 0;
   const isImagesUploaded = settings.images.length > 0;
+  const hasShowLab = settings.showLab;
 
   return (
     <Box display="flex"  justifyContent="center"  minHeight="100vh" marginTop={isSmallDevice ? "": "5rem"}>
@@ -152,8 +157,20 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
               <Tab disabled={!isConfigComplete} icon={<AddPhotoAlternateIcon />} label={t("setup.tabs.images")} value="images" />
             </Tabs>
           </Box>
+          <IconButton 
+          disabled={!isTaskInfoComplete || !isConfigComplete || !isImagesUploaded}
+           onClick={showLab} 
+           sx={{ 
+            position: 'absolute', 
+            top: isLargeDevice ? '2rem' : '1rem', 
+            right: isLargeDevice ? '10rem' : '1rem', 
+            fontSize: isLargeDevice ? '2rem' : '1.5rem'
+          }}>
+              {hasShowLab && hasConfig &&  <CloseIcon fontSize={isLargeDevice ? "large" : "medium"} />}
+          </IconButton>
             {currentTab === "datatype" && (
-               <Box minWidth="35vw" paddingTop={"2rem"}>
+               <Box minWidth="55vw" paddingTop={"1rem"}>
+                <>
                   <ConfigurationTask config={settings} onChange={updateTaskInfo} />  
                   <NoteSection 
                   icon={Info} 
@@ -165,11 +182,12 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                             {t("btn.next")}
                         </Button>
                       </Box>
+                      </>
                 </Box>
             )}
 
             {currentTab === "configure" && ( 
-                <Container>
+                <Box minWidth="55vw" paddingTop={"1rem"}>
                   {settings.taskChoice === "image_classification" && (
                     <>
                       <ConfigureImageClassification config={settings.configuration} onChange={updateConfiguration} />
@@ -192,12 +210,19 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
                     </>
                   
                   )}
-                </Container>
+                </Box>
             )}
             {currentTab === "images" && (
               <>
-               <Box sx={{ padding: '2rem' }} maxWidth={"600px"}>
-                <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px' }}>
+               <Box sx={(theme) => ({
+                  paddingTop: isSmallDevice ? '0' : '0.5rem',
+                  padding: isSmallDevice ? '1.5rem' : '1rem',
+                  [theme.breakpoints.down('sm')]: {
+                    padding: '1rem',
+                  },
+                })} 
+                width={isSmallDevice ? "auto" : "55vw"}>
+                <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'rgb(66, 66, 66)', fontSize: '18px', paddingBottom: '1rem', paddingTop: '0.5rem'}}>
                   {t("btn.upload_images")}
                 </Typography>
                 <ImageUpload onImageUpload={handleImageUpload} settingsImages={settings.images} />

@@ -37,7 +37,7 @@ export default ({ config, onChange }) => {
           {
             cellType: "text",
             name: "description",
-            title: t("configuration.labels.option.id"),
+            title: t("configuration.labels.option.description"),
           },
         ],
       }
@@ -79,6 +79,11 @@ export default ({ config, onChange }) => {
           height: '2.2rem !important',
           minHeight: '2.2rem !important',
           lineHeight: '2.2rem !important',
+        },
+        '@media (min-width: 600px)': {
+          '.MuiInputBase-input': {
+            width: '350px !important',
+          }
         }
       }} />
    
