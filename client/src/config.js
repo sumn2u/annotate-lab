@@ -10,7 +10,7 @@ if (typeof import.meta !== 'undefined' && import.meta.env) {
 const config = {
     DOCS_URL:"https://annotate-docs.dwaste.live/",
     SERVER_URL,
-    UPLOAD_LIMIT: 5,
+    UPLOAD_LIMIT: 500,
     OUTLINE_THICKNESS_CONFIG : {
       POLYGON: 2,
       CIRCLE: 2,

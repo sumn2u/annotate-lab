@@ -25,7 +25,6 @@ import {withHotKeys} from "react-hotkeys"
 import {Save, ExitToApp} from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
-import { clear_db } from "../utils/get-data-from-server"
 import { useSnackbar} from "../SnackbarContext"
 import ClassDistributionSidebarBox from "../ClassDistributionSidebarBox"
 
@@ -45,6 +44,7 @@ export const MainLayout = ({
   onRegionClassAdded,
   hideHeader,
   hideHeaderText,
+  onExit,
   hideClone = true,
   hideSettings = false,
   hideSave = false,
@@ -97,21 +97,6 @@ export const MainLayout = ({
     }
   }, [])
 
-  const reloadApp = () => {
-    settings.changeSetting('settings', null);
-    window.location.reload();
-  }
-  
-  const logout = async () => {
-    try {
-      const response = await clear_db();
-      showSnackbar(response.message, 'success');
-      await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 500 milliseconds
-    } catch (error) {
-      showSnackbar(error.message, 'error');
-    }
-    reloadApp()
-  };
 
   const canvas = (
     <ImageCanvas
@@ -197,7 +182,7 @@ export const MainLayout = ({
 
   const onClickHeaderItem = useEventCallback((item) => {
     if(item.name === "Exit"){
-      logout()
+      onExit()
     } else {
       dispatch({type: "HEADER_BUTTON_CLICKED", buttonName: item.name})
     }
@@ -206,6 +191,9 @@ export const MainLayout = ({
   const nextImageHasRegions =
     !nextImage || (nextImage.regions && nextImage.regions.length > 0)
   const selectedImages = state.images.filter((image) => image.selected)
+  const hasRegions = state.images[state.selectedImage]?.regions?.length > 0
+  const disableRegion  = hasRegions ? false : !state.hasNewChange
+
   return (
     <ThemeProvider theme={theme}>
           <HotkeyDiv
@@ -247,7 +235,7 @@ export const MainLayout = ({
                 !hideClone && state.hasNewChange &&
                 !nextImageHasRegions &&
                 activeImage.regions && {name: "Clone", label: t("btn.clone")},
-                !hideSave && {name: "Save", label:t("btn.save"), disabled: !state.hasNewChange, icon: <Save />},
+                !hideSave && {name: "Save", label:t("btn.save"), disabled: disableRegion, icon: <Save />},
                 {name: "Docs", label: t("btn.docs")},
                 !hideSettings && {name: "Settings", label: t("btn.settings")},
                 {name: "Exit", label:t("btn.exit"), icon: <ExitToApp />}

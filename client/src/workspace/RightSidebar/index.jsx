@@ -44,6 +44,7 @@ const Expander = styled(ButtonBase)(({ theme }) => ({
     left: -20,
     width: 20,
     opacity: 0.4,
+    zIndex: 1,
     "& .icon": {
       marginLeft: 0,
     },

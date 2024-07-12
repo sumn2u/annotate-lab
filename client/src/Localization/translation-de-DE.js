@@ -40,13 +40,13 @@ const translationDeDE = {
   "configuration.region_types_allowed": "Erlaubte Regionstypen",
   "configuration.region_types_allowed.description": "Welche Arten von Regionen können auf dem Bild gezeichnet werden.",
   "configuration.labels": "Verfügbare Labels",
-  "configuration.labels.option.id": "ID",
+  "configuration.labels.option.id": "Id",
   "configuration.labels.option.description": "Beschreibung (optional)",
   "configuration.labels.description": "Wenn Sie Regionen auf einem Bild kennzeichnen, sind dies die zulässigen Klassifikationen oder Tags.",
   "configuration.regions": "Standard-Regionstyp",
   "configuration.regions.description": "Wählen Sie den Standard-Regionstyp, der auf dem Bild gezeichnet werden kann.",
   "error.configuration.image_upload.max": "Maximale Anzahl von Bildern erreicht",
-  "configuration.image_upload.description": "Laden Sie Bilder hoch, die annotiert werden sollen, oder ziehen Sie Bilder hierher. Unterstützte Dateien: .jpg, .jpeg, .png und maximale Anzahl von Bildern:",
+  "configuration.image_upload.description": "Laden Sie Bilder hoch, die annotiert werden sollen, oder ziehen Sie Bilder hierher. Unterstützte Dateien: <strong>.jpg, .jpeg, .png</strong> und maximale Anzahl von Bildern: <strong>{{maxImages}}</strong>",
   "configuration.image_upload.file_drop": "Dateien hierher ziehen",
   "download.configuration": "Konfiguration",
   "download.image_mask": "Maskiertes Bild",
@@ -66,7 +66,7 @@ const translationDeDE = {
   "note": "Hinweis",
   "here": "hier",
   "more_info": "Weitere Informationen finden Sie in unserer Dokumentation",
-  "yolo_annotations": "YOLO-Annotationen",
+  "yolo_annotations": "Anmerkungsetiketten",
   "download_checkbox_select": "Wähle dieses Bild für den Download aus",
   "undo_last_action": "Letzte Aktion rückgängig machen",
   "delete_regions": "Regionen löschen",
@@ -82,7 +82,11 @@ const translationDeDE = {
   "expand_selection": "Auswahl erweitern",
   "collapse_selection": "Auswahl verkleinern",
   "error.image_not_found": "Bild nicht gefunden",
-  "info": "Die Info"
+  "info": "Die Info",
+  "exit_alert_title": "Sind Sie sicher, dass Sie beenden möchten?",
+  "exit_alert_description": "Möchten Sie wirklich beenden? Diese Aktion wird den Speicher löschen und alle Daten werden verloren gehen.",
+  "exit_alert_cancel": "Abbrechen",
+  "exit_alert_confirm": "Zustimmen",
 };
 
 export default translationDeDE;

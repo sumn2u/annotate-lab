@@ -12,6 +12,7 @@ const defaultSettings = {
     taskChoice: "image_classification",
     images: [],
     showLab: false,
+    lastSavedImageIndex: null,
     configuration: {
       labels: [],
       multipleRegions: true,

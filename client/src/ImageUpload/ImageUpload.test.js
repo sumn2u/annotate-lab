@@ -38,6 +38,12 @@ jest.mock('react-i18next', () => ({
         "error.server_connection": "Server connection error",
       }[key]),
     }),
+    Trans: ({ i18nKey, values }) => {
+      const translations = {
+        "configuration.image_upload.description": `Upload images to be annotated, or drag and drop images here. Files supported: <strong>.jpg, .jpeg, .png</strong> and max number of images: <strong>${values.maxImages}</strong>`,
+      };
+      return <span dangerouslySetInnerHTML={{ __html: translations[i18nKey] }} />;
+    },
   }));
   
 

@@ -177,13 +177,14 @@ export const Annotator = ({
     if (selectedImage === undefined) return
 
     const { multipleRegionLabels, multipleRegions } = settings?.configuration || {};
-    const hasSingleRegion = state.images?.[selectedImage]?.regions?.length === 1;
-    const disableSelection = (hasSingleRegion && !multipleRegionLabels) ||  (hasSingleRegion && !multipleRegions);
-
-    dispatchToReducer({
-      type: "DISABLE_SELECT_TOOL",
-      selectedTool: disableSelection ? [] : selectedTool
-    })
+    const hasRegions = state.images?.[selectedImage]?.regions?.length >= 1;
+    const disableSelection = (hasRegions && !multipleRegionLabels) ||  (hasRegions && !multipleRegions);
+    if(disableSelection){
+        dispatchToReducer({
+          type: "DISABLE_SELECT_TOOL",
+          selectedTool: disableSelection ? [] : selectedTool
+        })
+    }
    
     dispatchToReducer({
       type: "SELECT_IMAGE",
@@ -207,6 +208,7 @@ export const Annotator = ({
           hideSettings={hideSettings}
           hideSave={hideSave}
           allImages= {allImages}
+          onExit={onExit}
           enabledRegionProps={enabledRegionProps}
           onSelectJump={onSelectJump}
           saveActiveImage = {saveCurrentData}
