@@ -1,8 +1,8 @@
 {
-    "taskDescription": "",
+    "taskDescription": "Updated task description",
     "taskChoice": "image_classification",
     "images": [],
-    "showLab": false,
+    "showLab": true,
     "lastSavedImageIndex": null,
     "configuration": {
         "labels": [],

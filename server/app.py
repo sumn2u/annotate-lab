@@ -38,28 +38,34 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 JSON_FILE = 'settings.json'
 
 
+default_settings = {
+    "taskDescription": "",
+    "taskChoice": "image_classification",
+    "images": [],
+    "showLab": False,
+    "lastSavedImageIndex": None,
+    "configuration": {
+        "labels": [],
+        "multipleRegions": True,
+        "multipleRegionLabels": True,
+        "regionTypesAllowed": []
+    }
+}
+
 # Load initial data from JSON file if exists
 try:
     with open(JSON_FILE, 'r') as f:
         initial_settings = json.load(f)
 except FileNotFoundError:
-    initial_settings = {
-        "taskDescription": "",
-        "taskChoice": "image_classification",
-        "images": [],
-        "showLab": False,
-        "lastSavedImageIndex": None,
-        "configuration": {
-            "labels": [],
-            "multipleRegions": True,
-            "multipleRegionLabels": True,
-            "regionTypesAllowed": []
-        }
-    }
+    initial_settings = default_settings.copy()
 
-    # Save initial data to JSON file
+    # Save initial settings to JSON file
     with open(JSON_FILE, 'w') as f:
         json.dump(initial_settings, f, indent=4)
+
+def save_settings(settings):
+    with open(JSON_FILE, 'w') as f:
+        json.dump(settings, f, indent=4)
 
 dbModule = Module()
 path = os.path.abspath('./uploads')
@@ -110,6 +116,14 @@ def update_settings():
     initial_settings.update(new_settings)
     save_settings(initial_settings)
     return jsonify({'message': 'Settings updated successfully'})
+
+@app.route('/settings/reset', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
+def reset_settings():
+    global initial_settings
+    initial_settings = default_settings.copy()
+    save_settings(initial_settings)
+    return jsonify({'message': 'Settings reset to default values'})
 
 @app.route('/upload', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
@@ -281,8 +295,11 @@ def clear_upload_folder():
 @app.route('/clearSession', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
 def clear_session():
+    global initial_settings
     try:
         dbModule.clear_db()
+        initial_settings = default_settings.copy()
+        save_settings(initial_settings)
         clear_upload_folder()
         return jsonify({"message": "Database cleared successfully."}), 200
 

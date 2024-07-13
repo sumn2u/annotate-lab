@@ -3,7 +3,7 @@ from unittest.mock import patch
 # import os
 import json
 from io import BytesIO
-from app import app
+from app import app, default_settings
 
 class FlaskTestCase(unittest.TestCase):
 
@@ -47,6 +47,27 @@ class FlaskTestCase(unittest.TestCase):
         data = json.loads(response.data)
         self.assertEqual(data['taskDescription'], 'Updated task description')
         self.assertTrue(data['showLab'])
+
+    def test_reset_settings(self):
+        # Update settings first to ensure they are not default
+        updated_settings = {
+            'taskDescription': '',
+            'showLab': False
+        }
+        response = self.app.post('/settings', json=updated_settings)
+        self.assertEqual(response.status_code, 200)
+        
+        # Reset settings to default
+        response = self.app.post('/settings/reset')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Settings reset to default values', response.data)
+        
+        # Verify settings are reset to default
+        response = self.app.get('/settings')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        for key, value in default_settings.items():
+            self.assertEqual(data[key], value)
 
     def test_upload_file_success(self):
         data = {
