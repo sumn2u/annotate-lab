@@ -34,6 +34,33 @@ CORS(app, resources={r"/*": {"origins": client_url},
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
+# File path to store task configuration
+JSON_FILE = 'task_config.json'
+
+
+# Load initial data from JSON file if exists
+try:
+    with open(JSON_FILE, 'r') as f:
+        initial_settings = json.load(f)
+except FileNotFoundError:
+    initial_settings = {
+        "taskDescription": "",
+        "taskChoice": "image_classification",
+        "images": [],
+        "showLab": False,
+        "lastSavedImageIndex": None,
+        "configuration": {
+            "labels": [],
+            "multipleRegions": True,
+            "multipleRegionLabels": True,
+            "regionTypesAllowed": []
+        }
+    }
+
+    # Save initial data to JSON file
+    with open(JSON_FILE, 'w') as f:
+        json.dump(initial_settings, f, indent=4)
+
 dbModule = Module()
 path = os.path.abspath('./uploads')
 
@@ -66,6 +93,21 @@ def get_uploaded_files():
             file_url = url_for('uploaded_file', filename=filename, _external=True)
             files.append({'filename': filename, 'url': file_url})
     return files
+
+def save_settings(settings):
+    with open(JSON_FILE, 'w') as f:
+        json.dump(settings, f, indent=4)
+
+@app.route('/settings', methods=['GET'])
+def get_settings():
+    return jsonify(initial_settings)
+
+@app.route('/settings', methods=['POST'])
+def update_settings():
+    new_settings = request.json
+    initial_settings.update(new_settings)
+    save_settings(initial_settings)
+    return jsonify({'message': 'Settings updated successfully'})
 
 @app.route('/upload', methods=['POST'])
 @cross_origin(origin=client_url, headers=['Content-Type'])
