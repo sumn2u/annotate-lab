@@ -234,9 +234,13 @@ export default () => {
     try {
       const settings = await getSettings();
       setShowLabel(false)
+      const localConfiguration = settingsConfig.settings || {};
       // get last saved configuration
-      const savedConfiguration = settings|| {};
-      const lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
+      const savedConfiguration = settings || {};
+      let lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
+      if(localConfiguration.lastSavedImageIndex){
+        lastSavedImageIndex = localConfiguration.lastSavedImageIndex;
+      }
       setSettings(savedConfiguration);
       if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
         setSettings(savedConfiguration);
