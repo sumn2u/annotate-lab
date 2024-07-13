@@ -1,7 +1,7 @@
 // @flow
 import React, { useMemo } from "react"
 import Survey from "material-survey/components/Survey"
-import { setIn } from "seamless-immutable"
+import { setIn, asMutable } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material";
 import {useTranslation} from "react-i18next"
 
@@ -28,12 +28,15 @@ export default ({ config, onChange }) => {
     
       ],
     }
+
     const defaultAnswers = useMemo(
-        () => ({
+        () => asMutable({
           taskDescription: config.taskDescription || "",
           taskChoice: config.taskChoice !== undefined ? config.taskChoice : "image_classification",
-        }),
-        [config.taskDescription, config.taskChoice]
+        },
+         {deep: true}
+         ),
+      [config.taskDescription, config.taskChoice]
       );
     
 
