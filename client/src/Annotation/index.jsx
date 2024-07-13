@@ -248,6 +248,9 @@ export default () => {
             fetchImages(savedConfiguration.images, lastSavedImageIndex);
           }
       }
+      if(localConfiguration.taskDescription && localConfiguration.taskDescription.length > 0 && localConfiguration.taskDescription !== savedConfiguration.taskDescription){
+        reloadApp()
+      }
       const showLab = settingsConfig.settings?.showLab || false;
       if(!isSettingsOpen && showLab) {
         setShowLabel(showLab)
