@@ -29,6 +29,25 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'File type not allowed', response.data)
 
+    def test_get_initial_settings(self):
+        response = self.app.get('/settings')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['taskDescription'], '')
+        self.assertEqual(data['taskChoice'], 'image_classification')
+
+    def test_update_settings(self):
+        updated_settings = {
+            'taskDescription': 'Updated task description',
+            'showLab': True
+        }
+        response = self.app.post('/settings', json=updated_settings)
+        self.assertEqual(response.status_code, 200)
+        response = self.app.get('/settings')
+        data = json.loads(response.data)
+        self.assertEqual(data['taskDescription'], 'Updated task description')
+        self.assertTrue(data['showLab'])
+
     def test_upload_file_success(self):
         data = {
             'file': (BytesIO(b'some file data'), 'test.png')
