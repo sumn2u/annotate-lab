@@ -165,7 +165,7 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
            sx={{ 
             position: 'absolute', 
             top: isLargeDevice ? '2rem' : '1rem', 
-            right: isLargeDevice ? '10rem' : '1rem', 
+            left: isLargeDevice ? 'calc(100vw - 10rem)' : 'calc(100vw - 3rem)', 
             fontSize: isLargeDevice ? '2rem' : '1.5rem'
           }}>
               {hasShowLab && hasConfig &&  <CloseIcon fontSize={isLargeDevice ? "large" : "medium"} />}

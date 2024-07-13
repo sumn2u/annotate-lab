@@ -245,7 +245,7 @@ export default () => {
       if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
         setSettings(savedConfiguration);
         if (savedConfiguration.images.length > 0) {
-            await fetchImages(savedConfiguration.images, lastSavedImageIndex);
+            fetchImages(savedConfiguration.images, lastSavedImageIndex);
           }
       }
       const showLab = settingsConfig.settings?.showLab || false;
