@@ -9,7 +9,7 @@ import { getImagesAnnotation } from "../utils/send-data-to-server"
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import AlertDialog from "../AlertDialog";
-import { clear_db } from "../utils/get-data-from-server"
+import { clear_db, getSettings } from "../utils/get-data-from-server"
 import colors from "../colors.js";
 import {useTranslation} from "react-i18next"
 
@@ -57,7 +57,7 @@ export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
   const [open, setOpen] = useState(false);
   const {t} = useTranslation();
-  const [showLabel, setShowLabel] = useState(false)
+  const [showLabel, setShowLabel] = useState(true)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const settingsConfig = useSettings()
@@ -230,20 +230,27 @@ export default () => {
     reloadApp()
   };
 
-  const preloadConfiguration = () => {
-     // get last saved configuration
-     const savedConfiguration = settingsConfig.settings|| {};
-     const lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
-     if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
-       setSettings(savedConfiguration);
-       if (savedConfiguration.images.length > 0) {
-          fetchImages(savedConfiguration.images, lastSavedImageIndex);
-        }
-     }
-     const showLab = settingsConfig.settings?.showLab || false;
-     if(!isSettingsOpen && showLab) {
-      setShowLabel(showLab)
-     } 
+  const preloadConfiguration = async () => {
+    try {
+      const settings = await getSettings();
+      setShowLabel(false)
+      // get last saved configuration
+      const savedConfiguration = settings|| {};
+      const lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
+      setSettings(savedConfiguration);
+      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
+        setSettings(savedConfiguration);
+        if (savedConfiguration.images.length > 0) {
+            await fetchImages(savedConfiguration.images, lastSavedImageIndex);
+          }
+      }
+      const showLab = settingsConfig.settings?.showLab || false;
+      if(!isSettingsOpen && showLab) {
+        setShowLabel(showLab)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
   
   const showAnnotationLab = (newSettings) => {
@@ -256,7 +263,6 @@ export default () => {
   useEffect(() => {
     preloadConfiguration();
   }, [ ]);
-
 
   return (
     <>

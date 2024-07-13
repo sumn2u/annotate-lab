@@ -99,10 +99,12 @@ def save_settings(settings):
         json.dump(settings, f, indent=4)
 
 @app.route('/settings', methods=['GET'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def get_settings():
     return jsonify(initial_settings)
 
 @app.route('/settings', methods=['POST'])
+@cross_origin(origin=client_url, headers=['Content-Type'])
 def update_settings():
     new_settings = request.json
     initial_settings.update(new_settings)

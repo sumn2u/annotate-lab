@@ -36,6 +36,18 @@ export const getLabels = () => {
     })
   }
 
+  export const getSettings = () => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${config.SERVER_URL}/settings`)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error?.response); // Reject with error data
+        });
+    })
+  }
+
 export const clear_db = () => {
   return new Promise((resolve, reject) => {
     axios.post(`${config.SERVER_URL}/clearSession`)

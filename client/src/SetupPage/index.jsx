@@ -24,6 +24,7 @@ import NoteSection from "../NoteSection";
 import CloseIcon from "@mui/icons-material/Close";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import config from '../config.js';
+import { saveSettings } from "../utils/send-data-to-server.js";
 
 const theme = createTheme()
 
@@ -128,12 +129,13 @@ export const SetupPage = ({setConfiguration, settings, setShowLabel, showAnnotat
     }
   }, [currentTab]);
   
-  const showLab = ()=> {
+  const showLab = async ()=> {
     const hasLabels = configuration.labels.length > 0;
     setShowLabel(hasLabels)
     if(hasLabels) {
       const newSettings = {...settings, showLab: true}
       settingsConfig.changeSetting('settings',newSettings);
+      await saveSettings(newSettings)
       showAnnotationLab(newSettings)
     }
   }
