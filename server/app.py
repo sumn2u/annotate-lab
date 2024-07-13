@@ -35,7 +35,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # File path to store task configuration
-JSON_FILE = 'settings.json'
+CSV_FILE = os.path.join('db', 'database', 'settings.csv')
 
 
 default_settings = {
@@ -52,20 +52,22 @@ default_settings = {
     }
 }
 
-# Load initial data from JSON file if exists
-try:
-    with open(JSON_FILE, 'r') as f:
-        initial_settings = json.load(f)
-except FileNotFoundError:
-    initial_settings = default_settings.copy()
-
-    # Save initial settings to JSON file
-    with open(JSON_FILE, 'w') as f:
-        json.dump(initial_settings, f, indent=4)
+# Load initial data from CSV file if exists
+def load_settings():
+    if os.path.exists(CSV_FILE):
+        try:
+            data = pd.read_csv(CSV_FILE)
+            if not data.empty:
+                return data.to_dict(orient='records')[0]
+        except pd.errors.EmptyDataError:
+            pass
+    return default_settings.copy()
 
 def save_settings(settings):
-    with open(JSON_FILE, 'w') as f:
-        json.dump(settings, f, indent=4)
+    os.makedirs(os.path.dirname(CSV_FILE), exist_ok=True)
+    pd.DataFrame([settings]).to_csv(CSV_FILE, index=False)
+
+initial_settings = load_settings()
 
 dbModule = Module()
 path = os.path.abspath('./uploads')
@@ -99,10 +101,6 @@ def get_uploaded_files():
             file_url = url_for('uploaded_file', filename=filename, _external=True)
             files.append({'filename': filename, 'url': file_url})
     return files
-
-def save_settings(settings):
-    with open(JSON_FILE, 'w') as f:
-        json.dump(settings, f, indent=4)
 
 @app.route('/settings', methods=['GET'])
 @cross_origin(origin=client_url, headers=['Content-Type'])

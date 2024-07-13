@@ -1,0 +1,2 @@
+taskDescription,taskChoice,images,showLab,lastSavedImageIndex,configuration
+,image_classification,[],False,,"{'labels': [], 'multipleRegions': True, 'multipleRegionLabels': True, 'regionTypesAllowed': []}"
