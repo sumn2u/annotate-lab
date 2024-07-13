@@ -35,7 +35,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 # File path to store task configuration
-JSON_FILE = 'task_config.json'
+JSON_FILE = 'settings.json'
 
 
 # Load initial data from JSON file if exists
