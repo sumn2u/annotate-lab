@@ -1,5 +1,5 @@
 {
-    "taskDescription": "Updated task description",
+    "taskDescription": "",
     "taskChoice": "image_classification",
     "images": [],
     "showLab": true,
