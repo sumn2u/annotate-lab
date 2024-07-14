@@ -110,7 +110,6 @@ annotation-lab/
 ### Server
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)
 - [Pandas](https://pandas.pydata.org/)
-- [NumPy](https://numpy.org/)
 - Other dependencies as listed in `requirements.txt`
 
 
@@ -425,7 +424,8 @@ To convert non-normalized bounding box coordinates (x<sub style="font-size: 0.8e
 
 
 ![yolo-normalization](./sample_images/yolo-normalization.png)
-Image Credit: Leandro de Oliveira
+<p align="center">Image Credit: Leandro de Oliveira</p>
+
 ```python
 # Assuming row contains your bounding box coordinates
 row = {'xmax': 400, 'xmin': 200, 'ymax': 300, 'ymin': 100}
