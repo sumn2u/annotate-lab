@@ -1,23 +1,23 @@
 // @flow weak
 
-import React, {useEffect, useMemo, useRef, useState} from "react"
-import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import useEventCallback from "use-event-callback"
-import {useSettings} from "../SettingsProvider"
-import {useTranslation} from "react-i18next";
+import { useSettings } from "../SettingsProvider"
+import { useTranslation } from "react-i18next"
 
 const theme = createTheme()
-const Video = styled("video")(({theme}) => ({
+const Video = styled("video")(({ theme }) => ({
   zIndex: 0,
   position: "absolute",
 }))
 
-const StyledImage = styled("img")(({theme}) => ({
+const StyledImage = styled("img")(({ theme }) => ({
   zIndex: 0,
   position: "absolute",
 }))
 
-const Error = styled("div")(({theme}) => ({
+const Error = styled("div")(({ theme }) => ({
   zIndex: 0,
   position: "absolute",
   left: 0,
@@ -62,7 +62,7 @@ export default ({
         renderLoopRunning = true
         if (settings.videoPlaybackSpeed) {
           videoRef.current.playbackRate = parseFloat(
-            settings.videoPlaybackSpeed
+            settings.videoPlaybackSpeed,
           )
         }
       } else {
@@ -88,7 +88,13 @@ export default ({
     return () => {
       renderLoopRunning = false
     }
-  }, [onChangeVideoPlaying, onChangeVideoTime, settings.videoPlaybackSpeed, videoPlaying, videoTime])
+  }, [
+    onChangeVideoPlaying,
+    onChangeVideoTime,
+    settings.videoPlaybackSpeed,
+    videoPlaying,
+    videoTime,
+  ])
 
   const onLoadedVideoMetadata = useEventCallback((event) => {
     const videoElm = event.currentTarget
@@ -111,12 +117,10 @@ export default ({
       })
   })
 
-  const {t} = useTranslation();
+  const { t } = useTranslation()
 
   const onImageError = useEventCallback((event) => {
-    setError(
-      (t("error.image"))
-    )
+    setError(t("error.image"))
   })
 
   const stylePosition = useMemo(() => {

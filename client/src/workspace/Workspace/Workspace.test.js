@@ -1,35 +1,35 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import Workplace from './index' // Replace with the actual file name
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { IconDictionaryContext } from '../icon-dictionary.js'
+import React from "react"
+import { render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import Workplace from "./index" // Replace with the actual file name
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { IconDictionaryContext } from "../icon-dictionary.js"
 
 const theme = createTheme()
 
-jest.mock('react-use', () => ({
+jest.mock("react-use", () => ({
   useMeasure: () => [jest.fn(), { height: 500 }],
 }))
 
-jest.mock('../../config.js', () => ({
-    DOCS_URL: "https://annotate-docs.dwaste.live/",
-    SERVER_URL: "http://localhost:5000",
-  }));
-  
+jest.mock("../../config.js", () => ({
+  DOCS_URL: "https://annotate-docs.dwaste.live/",
+  SERVER_URL: "http://localhost:5000",
+}))
+
 // Mock the useTranslation hook with actual translations
-jest.mock('react-i18next', () => ({
-    useTranslation: () => ({
-        t: key => ({
-            "labname": "labname",
-            "btn.download": "Download",
-            "download.configuration": "Download Configuration",
-            "download.image_mask": "Download Masked Image",
-        }[key]),
-    }),
-}));
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) =>
+      ({
+        labname: "labname",
+        "btn.download": "Download",
+        "download.configuration": "Download Configuration",
+        "download.image_mask": "Download Masked Image",
+      })[key],
+  }),
+}))
 
-
-describe('Workplace', () => {
+describe("Workplace", () => {
   const mockIconDictionary = {}
   const renderComponent = (props = {}) =>
     render(
@@ -37,42 +37,47 @@ describe('Workplace', () => {
         <IconDictionaryContext.Provider value={mockIconDictionary}>
           <Workplace {...props} />
         </IconDictionaryContext.Provider>
-      </ThemeProvider>
+      </ThemeProvider>,
     )
 
-  test('renders without crashing', () => {
+  test("renders without crashing", () => {
     renderComponent()
-    expect(screen.getByTestId('container')).toBeInTheDocument()
+    expect(screen.getByTestId("container")).toBeInTheDocument()
   })
 
-  test('renders header when hideHeader is false', () => {
-    renderComponent({ hideHeader: false, headerItems: [{name: "Docs", label: "Docs"},] })
-    expect(screen.getByTestId('header')).toBeInTheDocument()
+  test("renders header when hideHeader is false", () => {
+    renderComponent({
+      hideHeader: false,
+      headerItems: [{ name: "Docs", label: "Docs" }],
+    })
+    expect(screen.getByTestId("header")).toBeInTheDocument()
   })
 
-  test('does not render header when hideHeader is true', () => {
+  test("does not render header when hideHeader is true", () => {
     renderComponent({ hideHeader: true })
-    expect(screen.queryByTestId('header')).not.toBeInTheDocument()
+    expect(screen.queryByTestId("header")).not.toBeInTheDocument()
   })
 
-  test('does not render icon sidebar when iconSidebarItems are empty', () => {
+  test("does not render icon sidebar when iconSidebarItems are empty", () => {
     renderComponent({ iconSidebarItems: [] })
-    expect(screen.queryByTestId('icon-sidebar')).not.toBeInTheDocument()
+    expect(screen.queryByTestId("icon-sidebar")).not.toBeInTheDocument()
   })
 
-  test('renders right sidebar when rightSidebarItems are provided', () => {
-    renderComponent({ rightSidebarItems: ['item1', 'item2'] })
-    expect(screen.getByTestId('right-sidebar')).toBeInTheDocument()
+  test("renders right sidebar when rightSidebarItems are provided", () => {
+    renderComponent({ rightSidebarItems: ["item1", "item2"] })
+    expect(screen.getByTestId("right-sidebar")).toBeInTheDocument()
   })
 
-  test('does not render right sidebar when rightSidebarItems are empty', () => {
+  test("does not render right sidebar when rightSidebarItems are empty", () => {
     renderComponent({ rightSidebarItems: [] })
-    expect(screen.queryByTestId('right-sidebar')).not.toBeInTheDocument()
+    expect(screen.queryByTestId("right-sidebar")).not.toBeInTheDocument()
   })
 
-  test('passes correct height to RightSidebar', () => {
-    renderComponent({ rightSidebarItems: ['item1'], rightSidebarExpanded: true })
-    expect(screen.getByTestId('right-sidebar')).toHaveStyle({ height: '500px' })
+  test("passes correct height to RightSidebar", () => {
+    renderComponent({
+      rightSidebarItems: ["item1"],
+      rightSidebarExpanded: true,
+    })
+    expect(screen.getByTestId("right-sidebar")).toHaveStyle({ height: "500px" })
   })
-
 })

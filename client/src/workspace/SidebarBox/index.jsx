@@ -12,15 +12,15 @@ import { useIconDictionary } from "../icon-dictionary.js"
 import styles from "./styles.js"
 
 const theme = createTheme()
-const ContainerDiv = styled('div')(() => styles.container)
-const HeaderDiv = styled('div')(() => styles.header)
-const ContentDiv = styled('div')(() => styles.expandedContent)
+const ContainerDiv = styled("div")(() => styles.container)
+const HeaderDiv = styled("div")(() => styles.header)
+const ContentDiv = styled("div")(() => styles.expandedContent)
 const TitleTypography = styled(Typography)(() => styles.title)
 
 const getExpandedFromLocalStorage = (title) => {
   try {
     return JSON.parse(
-      window.localStorage[`__REACT_WORKSPACE_SIDEBAR_EXPANDED_${title}`]
+      window.localStorage[`__REACT_WORKSPACE_SIDEBAR_EXPANDED_${title}`],
     )
   } catch (e) {
     return false
@@ -40,9 +40,7 @@ export const SidebarBox = ({
   expandedByDefault,
 }) => {
   const content = (
-    <ContentDiv
-      className={classnames(noScroll && "noScroll")}
-    >
+    <ContentDiv className={classnames(noScroll && "noScroll")}>
       {children}
     </ContentDiv>
   )
@@ -50,14 +48,14 @@ export const SidebarBox = ({
   const [expanded, changeExpandedState] = useState(
     expandedByDefault === undefined
       ? getExpandedFromLocalStorage(title)
-      : expandedByDefault
+      : expandedByDefault,
   )
   const changeExpanded = useCallback(
     (expanded) => {
       changeExpandedState(expanded)
       setExpandedInLocalStorage(title, expanded)
     },
-    [changeExpandedState, title]
+    [changeExpandedState, title],
   )
 
   const toggleExpanded = useEventCallback(() => changeExpanded(!expanded))
@@ -67,9 +65,7 @@ export const SidebarBox = ({
     <ThemeProvider theme={theme}>
       <ContainerDiv>
         <HeaderDiv>
-          <div className="iconContainer">
-            {icon || <TitleIcon />}
-          </div>
+          <div className="iconContainer">{icon || <TitleIcon />}</div>
           <TitleTypography>
             {title} <span>{subTitle}</span>
           </TitleTypography>
@@ -84,13 +80,13 @@ export const SidebarBox = ({
             content
           ) : null
         ) : (
-          <Collapse in={expanded} >
-              <div
-                className="panel"
-                style={{ display: "block", overflow: "hidden", height: 300 }}
-              >
-                {content}
-              </div>
+          <Collapse in={expanded}>
+            <div
+              className="panel"
+              style={{ display: "block", overflow: "hidden", height: 300 }}
+            >
+              {content}
+            </div>
           </Collapse>
         )}
       </ContainerDiv>
@@ -100,5 +96,5 @@ export const SidebarBox = ({
 
 export default memo(
   SidebarBox,
-  (prev, next) => prev.title === next.title && prev.children === next.children
+  (prev, next) => prev.title === next.title && prev.children === next.children,
 )

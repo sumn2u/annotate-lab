@@ -1,33 +1,35 @@
-import { createContext, useState, useContext } from 'react';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { createContext, useState, useContext } from "react"
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 
 const SnackbarContext = createContext({
   showSnackbar: () => {},
-});
+})
 
 export const SnackbarProvider = ({ children }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([])
 
-  const showSnackbar = (message, severity = 'info') => {
+  const showSnackbar = (message, severity = "info") => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { id: new Date().getTime(), message, severity },
-    ]);
-  };
+    ])
+  }
 
   const handleClose = (index) => {
-    setMessages((prevMessages) => prevMessages.filter((msg, idx) => idx !== index));
-  };
+    setMessages((prevMessages) =>
+      prevMessages.filter((msg, idx) => idx !== index),
+    )
+  }
 
   return (
     <SnackbarContext.Provider value={{ showSnackbar }}>
       {messages.map((msg, index) => (
         <Snackbar
-          key={msg.id+index}
+          key={msg.id + index}
           open
           autoHideDuration={6000}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           onClose={() => handleClose(index)}
           sx={{ mb: index * 8 }}
         >
@@ -38,15 +40,15 @@ export const SnackbarProvider = ({ children }) => {
       ))}
       {children}
     </SnackbarContext.Provider>
-  );
-};
+  )
+}
 
 export const useSnackbar = () => {
-  const context = useContext(SnackbarContext);
+  const context = useContext(SnackbarContext)
   if (!context) {
-    throw new Error('useSnackbar must be used within a SnackbarProvider');
+    throw new Error("useSnackbar must be used within a SnackbarProvider")
   }
-  return context;
-};
+  return context
+}
 
-export default SnackbarContext;
+export default SnackbarContext

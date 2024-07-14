@@ -87,7 +87,7 @@ export const RightSidebar = ({ children, initiallyExpanded, height }) => {
     (state) => !state,
     initiallyExpanded === undefined
       ? getInitialExpandedState()
-      : initiallyExpanded
+      : initiallyExpanded,
   )
 
   useEffect(() => {
@@ -101,7 +101,11 @@ export const RightSidebar = ({ children, initiallyExpanded, height }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container className={expanded ? "expanded" : ""} style={containerStyle} data-testid="right-sidebar">
+      <Container
+        className={expanded ? "expanded" : ""}
+        style={containerStyle}
+        data-testid="right-sidebar"
+      >
         <Slider className={expanded ? "expanded" : ""}>
           <InnerSliderContent>{children}</InnerSliderContent>
         </Slider>

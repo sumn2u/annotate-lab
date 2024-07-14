@@ -49,18 +49,18 @@ export default {
     fontSize: 13,
   },
   nameField: {
-    marginTop: 6
-  }, 
+    marginTop: 6,
+  },
   alert: {
-    padding: "0px", 
+    padding: "0px",
     paddingLeft: 3,
     paddingRight: 3,
     fontSize: 12,
-    lineHeight:1.6
-  }, 
-  div:{
-    marginTop: 4, 
-    display: "flex", 
-    justifyContent: "space-between"
-  }
+    lineHeight: 1.6,
+  },
+  div: {
+    marginTop: 4,
+    display: "flex",
+    justifyContent: "space-between",
+  },
 }

@@ -1,9 +1,9 @@
 // @flow
 
-import React, {memo} from "react"
+import React, { memo } from "react"
 import SidebarBoxContainer from "../SidebarBoxContainer"
-import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
-import {grey} from "@mui/material/colors"
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
+import { grey } from "@mui/material/colors"
 import RegionIcon from "@mui/icons-material/PictureInPicture"
 import Grid from "@mui/material/Grid"
 import ReorderIcon from "@mui/icons-material/SwapVert"
@@ -16,26 +16,26 @@ import VisibleOffIcon from "@mui/icons-material/VisibilityOff"
 import styles from "./styles"
 import classnames from "classnames"
 import isEqual from "lodash/isEqual"
-import {useTranslation} from "react-i18next";
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import Tooltip from "@mui/material/Tooltip";
+import { useTranslation } from "react-i18next"
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen"
+import OpenInFullIcon from "@mui/icons-material/OpenInFull"
+import Tooltip from "@mui/material/Tooltip"
 
 const theme = createTheme()
 
-const ChipSpan = styled('span')(() => styles.chip)
-const RowDiv = styled('div')(() => styles.row)
-const ContainerDiv = styled('div')(() => styles.container)
-const HeaderSep = styled("div")(({theme}) => ({
+const ChipSpan = styled("span")(() => styles.chip)
+const RowDiv = styled("div")(() => styles.row)
+const ContainerDiv = styled("div")(() => styles.container)
+const HeaderSep = styled("div")(({ theme }) => ({
   borderTop: `1px solid ${grey[200]}`,
   marginTop: 2,
   marginBottom: 2,
 }))
 
-const Chip = ({color, text}) => {
+const Chip = ({ color, text }) => {
   return (
     <ChipSpan>
-      <div className="color" style={{backgroundColor: color}} />
+      <div className="color" style={{ backgroundColor: color }} />
       <div className="text">{text}</div>
     </ChipSpan>
   )
@@ -54,19 +54,16 @@ const RowLayout = ({
   onClick,
 }) => {
   return (
-    <RowDiv
-      onClick={onClick}
-      className={classnames({header, highlighted})}
-    >
+    <RowDiv onClick={onClick} className={classnames({ header, highlighted })}>
       <Grid container alignItems="center">
         <Grid item xs={2}>
-          <div style={{textAlign: "right", paddingRight: 10}}>{order}</div>
+          <div style={{ textAlign: "right", paddingRight: 10 }}>{order}</div>
         </Grid>
         <Grid item xs={5}>
           {name}
         </Grid>
         <Grid item xs={2}>
-          <div style={{textAlign: "right", paddingRight: 6}}>{minimize}</div>
+          <div style={{ textAlign: "right", paddingRight: 6 }}>{minimize}</div>
         </Grid>
         <Grid item xs={1}>
           {trash}
@@ -83,36 +80,37 @@ const RowLayout = ({
 }
 
 const RowHeader = ({ regions, onChangeRegion, onDeleteRegion }) => {
-  const visible = regions.find(r => r.visible === false) == null;
-  const locked = regions.find(r => r.locked === false) == null;
-  const {t} = useTranslation();
+  const visible = regions.find((r) => r.visible === false) == null
+  const locked = regions.find((r) => r.locked === false) == null
+  const { t } = useTranslation()
   return (
     <RowLayout
       header
       highlighted={false}
       order={<ReorderIcon className="icon" />}
-      name={<div style={{paddingLeft: 10}}>{t("desc.class")}</div>}
+      name={<div style={{ paddingLeft: 10 }}>{t("desc.class")}</div>}
       area={<PieChartIcon className="icon" />}
       trash={
         <Tooltip title={t("delete_regions")}>
-          <TrashIcon className="icon"  
+          <TrashIcon
+            className="icon"
             onClick={() => {
-                regions.forEach(r => {
-                  onDeleteRegion(r);
-                });
-            }} 
+              regions.forEach((r) => {
+                onDeleteRegion(r)
+              })
+            }}
             data-testid="DeleteIcon-header"
           />
         </Tooltip>
-        }
+      }
       lock={
         locked === true ? (
           <Tooltip title={t("lock_regions")}>
             <LockIcon
               onClick={() => {
-                regions.forEach(r => {
-                  onChangeRegion({ ...r, locked: false });
-                });
+                regions.forEach((r) => {
+                  onChangeRegion({ ...r, locked: false })
+                })
               }}
               className="icon"
               data-testid="LockIcon-header"
@@ -122,42 +120,42 @@ const RowHeader = ({ regions, onChangeRegion, onDeleteRegion }) => {
           <Tooltip title={t("unlock_regions")}>
             <UnlockIcon
               onClick={() => {
-                regions.forEach(r => {
-                  onChangeRegion({ ...r, locked: true });
-                });
+                regions.forEach((r) => {
+                  onChangeRegion({ ...r, locked: true })
+                })
               }}
               className="icon"
               data-testid="UnlockIcon-header"
             />
           </Tooltip>
-        )    
+        )
       }
       visible={
-          visible ? (
-            <Tooltip title={t("show_regions")}>
-              <VisibleIcon
-                onClick={() => {
-                  regions.forEach(r => {
-                    onChangeRegion({ ...r, visible: false });
-                  });
-                }}
-                className="icon"
-                data-testid="VisibleIcon-header"
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip title={t("hide_regions")}>
-              <VisibleOffIcon
-                onClick={() => {
-                  regions.forEach(r => {
-                    onChangeRegion({ ...r, visible: true });
-                  });
-                }}
-                className="icon"
-                data-testid="InvisibleIcon-header"
-              />
-            </Tooltip>
-          )
+        visible ? (
+          <Tooltip title={t("show_regions")}>
+            <VisibleIcon
+              onClick={() => {
+                regions.forEach((r) => {
+                  onChangeRegion({ ...r, visible: false })
+                })
+              }}
+              className="icon"
+              data-testid="VisibleIcon-header"
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip title={t("hide_regions")}>
+            <VisibleOffIcon
+              onClick={() => {
+                regions.forEach((r) => {
+                  onChangeRegion({ ...r, visible: true })
+                })
+              }}
+              className="icon"
+              data-testid="InvisibleIcon-header"
+            />
+          </Tooltip>
+        )
       }
     />
   )
@@ -178,7 +176,7 @@ const Row = ({
   name,
   index,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation()
   return (
     <RowLayout
       header={false}
@@ -190,7 +188,7 @@ const Row = ({
         r.minimized ? (
           <Tooltip title={t("expand_selection")}>
             <OpenInFullIcon
-              onClick={() => onChangeRegion({...r, minimized: false})}
+              onClick={() => onChangeRegion({ ...r, minimized: false })}
               className="icon2"
               data-testid={`OpenInFullIcon-${r.id}`}
             />
@@ -198,7 +196,7 @@ const Row = ({
         ) : (
           <Tooltip title={t("collapse_selection")}>
             <CloseFullscreenIcon
-              onClick={() => onChangeRegion({...r, minimized: true})}
+              onClick={() => onChangeRegion({ ...r, minimized: true })}
               className="icon2"
               data-testid={`CloseFullscreenIcon-${r.id}`}
             />
@@ -207,14 +205,18 @@ const Row = ({
       }
       trash={
         <Tooltip title={t("delete_region")}>
-          <TrashIcon onClick={() => onDeleteRegion(r)} className="icon2" data-testid={`DeleteIcon-${r.id}`} />
+          <TrashIcon
+            onClick={() => onDeleteRegion(r)}
+            className="icon2"
+            data-testid={`DeleteIcon-${r.id}`}
+          />
         </Tooltip>
       }
       lock={
         r.locked ? (
           <Tooltip title={t("lock_region")}>
             <LockIcon
-              onClick={() => onChangeRegion({...r, locked: false})}
+              onClick={() => onChangeRegion({ ...r, locked: false })}
               className="icon2"
               data-testid={`LockIcon-${r.id}`}
             />
@@ -222,7 +224,7 @@ const Row = ({
         ) : (
           <Tooltip title={t("unlock_region")}>
             <UnlockIcon
-              onClick={() => onChangeRegion({...r, locked: true})}
+              onClick={() => onChangeRegion({ ...r, locked: true })}
               className="icon2"
               data-testid={`UnlockIcon-${r.id}`}
             />
@@ -233,7 +235,7 @@ const Row = ({
         r.visible || r.visible === undefined ? (
           <Tooltip title={t("show_region")}>
             <VisibleIcon
-              onClick={() => onChangeRegion({...r, visible: false})}
+              onClick={() => onChangeRegion({ ...r, visible: false })}
               className="icon2"
               data-testid={`VisibleIcon-${r.id}`}
             />
@@ -241,7 +243,7 @@ const Row = ({
         ) : (
           <Tooltip title={t("hide_region")}>
             <VisibleOffIcon
-              onClick={() => onChangeRegion({...r, visible: true})}
+              onClick={() => onChangeRegion({ ...r, visible: true })}
               className="icon2"
               data-testid={`InvisibleIcon-${r.id}`}
             />
@@ -264,7 +266,7 @@ const MemoRow = memo(
     prevProps.cls === nextProps.cls &&
     prevProps.name === nextProps.name &&
     prevProps.color === nextProps.color &&
-    prevProps.points === nextProps.points
+    prevProps.points === nextProps.points,
 )
 
 const emptyArr = []
@@ -275,20 +277,19 @@ export const RegionSelectorSidebarBox = ({
   onChangeRegion,
   onSelectRegion,
 }) => {
-
-  const {t} = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title={t("menu.regions")}
         subTitle=""
-        icon={<RegionIcon style={{color: grey[700]}} />}
+        icon={<RegionIcon style={{ color: grey[700] }} />}
         expandedByDefault
         noScroll={true}
       >
         <ContainerDiv>
-        <MemoRowHeader 
+          <MemoRowHeader
             regions={regions}
             onChangeRegion={onChangeRegion}
             onDeleteRegion={onDeleteRegion}
@@ -319,12 +320,12 @@ const mapUsedRegionProperties = (r) => [
   r.minimized,
   r.name,
   r.highlighted,
-  r.points
+  r.points,
 ]
 
 export default memo(RegionSelectorSidebarBox, (prevProps, nextProps) =>
   isEqual(
     (prevProps.regions || emptyArr).map(mapUsedRegionProperties),
-    (nextProps.regions || emptyArr).map(mapUsedRegionProperties)
-  )
+    (nextProps.regions || emptyArr).map(mapUsedRegionProperties),
+  ),
 )

@@ -57,13 +57,13 @@ export const PointDistances = ({
                   displayDistance =
                     Math.sqrt(
                       Math.pow(r1.x * w - r2.x * w, 2) +
-                        Math.pow(r1.y * h - r2.y * h, 2)
+                        Math.pow(r1.y * h - r2.y * h, 2),
                     ).toFixed(pointDistancePrecision) + unitName
                 } else {
                   displayDistance =
                     (
                       Math.sqrt(
-                        Math.pow(r1.x - r2.x, 2) + Math.pow(r1.y - r2.y, 2)
+                        Math.pow(r1.x - r2.x, 2) + Math.pow(r1.y - r2.y, 2),
                       ) * 100
                     ).toFixed(pointDistancePrecision) + "%"
                 }
@@ -79,7 +79,7 @@ export const PointDistances = ({
                     </text>
                   </Fragment>
                 )
-              })
+              }),
           )}
       </Svg>
     </ThemeProvider>

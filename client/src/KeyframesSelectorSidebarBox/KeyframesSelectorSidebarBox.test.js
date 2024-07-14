@@ -1,19 +1,19 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import '@testing-library/jest-dom';
-import KeyframesSelectorSidebarBox from "./index";
-import getTimeString from "../KeyframeTimeline/get-time-string";
+import React from "react"
+import { render, screen, fireEvent } from "@testing-library/react"
+import "@testing-library/jest-dom"
+import KeyframesSelectorSidebarBox from "./index"
+import getTimeString from "../KeyframeTimeline/get-time-string"
 
-jest.mock("../KeyframeTimeline/get-time-string");
+jest.mock("../KeyframeTimeline/get-time-string")
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key) => key,
   }),
-}));
+}))
 
 describe("KeyframesSelectorSidebarBox", () => {
-  const mockOnChangeVideoTime = jest.fn();
-  const mockOnDeleteKeyframe = jest.fn();
+  const mockOnChangeVideoTime = jest.fn()
+  const mockOnDeleteKeyframe = jest.fn()
 
   const setup = (props = {}) => {
     const utils = render(
@@ -23,60 +23,66 @@ describe("KeyframesSelectorSidebarBox", () => {
         onChangeVideoTime={mockOnChangeVideoTime}
         onDeleteKeyframe={mockOnDeleteKeyframe}
         {...props}
-      />
-    );
-    return { ...utils };
-  };
+      />,
+    )
+    return { ...utils }
+  }
 
   beforeEach(() => {
-    getTimeString.mockImplementation((time) => `00:${String(time / 10).padStart(2, '0')}`);
-  });
+    getTimeString.mockImplementation(
+      (time) => `00:${String(time / 10).padStart(2, "0")}`,
+    )
+  })
 
   test("renders correctly", () => {
-    setup();
+    setup()
 
-    expect(screen.getByText(/00:10/)).toBeInTheDocument();
-    expect(screen.getByText(/00:30/)).toBeInTheDocument();
-  });
+    expect(screen.getByText(/00:10/)).toBeInTheDocument()
+    expect(screen.getByText(/00:30/)).toBeInTheDocument()
+  })
 
   test("handles click to change video time", () => {
-    setup();
+    setup()
 
-    const keyframeRow = screen.getByText((content, element) => {
-      const hasText = (node) => node.textContent.includes("00:10");
-      const nodeHasText = hasText(element);
-      const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
-      return nodeHasText && childrenDontHaveText;
-    }).closest("div");
-    fireEvent.click(keyframeRow);
+    const keyframeRow = screen
+      .getByText((content, element) => {
+        const hasText = (node) => node.textContent.includes("00:10")
+        const nodeHasText = hasText(element)
+        const childrenDontHaveText = Array.from(element.children).every(
+          (child) => !hasText(child),
+        )
+        return nodeHasText && childrenDontHaveText
+      })
+      .closest("div")
+    fireEvent.click(keyframeRow)
 
-    expect(mockOnChangeVideoTime).toHaveBeenCalledWith(100);
-  });
+    expect(mockOnChangeVideoTime).toHaveBeenCalledWith(100)
+  })
 
   test("handles click to delete keyframe", () => {
-    setup();
+    setup()
 
-    const deleteButton = screen.getAllByTestId("DeleteIcon")[0];
-    fireEvent.click(deleteButton);
+    const deleteButton = screen.getAllByTestId("DeleteIcon")[0]
+    fireEvent.click(deleteButton)
 
-    expect(mockOnDeleteKeyframe).toHaveBeenCalledWith(100);
-  });
+    expect(mockOnDeleteKeyframe).toHaveBeenCalledWith(100)
+  })
 
   test("stops event propagation on delete", () => {
-    setup();
+    setup()
 
-    const keyframeRow = screen.getByText(/00:10/).closest(".keyframeRow");
-    expect(keyframeRow).toBeInTheDocument();
- 
-    const deleteButton = keyframeRow.querySelector("[data-testid='DeleteIcon']");
-    expect(deleteButton).toBeInTheDocument();
+    const keyframeRow = screen.getByText(/00:10/).closest(".keyframeRow")
+    expect(keyframeRow).toBeInTheDocument()
 
-    const stopPropagationSpy = jest.spyOn(Event.prototype, "stopPropagation");
-    fireEvent.click(deleteButton);
+    const deleteButton = keyframeRow.querySelector("[data-testid='DeleteIcon']")
+    expect(deleteButton).toBeInTheDocument()
 
-    expect(stopPropagationSpy).toHaveBeenCalled();
+    const stopPropagationSpy = jest.spyOn(Event.prototype, "stopPropagation")
+    fireEvent.click(deleteButton)
 
-    expect(mockOnChangeVideoTime).toHaveBeenCalled();
-    expect(mockOnDeleteKeyframe).toHaveBeenCalledWith(100);
-  });
-});
+    expect(stopPropagationSpy).toHaveBeenCalled()
+
+    expect(mockOnChangeVideoTime).toHaveBeenCalled()
+    expect(mockOnDeleteKeyframe).toHaveBeenCalledWith(100)
+  })
+})

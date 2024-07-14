@@ -14,10 +14,10 @@ import { grey } from "@mui/material/colors"
 import isEqual from "lodash/isEqual"
 import { useTranslation } from "react-i18next"
 import { Grid } from "@mui/material"
-import Tooltip from "@mui/material/Tooltip";
+import Tooltip from "@mui/material/Tooltip"
 
 const theme = createTheme()
-const EmptyTextDiv = styled('div')(() => ({
+const EmptyTextDiv = styled("div")(() => ({
   fontSize: 14,
   fontWeight: "bold",
   color: grey[500],
@@ -25,14 +25,15 @@ const EmptyTextDiv = styled('div')(() => ({
   padding: 20,
 }))
 
-const listItemTextStyle = { paddingLeft: 16, fontSize: 11, paddingTop: 0, paddingBottom: 0}
+const listItemTextStyle = {
+  paddingLeft: 16,
+  fontSize: 11,
+  paddingTop: 0,
+  paddingBottom: 0,
+}
 
-export const HistorySidebarBox = ({
-  history,
-  onRestoreHistory,
-}) => {
-
-  const { t } = useTranslation();
+export const HistorySidebarBox = ({ history, onRestoreHistory }) => {
+  const { t } = useTranslation()
 
   return (
     <ThemeProvider theme={theme}>
@@ -42,12 +43,17 @@ export const HistorySidebarBox = ({
         expandedByDefault
         noScroll={true}
       >
-        <List sx={{paddingTop: "0px"}}>
+        <List sx={{ paddingTop: "0px" }}>
           {history.length === 0 && (
             <EmptyTextDiv>{t("no.history")}</EmptyTextDiv>
           )}
           {history.map(({ name, time }, i) => (
-            <ListItem sx={{paddingTop: "0px", paddingBottom:"0px"}} button dense key={i} >
+            <ListItem
+              sx={{ paddingTop: "0px", paddingBottom: "0px" }}
+              button
+              dense
+              key={i}
+            >
               <ListItemText
                 style={listItemTextStyle}
                 primary={name}
@@ -57,9 +63,9 @@ export const HistorySidebarBox = ({
               />
               {i === 0 && (
                 <ListItemSecondaryAction onClick={() => onRestoreHistory()}>
-                  <Grid item xs={1}  onClick={() => onRestoreHistory()}>
-                  <Tooltip title={t("undo_last_action")} placement="left">
-                    <UndoIcon sx={{ fontSize: 14 }}  data-testid="undo-icon"/>
+                  <Grid item xs={1} onClick={() => onRestoreHistory()}>
+                    <Tooltip title={t("undo_last_action")} placement="left">
+                      <UndoIcon sx={{ fontSize: 14 }} data-testid="undo-icon" />
                     </Tooltip>
                   </Grid>
                 </ListItemSecondaryAction>
@@ -75,6 +81,6 @@ export const HistorySidebarBox = ({
 export default memo(HistorySidebarBox, (prevProps, nextProps) =>
   isEqual(
     prevProps.history.map((a) => [a.name, a.time]),
-    nextProps.history.map((a) => [a.name, a.time])
-  )
+    nextProps.history.map((a) => [a.name, a.time]),
+  ),
 )

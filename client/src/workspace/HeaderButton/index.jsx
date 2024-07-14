@@ -6,7 +6,7 @@ import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import { useIconDictionary } from "../icon-dictionary.js"
 import { iconMapping } from "../icon-mapping.js"
 import { colors } from "@mui/material"
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from "@mui/material/useMediaQuery"
 
 const theme = createTheme()
 const defaultNameIconMapping = iconMapping
@@ -21,8 +21,8 @@ const getIcon = (name, customIconMapping) => {
 
 const StyledButton = styled(Button)(({ theme }) => ({
   textTransform: "none",
-  width: useMediaQuery(theme.breakpoints.down('sm')) ? 30:  60,
-  minWidth: useMediaQuery(theme.breakpoints.down('sm')) ? 32:  64,
+  width: useMediaQuery(theme.breakpoints.down("sm")) ? 30 : 60,
+  minWidth: useMediaQuery(theme.breakpoints.down("sm")) ? 32 : 64,
   paddingTop: 8,
   paddingBottom: 4,
   marginLeft: 1,
@@ -60,7 +60,7 @@ export const HeaderButton = ({
   hideText = false,
 }) => {
   const customIconMapping = useIconDictionary()
-  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down("sm"))
 
   return (
     <ThemeProvider theme={theme}>

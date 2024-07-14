@@ -1,12 +1,12 @@
 // @flow weak
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import Paper from "@mui/material/Paper"
 import DefaultRegionLabel from "../RegionLabel"
 import LockIcon from "@mui/icons-material/Lock"
 
 const copyWithout = (obj, ...args) => {
-  const newObj = {...obj}
+  const newObj = { ...obj }
   for (const arg of args) {
     delete newObj[arg]
   }
@@ -32,24 +32,24 @@ export const RegionTags = ({
   const RegionLabel =
     RegionEditLabel != null ? RegionEditLabel : DefaultRegionLabel
 
-   const [windowDimensions, setWindowDimensions] = useState({
+  const [windowDimensions, setWindowDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
-  });
+  })
 
   useEffect(() => {
     const handleResize = () => {
       setWindowDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
-      });
-    };
+      })
+    }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize)
     return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
   return regions
     .filter((r) => r.visible || r.visible === undefined)
     .map((region) => {
@@ -60,24 +60,25 @@ export const RegionTags = ({
         region.editingLabels && !region.locked ? 220 : region.tags ? 60 : 50
       const displayOnTop = pbox.y > labelBoxHeight
       const checkBottomSpace = pbox.y + pbox.h + margin / 2 + labelBoxHeight
-      const hasEnoughBottomSpace = checkBottomSpace  < (windowDimensions.height-45)
-      let coords;
+      const hasEnoughBottomSpace =
+        checkBottomSpace < windowDimensions.height - 45
+      let coords
       if (displayOnTop) {
         coords = {
           left: pbox.x,
           top: pbox.y - margin / 2,
-        };
+        }
       } else if (hasEnoughBottomSpace) {
         coords = {
           left: pbox.x,
           top: pbox.y + pbox.h + margin / 2,
-        };
+        }
       } else {
         // Not enough space at the bottom, render on the right
         coords = {
           left: pbox.x + pbox.w + margin / 2,
           top: pbox.y,
-        };
+        }
       }
       if (region.locked) {
         return (
@@ -94,7 +95,7 @@ export const RegionTags = ({
               style={{
                 position: "absolute",
                 left: 0,
-                ...(displayOnTop ? {bottom: 0} : {top: 0}),
+                ...(displayOnTop ? { bottom: 0 } : { top: 0 }),
                 zIndex: 10,
                 backgroundColor: "#fff",
                 borderRadius: 4,
@@ -104,13 +105,13 @@ export const RegionTags = ({
                 pointerEvents: "none",
               }}
             >
-              <LockIcon style={{width: 16, height: 16, color: "#333"}} />
+              <LockIcon style={{ width: 16, height: 16, color: "#333" }} />
             </Paper>
           </div>
         )
       }
-      if(region.minimized){
-        return (null)
+      if (region.minimized) {
+        return null
       }
       return (
         <div
@@ -137,7 +138,7 @@ export const RegionTags = ({
               position: "absolute",
               zIndex: 20,
               left: 0,
-              ...(displayOnTop ? {bottom: 0} : {top: 0}),
+              ...(displayOnTop ? { bottom: 0 } : { top: 0 }),
             }}
             {...(!region.editingLabels
               ? copyWithout(mouseEvents, "onMouseDown", "onMouseUp")

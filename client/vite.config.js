@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import markdownRawPlugin from 'vite-raw-plugin';
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+import { nodePolyfills } from "vite-plugin-node-polyfills"
+import markdownRawPlugin from "vite-raw-plugin"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,22 +9,22 @@ export default defineConfig({
     react(),
     nodePolyfills(),
     markdownRawPlugin({
-      fileRegex: /\.md$/
+      fileRegex: /\.md$/,
     }),
   ],
-  base: './',
+  base: "./",
   optimizeDeps: {
     esbuildOptions: {
       define: {
-        global: 'globalThis',
+        global: "globalThis",
       },
     },
   },
   build: {
-    outDir: 'dist', 
+    outDir: "dist",
   },
   server: {
     host: true,
-    port: 5173
-}
-});
+    port: 5173,
+  },
+})

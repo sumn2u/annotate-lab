@@ -20,26 +20,26 @@ export const TagsSidebarBox = ({
   const { t } = useTranslation()
   const { tags = [], cls = null } = currentImage || {}
   const onChangeClassification = useEventCallback((o) =>
-    onChangeImage({ cls: o.value })
+    onChangeImage({ cls: o.value }),
   )
   const onChangeTags = useEventCallback((o) =>
-    onChangeImage({ tags: o.map((a) => a.value) })
+    onChangeImage({ tags: o.map((a) => a.value) }),
   )
   const selectValue = useMemo(
     () => (cls ? { value: cls, label: cls } : null),
-    [cls]
+    [cls],
   )
   const memoImgClsList = useMemo(
     () => asMutable(imageClsList.map((c) => ({ value: c, label: c }))),
-    [imageClsList]
+    [imageClsList],
   )
   const memoImgTagList = useMemo(
     () => asMutable(imageTagList.map((c) => ({ value: c, label: c }))),
-    [imageTagList]
+    [imageTagList],
   )
   const memoCurrentTags = useMemo(
     () => tags.map((r) => ({ value: r, label: r })),
-    [tags]
+    [tags],
   )
 
   if (!currentImage) return null
@@ -82,13 +82,13 @@ export default memo(
     prevProps.currentImage.cls === nextProps.currentImage.cls &&
     prevProps.currentImage.tags === nextProps.currentImage.tags &&
     prevProps.imageClsList === nextProps.imageClsList &&
-    prevProps.imageTagList === nextProps.imageTagList
+    prevProps.imageTagList === nextProps.imageTagList,
 )
 
 TagsSidebarBox.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-  currentImage: PropTypes.shape({ 
-    cls: PropTypes.string, 
+  currentImage: PropTypes.shape({
+    cls: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
   imageClsList: PropTypes.arrayOf(PropTypes.string),

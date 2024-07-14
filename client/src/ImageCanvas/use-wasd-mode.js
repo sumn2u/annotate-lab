@@ -1,8 +1,8 @@
-import {useEffect} from "react"
-import {useSettings} from "../SettingsProvider"
+import { useEffect } from "react"
+import { useSettings } from "../SettingsProvider"
 
-export default ({getLatestMat, changeMat}) => {
-  const {wasdMode} = useSettings()
+export default ({ getLatestMat, changeMat }) => {
+  const { wasdMode } = useSettings()
   useEffect(() => {
     if (!wasdMode) return
     const vel = 10

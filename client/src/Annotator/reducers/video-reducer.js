@@ -1,15 +1,14 @@
 // @flow
-import {setIn, without} from "seamless-immutable"
+import { setIn, without } from "seamless-immutable"
 
 export default (state, action) => {
-
   switch (action.type) {
     case "IMAGE_OR_VIDEO_LOADED": {
-      const {duration} = action.metadata
+      const { duration } = action.metadata
       if (typeof duration === "number") {
         return setIn(state, ["videoDuration"], duration * 1000)
       }
-      return;
+      return
     }
     case "HEADER_BUTTON_CLICKED": {
       switch (action.buttonName.toLowerCase()) {

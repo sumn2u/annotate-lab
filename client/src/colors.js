@@ -24,7 +24,7 @@ const reverseParseColor = (rrggbb) => {
 }
 
 export const colorInts = colors.map(
-  (c) => (reverseParseColor(c) | transparency) >>> 0
+  (c) => (reverseParseColor(c) | transparency) >>> 0,
 )
 
 export default colors

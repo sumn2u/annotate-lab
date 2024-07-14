@@ -1,9 +1,9 @@
 // @flow
-import {moveRegion} from "../../ImageCanvas/region-tools.js"
-import {getIn, setIn} from "seamless-immutable"
+import { moveRegion } from "../../ImageCanvas/region-tools.js"
+import { getIn, setIn } from "seamless-immutable"
 import isEqual from "lodash/isEqual"
 import getActiveImage from "./get-active-image"
-import {saveToHistory} from "./history-handler.js"
+import { saveToHistory } from "./history-handler.js"
 import colors from "../../colors"
 import fixTwisted from "./fix-twisted"
 import convertExpandingLineToPolygon from "./convert-expanding-line-to-polygon"
@@ -13,7 +13,11 @@ import setInLocalStorage from "../../utils/set-in-local-storage"
 import i18next from "i18next"
 
 const getRandomId = () => Math.random().toString().split(".")[1]
-const arrayRemove = (arr, value) => { return arr.filter((ele)=>{return ele !== value})}
+const arrayRemove = (arr, value) => {
+  return arr.filter((ele) => {
+    return ele !== value
+  })
+}
 
 export default (state, action) => {
   if (
@@ -37,14 +41,14 @@ export default (state, action) => {
 
   // Throttle certain actions
   if (action.type === "MOUSE_MOVE") {
-    if (Date.now() - ((state).lastMouseMoveCall || 0) < 16) return state
+    if (Date.now() - (state.lastMouseMoveCall || 0) < 16) return state
     state = setIn(state, ["lastMouseMoveCall"], Date.now())
   }
   if (!action.type.includes("MOUSE")) {
     state = setIn(state, ["lastAction"], action)
   }
 
-  const {currentImageIndex, pathToActiveImage, activeImage} =
+  const { currentImageIndex, pathToActiveImage, activeImage } =
     getActiveImage(state)
 
   const getRegionIndex = (region) => {
@@ -54,7 +58,7 @@ export default (state, action) => {
         : region.id
     if (!activeImage) return null
     const regionIndex = (activeImage.regions || []).findIndex(
-      (r) => r.id === regionId
+      (r) => r.id === regionId,
     )
     return regionIndex === -1 ? null : regionIndex
   }
@@ -79,7 +83,7 @@ export default (state, action) => {
       return setIn(
         state,
         [...pathToActiveImage, "regions"],
-        (regions || []).filter((r) => r.id !== region.id)
+        (regions || []).filter((r) => r.id !== region.id),
       )
     }
   }
@@ -92,16 +96,16 @@ export default (state, action) => {
       (activeImage.regions || []).map((r) => ({
         ...r,
         editingLabels: false,
-      }))
+      })),
     )
   }
 
   const setNewImage = (img, index) => {
-    let {frameTime} = typeof img === "object" ? img : {src: img}
+    let { frameTime } = typeof img === "object" ? img : { src: img }
     return setIn(
       setIn(state, ["selectedImage"], index),
       ["selectedImageFrameTime"],
-      frameTime
+      frameTime,
     )
   }
 
@@ -114,9 +118,16 @@ export default (state, action) => {
     }
     case "SELECT_CLASSIFICATION": {
       let selectedClsList = activeImage.selectedClsList || []
-      selectedClsList = selectedClsList.indexOf(action.cls) !== -1 ? arrayRemove(selectedClsList, action.cls) : selectedClsList.concat([action.cls])
-      selectedClsList = selectedClsList.filter(item => item !== '')
-      state = setIn(state, [...pathToActiveImage, 'selectedClsList'], selectedClsList)
+      selectedClsList =
+        selectedClsList.indexOf(action.cls) !== -1
+          ? arrayRemove(selectedClsList, action.cls)
+          : selectedClsList.concat([action.cls])
+      selectedClsList = selectedClsList.filter((item) => item !== "")
+      state = setIn(
+        state,
+        [...pathToActiveImage, "selectedClsList"],
+        selectedClsList,
+      )
       return setIn(state, ["selectedCls"], action.cls)
     }
     case "CHANGE_REGION": {
@@ -128,7 +139,10 @@ export default (state, action) => {
         const clsIndex = state.regionClsList.indexOf(action.region.cls)
         if (clsIndex !== -1) {
           state = setIn(state, ["selectedCls"], action.region.cls)
-          action.region.color = clsIndex < state.regionColorList.length ? state.regionColorList[clsIndex] : colors[clsIndex % colors.length]
+          action.region.color =
+            clsIndex < state.regionColorList.length
+              ? state.regionColorList[clsIndex]
+              : colors[clsIndex % colors.length]
         }
       }
       if (!isEqual(oldRegion.tags, action.region.tags)) {
@@ -140,12 +154,12 @@ export default (state, action) => {
       return setIn(
         state,
         [...pathToActiveImage, "regions", regionIndex],
-        action.region
+        action.region,
       )
     }
     case "CHANGE_IMAGE": {
       if (!activeImage) return state
-      const {delta} = action
+      const { delta } = action
       for (const key of Object.keys(delta)) {
         if (key === "cls") saveToHistory(state, "Change Image Class")
         if (key === "tags") saveToHistory(state, "Change Image Tags")
@@ -155,17 +169,17 @@ export default (state, action) => {
     }
 
     case "CHANGE_2_COMPLETE": {
-      if(!activeImage) return state
-      return setIn(state, [...pathToActiveImage, 'processed'], true)
+      if (!activeImage) return state
+      return setIn(state, [...pathToActiveImage, "processed"], true)
     }
     case "SELECT_FILE": {
       const { selected } = action
-      if(!activeImage) return state
-      return setIn(state, [...pathToActiveImage, 'selected'], selected)
+      if (!activeImage) return state
+      return setIn(state, [...pathToActiveImage, "selected"], selected)
     }
-    
+
     case "SELECT_REGION": {
-      const {region} = action
+      const { region } = action
       const regionIndex = getRegionIndex(action.region)
       if (regionIndex === null) return state
       const regions = [...(activeImage.regions || [])].map((r) => ({
@@ -183,26 +197,30 @@ export default (state, action) => {
       })
     }
     case "BEGIN_BOX_TRANSFORM": {
-      const {box, directions} = action
+      const { box, directions } = action
       state = closeEditors(state)
       if (directions[0] === 0 && directions[1] === 0) {
-        return setIn(state, ["mode"], {mode: "MOVE_REGION", regionId: box.id})
+        return setIn(state, ["mode"], { mode: "MOVE_REGION", regionId: box.id })
       } else {
         return setIn(state, ["mode"], {
           mode: "RESIZE_BOX",
           regionId: box.id,
           freedom: directions,
-          original: {x: box.x, y: box.y, w: box.w, h: box.h},
+          original: { x: box.x, y: box.y, w: box.w, h: box.h },
         })
       }
     }
     case "BEGIN_MOVE_LINE_POINT": {
-      const {line, pointIdx} = action
+      const { line, pointIdx } = action
       state = closeEditors(state)
-      return setIn(state, ["mode"], {mode: "MOVE_LINE_POINT", regionId: line.id, pointIdx})
+      return setIn(state, ["mode"], {
+        mode: "MOVE_LINE_POINT",
+        regionId: line.id,
+        pointIdx,
+      })
     }
     case "BEGIN_MOVE_POLYGON_POINT": {
-      const {polygon, pointIndex} = action
+      const { polygon, pointIndex } = action
       state = closeEditors(state)
       if (
         state.mode &&
@@ -216,8 +234,8 @@ export default (state, action) => {
             open: false,
           }),
           ["mode"],
-          null
-          )
+          null,
+        )
       } else {
         state = saveToHistory(state, i18next.t("move.polypoint"))
       }
@@ -228,7 +246,7 @@ export default (state, action) => {
       })
     }
     case "BEGIN_MOVE_KEYPOINT": {
-      const {region, keypointId} = action
+      const { region, keypointId } = action
       state = closeEditors(state)
       state = saveToHistory(state, "Move Keypoint")
       return setIn(state, ["mode"], {
@@ -238,7 +256,7 @@ export default (state, action) => {
       })
     }
     case "ADD_POLYGON_POINT": {
-      const {polygon, point, pointIndex} = action
+      const { polygon, point, pointIndex } = action
       const regionIndex = getRegionIndex(polygon)
       if (regionIndex === null) return state
       const points = [...polygon.points]
@@ -249,13 +267,13 @@ export default (state, action) => {
       })
     }
     case "MOUSE_MOVE": {
-      const {x, y} = action
+      const { x, y } = action
 
       if (!state.mode) return state
       if (!activeImage) return state
       switch (state.mode.mode) {
         case "MOVE_POLYGON_POINT": {
-          const {pointIndex, regionId} = state.mode
+          const { pointIndex, regionId } = state.mode
           const regionIndex = getRegionIndex(regionId)
           if (regionIndex === null) return state
           return setIn(
@@ -267,11 +285,11 @@ export default (state, action) => {
               "points",
               pointIndex,
             ],
-            [x, y]
+            [x, y],
           )
         }
         case "MOVE_KEYPOINT": {
-          const {keypointId, regionId} = state.mode
+          const { keypointId, regionId } = state.mode
           const [region, regionIndex] = getRegion(regionId)
           if (regionIndex === null) return state
           return setIn(
@@ -283,14 +301,14 @@ export default (state, action) => {
               "points",
               keypointId,
             ],
-            {...(region).points[keypointId], x, y}
+            { ...region.points[keypointId], x, y },
           )
         }
         case "MOVE_REGION": {
-          const {regionId} = state.mode
+          const { regionId } = state.mode
           if (regionId === "$$allowed_area") {
             const {
-              allowedArea: {w, h},
+              allowedArea: { w, h },
             } = state
             return setIn(state, ["allowedArea"], {
               x: x - w / 2,
@@ -304,14 +322,14 @@ export default (state, action) => {
           return setIn(
             state,
             [...pathToActiveImage, "regions", regionIndex],
-            moveRegion(activeImage.regions[regionIndex], x, y)
+            moveRegion(activeImage.regions[regionIndex], x, y),
           )
         }
         case "RESIZE_BOX": {
           const {
             regionId,
             freedom: [xFree, yFree],
-            original: {x: ox, y: oy, w: ow, h: oh},
+            original: { x: ox, y: oy, w: ow, h: oh },
           } = state.mode
 
           const dx = xFree === 0 ? ox : xFree === -1 ? Math.min(ox + ow, x) : ox
@@ -359,21 +377,21 @@ export default (state, action) => {
           })
         }
         case "RESIZE_KEYPOINTS": {
-          const {regionId, landmarks, centerX, centerY} = state.mode
+          const { regionId, landmarks, centerX, centerY } = state.mode
           const distFromCenter = Math.sqrt(
-            (centerX - x) ** 2 + (centerY - y) ** 2
+            (centerX - x) ** 2 + (centerY - y) ** 2,
           )
           const scale = distFromCenter / 0.15
           return modifyRegion(regionId, {
             points: getLandmarksWithTransform({
               landmarks,
-              center: {x: centerX, y: centerY},
+              center: { x: centerX, y: centerY },
               scale,
             }),
           })
         }
         case "DRAW_POLYGON": {
-          const {regionId} = state.mode
+          const { regionId } = state.mode
           const [region, regionIndex] = getRegion(regionId)
           if (!region) return setIn(state, ["mode"], null)
           return setIn(
@@ -383,13 +401,13 @@ export default (state, action) => {
               "regions",
               regionIndex,
               "points",
-              (region).points.length - 1,
+              region.points.length - 1,
             ],
-            [x, y]
+            [x, y],
           )
         }
         case "DRAW_LINE": {
-          const {regionId} = state.mode
+          const { regionId } = state.mode
           const [region, regionIndex] = getRegion(regionId)
           if (!region) return setIn(state, ["mode"], null)
           return setIn(state, [...pathToActiveImage, "regions", regionIndex], {
@@ -399,22 +417,32 @@ export default (state, action) => {
           })
         }
         case "MOVE_LINE_POINT": {
-          const {regionId, pointIdx} = state.mode
+          const { regionId, pointIdx } = state.mode
           const [region, regionIndex] = getRegion(regionId)
           if (!region) return setIn(state, ["mode"], null)
-          if (pointIdx === 0) return setIn(state, [...pathToActiveImage, "regions", regionIndex], {
-            ...region,
-            x1: x,
-            y1: y,
-          })
-          if (pointIdx === 1) return setIn(state, [...pathToActiveImage, "regions", regionIndex], {
-            ...region,
-            x2: x,
-            y2: y,
-          })
+          if (pointIdx === 0)
+            return setIn(
+              state,
+              [...pathToActiveImage, "regions", regionIndex],
+              {
+                ...region,
+                x1: x,
+                y1: y,
+              },
+            )
+          if (pointIdx === 1)
+            return setIn(
+              state,
+              [...pathToActiveImage, "regions", regionIndex],
+              {
+                ...region,
+                x2: x,
+                y2: y,
+              },
+            )
         }
         case "DRAW_EXPANDING_LINE": {
-          const {regionId} = state.mode
+          const { regionId } = state.mode
           const [expandingLine, regionIndex] = getRegion(regionId)
           if (!expandingLine) return state
           const isMouseDown = Boolean(state.mouseDownAt)
@@ -422,7 +450,7 @@ export default (state, action) => {
             // If the mouse is down, set width/angle
             const lastPoint = expandingLine.points.slice(-1)[0]
             const mouseDistFromLastPoint = Math.sqrt(
-              (lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2
+              (lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2,
             )
             if (mouseDistFromLastPoint < 0.002 && !lastPoint.width) return state
 
@@ -435,7 +463,7 @@ export default (state, action) => {
                   width: mouseDistFromLastPoint * 2,
                   angle: Math.atan2(lastPoint.x - x, lastPoint.y - y),
                 },
-              ])
+              ]),
             )
             return newState
           } else {
@@ -445,23 +473,22 @@ export default (state, action) => {
               [...pathToActiveImage, "regions", regionIndex],
               {
                 ...expandingLine,
-                candidatePoint: {x, y},
-              }
+                candidatePoint: { x, y },
+              },
             )
           }
-
         }
         case "SET_EXPANDING_LINE_WIDTH": {
-          const {regionId} = state.mode;
-          const [expandingLine, regionIndex] = getRegion(regionId);
+          const { regionId } = state.mode
+          const [expandingLine, regionIndex] = getRegion(regionId)
           if (!expandingLine) {
-            return state;
+            return state
           }
-          const lastPoint = expandingLine.points.slice(-1)[0];
+          const lastPoint = expandingLine.points.slice(-1)[0]
           return setIn(
             state,
             [...pathToActiveImage, "regions", regionIndex, "expandingWidth"],
-            Math.sqrt((lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2)
+            Math.sqrt((lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2),
           )
         }
         default:
@@ -470,9 +497,9 @@ export default (state, action) => {
     }
     case "MOUSE_DOWN": {
       if (!activeImage) return state
-      const {x, y} = action
+      const { x, y } = action
 
-      state = setIn(state, ["mouseDownAt"], {x, y})
+      state = setIn(state, ["mouseDownAt"], { x, y })
 
       if (state.mode) {
         switch (state.mode.mode) {
@@ -482,7 +509,7 @@ export default (state, action) => {
             return setIn(
               state,
               [...pathToActiveImage, "regions", regionIndex],
-              {...polygon, points: polygon.points.concat([[x, y]])}
+              { ...polygon, points: polygon.points.concat([[x, y]]) },
             )
           }
           case "DRAW_LINE": {
@@ -512,7 +539,7 @@ export default (state, action) => {
                 return state
                   .setIn(
                     [...pathToActiveImage, "regions", regionIndex],
-                    convertExpandingLineToPolygon(expandingLine)
+                    convertExpandingLineToPolygon(expandingLine),
                   )
                   .setIn(["mode"], null)
               }
@@ -522,23 +549,23 @@ export default (state, action) => {
             return setIn(
               state,
               [...pathToActiveImage, "regions", regionIndex, "points"],
-              expandingLine.points.concat([{x, y, angle: null, width: null}])
+              expandingLine.points.concat([{ x, y, angle: null, width: null }]),
             )
           }
           case "SET_EXPANDING_LINE_WIDTH": {
             const [expandingLine, regionIndex] = getRegion(state.mode.regionId)
             if (!expandingLine) break
-            const {expandingWidth} = expandingLine
+            const { expandingWidth } = expandingLine
             return state
               .setIn(
                 [...pathToActiveImage, "regions", regionIndex],
                 convertExpandingLineToPolygon({
                   ...expandingLine,
                   points: expandingLine.points.map((p) =>
-                    p.width ? p : {...p, width: expandingWidth}
+                    p.width ? p : { ...p, width: expandingWidth },
                   ),
                   expandingWidth: undefined,
-                })
+                }),
               )
               .setIn(["mode"], null)
           }
@@ -553,7 +580,10 @@ export default (state, action) => {
 
       const clsIndex = (state.regionClsList || []).indexOf(defaultRegionCls)
       if (clsIndex !== -1) {
-        defaultRegionColor = clsIndex < state.regionColorList.length ? state.regionColorList[clsIndex] : colors[clsIndex % colors.length]
+        defaultRegionColor =
+          clsIndex < state.regionColorList.length
+            ? state.regionColorList[clsIndex]
+            : colors[clsIndex % colors.length]
       }
 
       switch (state.selectedTool) {
@@ -591,7 +621,7 @@ export default (state, action) => {
             editLabelEditorAfter: true,
             regionId: newRegion.id,
             freedom: [1, 1],
-            original: {x, y, w: newRegion.w, h: newRegion.h},
+            original: { x, y, w: newRegion.w, h: newRegion.h },
             isNew: true,
           })
           break
@@ -615,7 +645,7 @@ export default (state, action) => {
             editLabelEditorAfter: true,
             regionId: newRegion.id,
             freedom: [1, 1],
-            original: {x, y, w: newRegion.w, h: newRegion.h},
+            original: { x, y, w: newRegion.w, h: newRegion.h },
             isNew: true,
           })
           break
@@ -646,7 +676,7 @@ export default (state, action) => {
           newRegion = {
             type: "expanding-line",
             unfinished: true,
-            points: [{x, y, angle: null, width: null}],
+            points: [{ x, y, angle: null, width: null }],
             open: true,
             highlighted: true,
             color: defaultRegionColor,
@@ -682,15 +712,16 @@ export default (state, action) => {
         }
         case "create-keypoints": {
           state = saveToHistory(state, "Create Keypoints")
-          const [[keypointsDefinitionId, {landmarks}]] =
-            (Object.entries(state.keypointDefinitions))
+          const [[keypointsDefinitionId, { landmarks }]] = Object.entries(
+            state.keypointDefinitions,
+          )
 
           newRegion = {
             type: "keypoints",
             keypointsDefinitionId,
             points: getLandmarksWithTransform({
               landmarks,
-              center: {x, y},
+              center: { x, y },
               scale: 1,
             }),
             highlighted: true,
@@ -713,16 +744,16 @@ export default (state, action) => {
 
       const regions = [...(getIn(state, pathToActiveImage).regions || [])]
         .map((r) =>
-          setIn(r, ["editingLabels"], false).setIn(["highlighted"], false)
+          setIn(r, ["editingLabels"], false).setIn(["highlighted"], false),
         )
         .concat(newRegion ? [newRegion] : [])
 
       return setIn(state, [...pathToActiveImage, "regions"], regions)
     }
     case "MOUSE_UP": {
-      const {x, y} = action
+      const { x, y } = action
 
-      const {mouseDownAt = {x, y}} = state
+      const { mouseDownAt = { x, y } } = state
       if (!state.mode) return state
       state = setIn(state, ["mouseDownAt"], null)
       switch (state.mode.mode) {
@@ -735,29 +766,29 @@ export default (state, action) => {
               return setIn(
                 modifyRegion(state.mode.regionId, null),
                 ["mode"],
-                null
+                null,
               )
             }
           }
           if (state.mode.editLabelEditorAfter) {
             return {
-              ...modifyRegion(state.mode.regionId, {editingLabels: true}),
+              ...modifyRegion(state.mode.regionId, { editingLabels: true }),
               mode: null,
             }
           }
-          return {...state, mode: null}
+          return { ...state, mode: null }
         }
         case "MOVE_REGION": {
-          return {...state, mode: null}
+          return { ...state, mode: null }
         }
         case "RESIZE_KEYPOINTS": {
-          return {...state, mode: null}
+          return { ...state, mode: null }
         }
         case "MOVE_POLYGON_POINT": {
-          return {...state, mode: null}
+          return { ...state, mode: null }
         }
         case "MOVE_KEYPOINT": {
-          return {...state, mode: null}
+          return { ...state, mode: null }
         }
         case "CREATE_POINT_LINE": {
           return state
@@ -766,8 +797,8 @@ export default (state, action) => {
           return setIn(
             modifyRegion(state.mode.regionId, { editingLabels: true }),
             ["mode"],
-            null
-            )
+            null,
+          )
         }
         case "DRAW_EXPANDING_LINE": {
           const [expandingLine, regionIndex] = getRegion(state.mode.regionId)
@@ -778,7 +809,7 @@ export default (state, action) => {
               ? expandingLine.points.slice(-1)[0]
               : mouseDownAt
           const mouseDistFromLastPoint = Math.sqrt(
-            (lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2
+            (lastPoint.x - x) ** 2 + (lastPoint.y - y) ** 2,
           )
           if (mouseDistFromLastPoint > 0.002) {
             // The user is drawing has drawn the width for the last point
@@ -793,7 +824,7 @@ export default (state, action) => {
             newExpandingLine = setIn(
               expandingLine,
               ["points"],
-              fixTwisted(newPoints)
+              fixTwisted(newPoints),
             )
           } else {
             return state
@@ -801,7 +832,7 @@ export default (state, action) => {
           return setIn(
             state,
             [...pathToActiveImage, "regions", regionIndex],
-            newExpandingLine
+            newExpandingLine,
           )
         }
         default:
@@ -809,7 +840,7 @@ export default (state, action) => {
       }
     }
     case "DISABLE_SELECT_TOOL": {
-      return state.setIn(["selectedTool"], action.selectedTool);
+      return state.setIn(["selectedTool"], action.selectedTool)
     }
     case "OPEN_REGION_EDITOR": {
       const regionIndex = getRegionIndex(action.region)
@@ -825,14 +856,17 @@ export default (state, action) => {
           ...(activeImage.regions || [])[regionIndex],
           highlighted: true,
           editingLabels: true,
-        }
+        },
       )
       return setIn(state, [...pathToActiveImage, "regions"], newRegions)
     }
     case "CLOSE_REGION_EDITOR": {
       const regionIndex = getRegionIndex(action.region)
       if (regionIndex === null) return state
-      if ((action.region?.name == null || action.region?.name == "") && action.region?.cls == null) {
+      if (
+        (action.region?.name == null || action.region?.name == "") &&
+        action.region?.cls == null
+      ) {
         return setIn(state, [...pathToActiveImage, "regions", regionIndex], {
           ...(activeImage.regions || [])[regionIndex],
           falseInput: true,
@@ -850,14 +884,14 @@ export default (state, action) => {
       return setIn(
         state,
         [...pathToActiveImage, "regions"],
-        (activeImage.regions || []).filter((r) => r.id !== action.region.id)
+        (activeImage.regions || []).filter((r) => r.id !== action.region.id),
       )
     }
     case "DELETE_SELECTED_REGION": {
       return setIn(
         state,
         [...pathToActiveImage, "regions"],
-        (activeImage.regions || []).filter((r) => !r.highlighted)
+        (activeImage.regions || []).filter((r) => !r.highlighted),
       )
     }
     case "HEADER_BUTTON_CLICKED": {
@@ -869,10 +903,10 @@ export default (state, action) => {
           return setIn(
             setNewImage(
               state.images[currentImageIndex + 1],
-              currentImageIndex + 1
+              currentImageIndex + 1,
             ),
             ["images", currentImageIndex + 1, "regions"],
-            activeImage.regions
+            activeImage.regions,
           )
         }
         case "settings": {
@@ -898,20 +932,20 @@ export default (state, action) => {
         return setIn(state, ["showTags"], !state.showTags)
       }
       if (action.selectedTool === "modify-allowed-area" && !state.allowedArea) {
-        state = setIn(state, ["allowedArea"], {x: 0, y: 0, w: 1, h: 1})
+        state = setIn(state, ["allowedArea"], { x: 0, y: 0, w: 1, h: 1 })
       }
       state = setIn(state, ["mode"], null)
       return setIn(state, ["selectedTool"], action.selectedTool)
     }
     case "CANCEL": {
-      const {mode} = state
+      const { mode } = state
       if (mode) {
         switch (mode.mode) {
           case "DRAW_LINE":
           case "DRAW_EXPANDING_LINE":
           case "SET_EXPANDING_LINE_WIDTH":
           case "DRAW_POLYGON": {
-            const {regionId} = mode
+            const { regionId } = mode
             return modifyRegion(regionId, null)
           }
           case "MOVE_POLYGON_POINT":
@@ -929,12 +963,11 @@ export default (state, action) => {
         return setIn(
           state,
           [...pathToActiveImage, "regions"],
-          regions.map((r) => (
-            {
+          regions.map((r) => ({
             ...r,
             name: r.name || r.id,
             editingLabels: false,
-          }))
+          })),
         )
       } else if (regions) {
         return setIn(
@@ -943,7 +976,7 @@ export default (state, action) => {
           regions.map((r) => ({
             ...r,
             highlighted: false,
-          }))
+          })),
         )
       }
       break

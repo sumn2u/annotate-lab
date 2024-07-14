@@ -49,7 +49,7 @@ export default ({
 
       const projMouse = mat.applyToPoint(
         mousePosition.current.x,
-        mousePosition.current.y
+        mousePosition.current.y,
       )
 
       if (zoomWithPrimary && zoomStart) {
@@ -62,7 +62,7 @@ export default ({
       if (dragging) {
         mat.translate(
           prevMousePosition.current.x - mousePosition.current.x,
-          prevMousePosition.current.y - mousePosition.current.y
+          prevMousePosition.current.y - mousePosition.current.y,
         )
 
         changeMat(mat.clone())
@@ -81,7 +81,7 @@ export default ({
 
       const projMouse = mat.applyToPoint(
         mousePosition.current.x,
-        mousePosition.current.y
+        mousePosition.current.y,
       )
       if (zoomWithPrimary && e.button === 0) {
         changeZoomStart(projMouse)
@@ -103,7 +103,7 @@ export default ({
       e.preventDefault()
       const projMouse = mat.applyToPoint(
         mousePosition.current.x,
-        mousePosition.current.y
+        mousePosition.current.y,
       )
       if (zoomStart) {
         const zoomEnd = projMouse
@@ -129,7 +129,7 @@ export default ({
           // The region defined by zoomStart and zoomEnd should be the new transform
           let scale = Math.min(
             (zoomEnd.x - zoomStart.x) / iw,
-            (zoomEnd.y - zoomStart.y) / ih
+            (zoomEnd.y - zoomStart.y) / ih,
           )
           if (scale < 0.05) scale = 0.05
           if (scale > 10) scale = 10
