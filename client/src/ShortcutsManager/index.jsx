@@ -135,7 +135,7 @@ export const useDispatchHotkeyHandlers = ({ dispatch }) => {
       //   })
       // }
     }),
-    [dispatch]
+    [dispatch],
   )
   return handlers
 }

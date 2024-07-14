@@ -1,6 +1,6 @@
 // @flow
 
-import {setIn, updateIn, without} from "seamless-immutable"
+import { setIn, updateIn, without } from "seamless-immutable"
 import moment from "moment"
 
 const typesToSaveWithHistory = {
@@ -17,7 +17,7 @@ export const saveToHistory = (state, name) =>
         state: without(state, "history"),
         name,
       },
-    ].concat((h || []).slice(0, 9))
+    ].concat((h || []).slice(0, 9)),
   )
 
 export default (reducer) => {
@@ -30,7 +30,7 @@ export default (reducer) => {
         return setIn(
           nextState.history[0].state,
           ["history"],
-          nextState.history.slice(1)
+          nextState.history.slice(1),
         )
       }
     } else {
@@ -49,7 +49,7 @@ export default (reducer) => {
             },
           ]
             .concat(nextState.history || [])
-            .slice(0, 9)
+            .slice(0, 9),
         )
       }
     }

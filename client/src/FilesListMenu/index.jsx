@@ -4,13 +4,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Box from "@mui/material/Box"
 import * as muiColors from "@mui/material/colors"
 import SidebarBoxContainer from "../SidebarBoxContainer"
-import CollectionsIcon from '@mui/icons-material/Collections';
+import CollectionsIcon from "@mui/icons-material/Collections"
 import capitalize from "lodash/capitalize"
 import classnames from "classnames"
 import Checkbox from "@mui/material/Checkbox"
 import getActiveImage from "../Annotator/reducers/get-active-image"
 import { useTranslation } from "react-i18next"
-import Tooltip from "@mui/material/Tooltip";
+import Tooltip from "@mui/material/Tooltip"
 
 const theme = createTheme()
 const LabelContainer = styled("div")(({ theme }) => ({
@@ -39,7 +39,7 @@ const Circle = styled("div")(({ theme }) => ({
 }))
 const Label = styled("div")(({ theme }) => ({
   fontSize: 11,
-  marginLeft: 2
+  marginLeft: 2,
 }))
 const DashSep = styled("div")(({ theme }) => ({
   flexGrow: 1,
@@ -64,9 +64,9 @@ export const FilesListMenu = ({
   onSelectJump,
   onSelectFile,
   saveActiveImage,
-  onClick
+  onClick,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const handleClickLabel = (label) => {
     onClick(getActiveImage(state))
     onSelectJump(label)
@@ -75,7 +75,7 @@ export const FilesListMenu = ({
   const handleCheckBoxClick = (image) => {
     onSelectFile(!image.selected)
   }
-  
+
   const hasRegions = (imageIndex) => {
     return allImages?.length > 0 && allImages[imageIndex].regions?.length > 0
   }
@@ -92,26 +92,46 @@ export const FilesListMenu = ({
         {allImages.map((image, index) => (
           <LabelContainer
             className={classnames({ selected: image.name === selectedImage })}
-            key = {index}
+            key={index}
           >
-        <Tooltip title={t("download_checkbox_select")} placement="left">
-          <Checkbox
-            sx={{
-              padding: 0, 
-              '& .MuiSvgIcon-root': {
-                fontSize: 14, // Set size
-                color: image.processed ? 'green' : '', // Set color conditionally
-              },
-              cursor: selectedImage !== null && selectedImage !== index ? 'not-allowed' : 'pointer',
-            }}
-            checked={image.selected}
-            onClick={() => handleCheckBoxClick(image, index)}
-            data-testid="checkbox"
-            disabled={(selectedImage !== null && selectedImage !== index) || !hasRegions(index)}
-          />
-          </Tooltip>
-            <span style={index === selectedImage? {backgroundColor: "rgba(255, 124, 120, 0.5)"} : {}}>
-              <Label className={classnames({ selected: image.name === selectedImage })} style={ { backgroundColor: "withe" }} onClick={() => {handleClickLabel(image.name)}}>
+            <Tooltip title={t("download_checkbox_select")} placement="left">
+              <Checkbox
+                sx={{
+                  padding: 0,
+                  "& .MuiSvgIcon-root": {
+                    fontSize: 14, // Set size
+                    color: image.processed ? "green" : "", // Set color conditionally
+                  },
+                  cursor:
+                    selectedImage !== null && selectedImage !== index
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+                checked={image.selected}
+                onClick={() => handleCheckBoxClick(image, index)}
+                data-testid="checkbox"
+                disabled={
+                  (selectedImage !== null && selectedImage !== index) ||
+                  !hasRegions(index)
+                }
+              />
+            </Tooltip>
+            <span
+              style={
+                index === selectedImage
+                  ? { backgroundColor: "rgba(255, 124, 120, 0.5)" }
+                  : {}
+              }
+            >
+              <Label
+                className={classnames({
+                  selected: image.name === selectedImage,
+                })}
+                style={{ backgroundColor: "withe" }}
+                onClick={() => {
+                  handleClickLabel(image.name)
+                }}
+              >
                 {capitalize(image.name)}
               </Label>
             </span>

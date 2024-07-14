@@ -1,36 +1,40 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import Header from "./index";
-import '@testing-library/jest-dom';
+import React from "react"
+import { render, screen, fireEvent } from "@testing-library/react"
+import Header from "./index"
+import "@testing-library/jest-dom"
 
-jest.mock('../../config.js', () => ({
-    DOCS_URL: "https://annotate-docs.dwaste.live/",
-    SERVER_URL: "http://localhost:5000",
-  }));
-  
+jest.mock("../../config.js", () => ({
+  DOCS_URL: "https://annotate-docs.dwaste.live/",
+  SERVER_URL: "http://localhost:5000",
+}))
 
 // Mock the useTranslation hook with actual translations
-jest.mock('react-i18next', () => ({
-    useTranslation: () => ({
-        t: key => ({
-            "labname": "labname",
-            "btn.download": "Download",
-            "download.configuration": "Download Configuration",
-            "download.image_mask": "Download Masked Image",
-        }[key]),
-    }),
-}));
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) =>
+      ({
+        labname: "labname",
+        "btn.download": "Download",
+        "download.configuration": "Download Configuration",
+        "download.image_mask": "Download Masked Image",
+      })[key],
+  }),
+}))
 
 describe("Header", () => {
-  const mockOnClickItem = jest.fn();
+  const mockOnClickItem = jest.fn()
 
   const items = [
-    { name: "Download", label: "Download", icon: <div>Mock Download Icon</div> },
+    {
+      name: "Download",
+      label: "Download",
+      icon: <div>Mock Download Icon</div>,
+    },
     { name: "Item1", label: "Item 1", icon: <div>Mock Icon 1</div> },
-    { name: "Item2", label: "Item 2", icon: <div>Mock Icon 2</div> }
-  ];
+    { name: "Item2", label: "Item 2", icon: <div>Mock Icon 2</div> },
+  ]
 
-  const mockClass = ['class1', 'class2', 'class3']
+  const mockClass = ["class1", "class2", "class3"]
   const selectedImages = []
   beforeEach(() => {
     render(
@@ -40,32 +44,37 @@ describe("Header", () => {
         selectedImageName="image1"
         classList={mockClass}
         selectedImages={selectedImages}
-      />
-    );
-  });
+      />,
+    )
+  })
 
   it("renders all buttons with correct labels and icons", () => {
     // Verify Download button
-    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument()
 
     // Verify each HeaderButton in items is rendered with correct props
-    items.filter((item) => item.name !== "Download").forEach((item) => {
-      // Adjust the label to match the actual rendered text content
-      const expectedButtonText = `Mock Icon ${item.name === "Item1" ? 1 : 2} ${item.label}`;
+    items
+      .filter((item) => item.name !== "Download")
+      .forEach((item) => {
+        // Adjust the label to match the actual rendered text content
+        const expectedButtonText = `Mock Icon ${item.name === "Item1" ? 1 : 2} ${item.label}`
 
-      expect(screen.getByRole("button", { name: expectedButtonText })).toBeInTheDocument();
-      expect(screen.getByText(item.label)).toBeInTheDocument();
-      expect(screen.getByText(`Mock Icon ${item.name === "Item1" ? 1 : 2}`)).toBeInTheDocument(); // Adjust as per your mock icon content
-    });
-  });
+        expect(
+          screen.getByRole("button", { name: expectedButtonText }),
+        ).toBeInTheDocument()
+        expect(screen.getByText(item.label)).toBeInTheDocument()
+        expect(
+          screen.getByText(`Mock Icon ${item.name === "Item1" ? 1 : 2}`),
+        ).toBeInTheDocument() // Adjust as per your mock icon content
+      })
+  })
 
   it("handles click events correctly", () => {
-    const button = screen.getByRole("button", { name: "Mock Icon 1 Item 1" });
-    fireEvent.click(button);
-    expect(mockOnClickItem).toHaveBeenCalledWith(items[1]);
-  });
+    const button = screen.getByRole("button", { name: "Mock Icon 1 Item 1" })
+    fireEvent.click(button)
+    expect(mockOnClickItem).toHaveBeenCalledWith(items[1])
+  })
 
-  
   it("renders download button as disabled if specified", () => {
     render(
       <Header
@@ -74,13 +83,15 @@ describe("Header", () => {
         selectedImageName="image1"
         classList={mockClass}
         selectedImages={selectedImages}
-      />
-    );
+      />,
+    )
 
-    const downloadButtons = screen.getAllByRole("button", { name: "Download" });
-    const disabledButton = downloadButtons.find(button => button.hasAttribute('disabled'));
+    const downloadButtons = screen.getAllByRole("button", { name: "Download" })
+    const disabledButton = downloadButtons.find((button) =>
+      button.hasAttribute("disabled"),
+    )
 
-    expect(disabledButton).toBeInTheDocument();
-    expect(disabledButton).toBeDisabled();
-  });
-});
+    expect(disabledButton).toBeInTheDocument()
+    expect(disabledButton).toBeDisabled()
+  })
+})

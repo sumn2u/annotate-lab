@@ -1,17 +1,17 @@
 // @flow weak
 
-import React, {Fragment, useEffect, useMemo, useState} from "react"
-import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
+import React, { Fragment, useEffect, useMemo, useState } from "react"
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import range from "lodash/range"
 import * as colors from "@mui/material/colors"
 import { useMeasure } from "react-use"
 import useEventCallback from "use-event-callback"
-import {useRafState} from "react-use"
+import { useRafState } from "react-use"
 import getTimeString from "./get-time-string"
 
 const theme = createTheme()
 
-const Container = styled("div")(({theme}) => ({
+const Container = styled("div")(({ theme }) => ({
   position: "relative",
   display: "flex",
   flexGrow: 1,
@@ -21,7 +21,7 @@ const Container = styled("div")(({theme}) => ({
   marginRight: 16,
 }))
 
-const Tick = styled("div")(({theme}) => ({
+const Tick = styled("div")(({ theme }) => ({
   position: "absolute",
   width: 2,
   marginLeft: -1,
@@ -29,7 +29,7 @@ const Tick = styled("div")(({theme}) => ({
   backgroundColor: colors.grey[300],
   bottom: 0,
 }))
-const TickText = styled("div")(({theme}) => ({
+const TickText = styled("div")(({ theme }) => ({
   position: "absolute",
   userSelect: "none",
   fontSize: 10,
@@ -38,7 +38,7 @@ const TickText = styled("div")(({theme}) => ({
   bottom: 0,
 }))
 
-const PositionCursor = styled("div")(({theme}) => ({
+const PositionCursor = styled("div")(({ theme }) => ({
   position: "absolute",
   bottom: "calc(50% + 6px)",
   fontSize: 10,
@@ -67,7 +67,7 @@ const PositionCursor = styled("div")(({theme}) => ({
   },
 }))
 
-const KeyframeMarker = styled("div")(({theme}) => ({
+const KeyframeMarker = styled("div")(({ theme }) => ({
   position: "absolute",
   bottom: 8,
   cursor: "pointer",
@@ -146,14 +146,14 @@ export default ({
 
   const [minorInterval, majorInterval] = useMemo(
     () => getMajorInterval(duration),
-    [duration]
+    [duration],
   )
 
   const onMouseMove = useEventCallback((e) => {
     if (draggingTime) {
       const px = (e.clientX - bounds.left) / bounds.width
       changeInstantCurrentTime(
-        Math.min(duration, Math.max(0, Math.floor(px * duration)))
+        Math.min(duration, Math.max(0, Math.floor(px * duration))),
       )
     }
   })
@@ -176,7 +176,7 @@ export default ({
           <Fragment key={a}>
             <Tick
               key={a}
-              style={{left: (a / duration) * bounds.width, height: "50%"}}
+              style={{ left: (a / duration) * bounds.width, height: "50%" }}
             />
             <TickText
               style={{
@@ -203,7 +203,7 @@ export default ({
           <KeyframeMarker
             onClick={() => onChangeCurrentTime(kt)}
             key={kt}
-            style={{left: (kt / duration) * bounds.width}}
+            style={{ left: (kt / duration) * bounds.width }}
           />
         ))}
         <PositionCursor

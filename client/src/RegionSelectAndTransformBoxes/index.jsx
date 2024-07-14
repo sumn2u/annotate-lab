@@ -11,7 +11,7 @@ const TransformGrabber = styled("div")(({ theme }) => ({
   zIndex: 2,
   border: "2px solid #FFF",
   position: "absolute",
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 }))
 
 const boxCursorMap = [
@@ -106,7 +106,10 @@ export const RegionSelectAndTransformBox = memo(
               !zoomWithPrimary &&
               !r.locked &&
               r.highlighted &&
-              [[r.x1, r.y1], [r.x2, r.y2]].map(([px, py], i) => {
+              [
+                [r.x1, r.y1],
+                [r.x2, r.y2],
+              ].map(([px, py], i) => {
                 const proj = mat
                   .clone()
                   .inverse()
@@ -116,8 +119,7 @@ export const RegionSelectAndTransformBox = memo(
                     key={i}
                     {...mouseEvents}
                     onMouseDown={(e) => {
-                      if (e.button === 0)
-                        return onBeginMoveLinePoint(r, i)
+                      if (e.button === 0) return onBeginMoveLinePoint(r, i)
                       mouseEvents.onMouseDown(e)
                     }}
                     style={{
@@ -152,8 +154,8 @@ export const RegionSelectAndTransformBox = memo(
                       cursor: !r.open
                         ? "move"
                         : i === 0
-                        ? "pointer"
-                        : undefined,
+                          ? "pointer"
+                          : undefined,
                       zIndex: 10,
                       pointerEvents:
                         r.open && i === r.points.length - 1
@@ -225,8 +227,8 @@ export const RegionSelectAndTransformBox = memo(
                           cursor: !r.open
                             ? "move"
                             : i === 0
-                            ? "pointer"
-                            : undefined,
+                              ? "pointer"
+                              : undefined,
                           zIndex: 10,
                           pointerEvents:
                             r.open && i === r.points.length - 1
@@ -238,14 +240,14 @@ export const RegionSelectAndTransformBox = memo(
                       />
                     </Tooltip>
                   )
-                }
+                },
               )}
           </PreventScrollToParents>
         </Fragment>
       </ThemeProvider>
     )
   },
-  arePropsEqual
+  arePropsEqual,
 )
 
 export const RegionSelectAndTransformBoxes = memo(
@@ -257,7 +259,7 @@ export const RegionSelectAndTransformBoxes = memo(
         return <RegionSelectAndTransformBox key={r.id} {...props} region={r} />
       })
   },
-  (n, p) => n.regions === p.regions && n.mat === p.mat
+  (n, p) => n.regions === p.regions && n.mat === p.mat,
 )
 
 export default RegionSelectAndTransformBoxes

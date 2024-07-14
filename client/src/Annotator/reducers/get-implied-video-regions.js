@@ -2,10 +2,7 @@
 
 const emptyArr = []
 
-export default (
-  keyframes,
-  time
-) => {
+export default (keyframes, time) => {
   if (keyframes[time || 0]) {
     return keyframes[time || 0].regions
   }

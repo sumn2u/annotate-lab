@@ -1,69 +1,69 @@
 import Annotator from "../Annotator"
 import React, { useEffect, useState } from "react"
-import SetupPage from "../SetupPage";
-import { useSettings } from "../SettingsProvider";
-import {setIn} from "seamless-immutable"
-import config from '../config.js';
-import { useSnackbar } from '../SnackbarContext'
+import SetupPage from "../SetupPage"
+import { useSettings } from "../SettingsProvider"
+import { setIn } from "seamless-immutable"
+import config from "../config.js"
+import { useSnackbar } from "../SnackbarContext"
 import { getImagesAnnotation } from "../utils/send-data-to-server"
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import AlertDialog from "../AlertDialog";
+import CircularProgress from "@mui/material/CircularProgress"
+import Box from "@mui/material/Box"
+import AlertDialog from "../AlertDialog"
 import { clear_db, getSettings } from "../utils/get-data-from-server"
-import colors from "../colors.js";
-import {useTranslation} from "react-i18next"
+import colors from "../colors.js"
+import { useTranslation } from "react-i18next"
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
   comment: region.comment,
   id: region.id,
-});
+})
 
 const userReducer = (state, action) => {
   switch (action.type) {
     case "CLOSE_REGION_EDITOR":
     case "DELETE_REGION": {
-      const { images, selectedImage } = state;
-      const lastRegions = state.lastRegions || [];
-      if (selectedImage != null  && lastRegions) {
-        const currentImage = images[selectedImage];
-        const regions = currentImage ? (currentImage.regions || []) : [];
+      const { images, selectedImage } = state
+      const lastRegions = state.lastRegions || []
+      if (selectedImage != null && lastRegions) {
+        const currentImage = images[selectedImage]
+        const regions = currentImage ? currentImage.regions || [] : []
         if (
           regions.length !== lastRegions.length ||
           !regions.every((region, index) => {
-            const lastRegion = lastRegions[index] || [];
-            const currentProps = extractRelevantProps(region);
-            const lastProps = extractRelevantProps(lastRegion);
-            return JSON.stringify(currentProps) === JSON.stringify(lastProps);
+            const lastRegion = lastRegions[index] || []
+            const currentProps = extractRelevantProps(region)
+            const lastProps = extractRelevantProps(lastRegion)
+            return JSON.stringify(currentProps) === JSON.stringify(lastProps)
           })
         ) {
-          return setIn(state, ["hasNewChange"], true);
+          return setIn(state, ["hasNewChange"], true)
         } else {
-          return setIn(state, ["hasNewChange"], false);
+          return setIn(state, ["hasNewChange"], false)
         }
       }
     }
     case "SAVE_LAST_REGIONS": {
-      return setIn(state, ["lastRegions"], action.payload);
+      return setIn(state, ["lastRegions"], action.payload)
     }
     case "ENABLE_DOWNLOAD": {
-      return setIn(state, ["enabledDownload"], true);
+      return setIn(state, ["enabledDownload"], true)
     }
   }
-  return state;
-};
+  return state
+}
 
 export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
-  const [open, setOpen] = useState(false);
-  const {t} = useTranslation();
+  const [open, setOpen] = useState(false)
+  const { t } = useTranslation()
   const [showLabel, setShowLabel] = useState(true)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [imageNames, setImageNames] = useState([])
   const settingsConfig = useSettings()
   const [isLoading, setIsLoading] = useState(true)
-  const { showSnackbar } = useSnackbar();
-  const [settings, setSettings] =  useState({
+  const { showSnackbar } = useSnackbar()
+  const [settings, setSettings] = useState({
     taskDescription: "",
     taskChoice: "image_classification",
     images: [],
@@ -73,200 +73,226 @@ export default () => {
       labels: [],
       multipleRegions: true,
       multipleRegionLabels: true,
-    }
+    },
   })
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
   const handleExit = () => {
     logout()
     handleClose()
   }
 
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true) // Add loading state
   const onSelectJumpHandle = (selectedImageName) => {
-
-    let selectedImage = imageNames.filter( (image) =>{
+    let selectedImage = imageNames.filter((image) => {
       return image.name == selectedImageName
     })[0]
 
     let selectedImageIndex = imageNames.indexOf(selectedImage)
-    if(selectedImageIndex != -1){
+    if (selectedImageIndex != -1) {
       changeSelectedImageIndex(selectedImageIndex)
     }
     const newSettings = {
       ...settings,
       lastSavedImageIndex: selectedImageIndex,
-    };
-    settingsConfig.changeSetting('settings',newSettings);
-
+    }
+    settingsConfig.changeSetting("settings", newSettings)
   }
-  
+
   const getEnabledTools = (selectedTools) => {
     const enabledTools = [
-      {name: "bounding-box", value: "create-box"}, 
-      {name: "polygon", value: "create-polygon"}, 
-      {name: "point", value: "create-point"},
-      {name: "circle", value: "create-circle"}]
-      
-    return enabledTools.filter(tool => selectedTools?.includes(tool.name)).map(tool => tool.value) || []
+      { name: "bounding-box", value: "create-box" },
+      { name: "polygon", value: "create-polygon" },
+      { name: "point", value: "create-point" },
+      { name: "circle", value: "create-circle" },
+    ]
+
+    return (
+      enabledTools
+        .filter((tool) => selectedTools?.includes(tool.name))
+        .map((tool) => tool.value) || []
+    )
   }
   const setConfiguration = (settingsPayload) => {
-    const { type, payload } = settingsPayload;
+    const { type, payload } = settingsPayload
 
-   if (type === 'UPDATE_CONFIGURATION') {
-      setSettings(prevSettings => {
+    if (type === "UPDATE_CONFIGURATION") {
+      setSettings((prevSettings) => {
         return {
           ...prevSettings,
-          configuration: payload
-        };
-      });
-    }else if(type === 'UPDATE_TASK_INFO'){
-      setSettings(prevSettings => {
+          configuration: payload,
+        }
+      })
+    } else if (type === "UPDATE_TASK_INFO") {
+      setSettings((prevSettings) => {
         return {
           ...prevSettings,
           taskDescription: payload.taskDescription,
           taskChoice: payload.taskChoice,
-        };
-      });
-    }else if (type === 'UPDATE_IMAGES'){
-      setSettings(prevSettings => {
+        }
+      })
+    } else if (type === "UPDATE_IMAGES") {
+      setSettings((prevSettings) => {
         return {
           ...prevSettings,
-          images: payload
-        };
-      });
+          images: payload,
+        }
+      })
       changeSelectedImageIndex(0)
       setImageNames(payload)
     }
-  };
+  }
 
   const mapRegionsColor = (regions) => {
-    if(regions === undefined) return []
+    if (regions === undefined) return []
     return regions.map((region, index) => {
-      const classLabels = settings.configuration.labels.length > 0 
-    ? settings.configuration.labels 
-    : settingsConfig.settings.configuration.labels;
-      
-      const clsIndex = classLabels.findIndex(label => label.id === region.cls);
-      const regionColor = clsIndex !== -1 ?  (clsIndex < classLabels.length ? colors[clsIndex]: colors[clsIndex %  colors.length]) : colors[0]
+      const classLabels =
+        settings.configuration.labels.length > 0
+          ? settings.configuration.labels
+          : settingsConfig.settings.configuration.labels
+
+      const clsIndex = classLabels.findIndex((label) => label.id === region.cls)
+      const regionColor =
+        clsIndex !== -1
+          ? clsIndex < classLabels.length
+            ? colors[clsIndex]
+            : colors[clsIndex % colors.length]
+          : colors[0]
       return {
         ...region,
-        color: regionColor
+        color: regionColor,
       }
-    });
+    })
   }
   const fetchImages = async (imageUrls, lastOpenedImage) => {
     try {
-      const fetchPromises = imageUrls.map(async url => {
-        const response = await fetch(url.src);
+      const fetchPromises = imageUrls.map(async (url) => {
+        const response = await fetch(url.src)
         if (!response.ok) {
           if (response.status === 404) {
-            const errorMSG = `${t("error.image_not_found")}: ${url.src}`;
-            throw new Error(errorMSG);
+            const errorMSG = `${t("error.image_not_found")}: ${url.src}`
+            throw new Error(errorMSG)
           }
         }
-        const blob = await response.blob();
-        return { ...url, src: URL.createObjectURL(blob) };
-      });
-  
-      const images = await Promise.all(fetchPromises);
-      const imageURLSrcs = imageUrls.map(url => decodeURIComponent(url.src.split('/').pop()));
-      let image_annotations = await getImagesAnnotation({image_names: imageURLSrcs});
+        const blob = await response.blob()
+        return { ...url, src: URL.createObjectURL(blob) }
+      })
+
+      const images = await Promise.all(fetchPromises)
+      const imageURLSrcs = imageUrls.map((url) =>
+        decodeURIComponent(url.src.split("/").pop()),
+      )
+      let image_annotations = await getImagesAnnotation({
+        image_names: imageURLSrcs,
+      })
       const imageMap = imageUrls.map((url, index) => {
-        const imageName = decodeURIComponent(url.src.split('/').pop());
-        const annotation = image_annotations.find(annotation => annotation.image_name === imageName)
-        const newRegions =  mapRegionsColor(annotation?.regions) || []
+        const imageName = decodeURIComponent(url.src.split("/").pop())
+        const annotation = image_annotations.find(
+          (annotation) => annotation.image_name === imageName,
+        )
+        const newRegions = mapRegionsColor(annotation?.regions) || []
         return {
-            ...images[index],
-            src: url.src,
-            regions: newRegions,
-        };
-      });
-  
-      setSettings(prevSettings => ({
+          ...images[index],
+          src: url.src,
+          regions: newRegions,
+        }
+      })
+
+      setSettings((prevSettings) => ({
         ...prevSettings,
         images: imageMap,
-        imagesBlob: images
-      }));
+        imagesBlob: images,
+      }))
 
       // Ensure lastOpenedImage index is within bounds
-      const validImageIndex = lastOpenedImage >= images.length ? 0 : lastOpenedImage;
+      const validImageIndex =
+        lastOpenedImage >= images.length ? 0 : lastOpenedImage
 
       changeSelectedImageIndex(validImageIndex)
-      setImageNames(imageMap);
+      setImageNames(imageMap)
       setIsLoading(false)
     } catch (error) {
-      showSnackbar(error.message, 'error');
-      setIsLoading(false);
+      showSnackbar(error.message, "error")
+      setIsLoading(false)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
-  
+
   const getToolSelectionType = (toolName) => {
-    const regions = [ {name: "Polygon", value: "create-polygon"}, {name: "Bounding Box", value: "create-box"}, {name: "Point", value: "create-point"}] 
-    return regions.filter(region => region.name === toolName)[0]?.value || "create-polygon"
+    const regions = [
+      { name: "Polygon", value: "create-polygon" },
+      { name: "Bounding Box", value: "create-box" },
+      { name: "Point", value: "create-point" },
+    ]
+    return (
+      regions.filter((region) => region.name === toolName)[0]?.value ||
+      "create-polygon"
+    )
   }
 
   const reloadApp = () => {
-    settingsConfig.changeSetting('settings', null);
-    window.location.reload();
+    settingsConfig.changeSetting("settings", null)
+    window.location.reload()
   }
-  
+
   const logout = async () => {
     try {
-      const response = await clear_db();
-      showSnackbar(response.message, 'success');
-      await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 500 milliseconds
+      const response = await clear_db()
+      showSnackbar(response.message, "success")
+      await new Promise((resolve) => setTimeout(resolve, 500)) // Wait for 500 milliseconds
     } catch (error) {
-      showSnackbar(error.message, 'error');
+      showSnackbar(error.message, "error")
     }
     reloadApp()
-  };
+  }
 
   const preloadConfiguration = async () => {
     try {
-      const settings = await getSettings();
+      const settings = await getSettings()
       setShowLabel(false)
-      const localConfiguration = settingsConfig.settings || {};
+      const localConfiguration = settingsConfig.settings || {}
       // get last saved configuration
-      const savedConfiguration = settings || {};
-      let lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0;
-      if(localConfiguration.lastSavedImageIndex){
-        lastSavedImageIndex = localConfiguration.lastSavedImageIndex;
+      const savedConfiguration = settings || {}
+      let lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0
+      if (localConfiguration.lastSavedImageIndex) {
+        lastSavedImageIndex = localConfiguration.lastSavedImageIndex
       }
-      setSettings(savedConfiguration);
-      if (savedConfiguration.configuration && savedConfiguration.configuration.labels.length > 0) {
-        setSettings(savedConfiguration);
+      setSettings(savedConfiguration)
+      if (
+        savedConfiguration.configuration &&
+        savedConfiguration.configuration.labels.length > 0
+      ) {
+        setSettings(savedConfiguration)
         if (savedConfiguration.images.length > 0) {
-            fetchImages(savedConfiguration.images, lastSavedImageIndex);
-          }
+          fetchImages(savedConfiguration.images, lastSavedImageIndex)
+        }
       }
-      const showLab = settingsConfig.settings?.showLab || false;
-      if(!isSettingsOpen && showLab) {
+      const showLab = settingsConfig.settings?.showLab || false
+      if (!isSettingsOpen && showLab) {
         setShowLabel(showLab)
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
-  
+
   const showAnnotationLab = (newSettings) => {
-    setSettings(newSettings);
-    const lastSavedImageIndex = newSettings.lastSavedImageIndex || 0;
+    setSettings(newSettings)
+    const lastSavedImageIndex = newSettings.lastSavedImageIndex || 0
     if (newSettings.images.length > 0) {
-        fetchImages(newSettings.images, lastSavedImageIndex);
-      }
+      fetchImages(newSettings.images, lastSavedImageIndex)
+    }
   }
   useEffect(() => {
-    preloadConfiguration();
-  }, [ ]);
+    preloadConfiguration()
+  }, [])
 
   return (
     <>
@@ -280,11 +306,18 @@ export default () => {
       ) : (
         <>
           {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "100vh",
+              }}
+            >
               <CircularProgress />
             </Box>
           ) : (
-            <> 
+            <>
               <AlertDialog
                 open={open}
                 handleClose={handleClose}
@@ -292,13 +325,21 @@ export default () => {
                 description={t("exit_alert_description")}
                 exitConfirm={t("exit_alert_confirm")}
                 exitCancel={t("exit_alert_cancel")}
-                handleExit= {handleExit}
+                handleExit={handleExit}
               />
               <Annotator
-                taskDescription={settings.taskDescription || "Annotate each image according to this _markdown_ specification."}
+                taskDescription={
+                  settings.taskDescription ||
+                  "Annotate each image according to this _markdown_ specification."
+                }
                 images={settings.images || []}
-                enabledTools={getEnabledTools(settings.configuration.regionTypesAllowed) || []}
-                regionClsList={settings.configuration.labels.map(label => label.id) || []}
+                enabledTools={
+                  getEnabledTools(settings.configuration.regionTypesAllowed) ||
+                  []
+                }
+                regionClsList={
+                  settings.configuration.labels.map((label) => label.id) || []
+                }
                 selectedImage={selectedImageIndex}
                 enabledRegionProps={["class", "comment"]}
                 userReducer={userReducer}
@@ -308,12 +349,14 @@ export default () => {
                 settings={settings}
                 onSelectJump={onSelectJumpHandle}
                 showTags={true}
-                selectedTool={getToolSelectionType(settings.configuration.regions)}
-                openDocs={() => window.open(config.DOCS_URL, '_blank')}
+                selectedTool={getToolSelectionType(
+                  settings.configuration.regions,
+                )}
+                openDocs={() => window.open(config.DOCS_URL, "_blank")}
                 hideSettings={false}
                 onShowSettings={() => {
-                  setIsSettingsOpen(!isSettingsOpen);
-                  setShowLabel(false);
+                  setIsSettingsOpen(!isSettingsOpen)
+                  setShowLabel(false)
                 }}
                 selectedImageIndex={selectedImageIndex}
               />
@@ -322,5 +365,5 @@ export default () => {
         </>
       )}
     </>
-  );
-};
+  )
+}

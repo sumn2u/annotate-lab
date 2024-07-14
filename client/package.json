@@ -48,7 +48,8 @@
   "scripts": {
     "start": "vite --force",
     "build": "vite build",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write ."
   },
   "eslintConfig": {
     "extends": "react-app"

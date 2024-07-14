@@ -1,104 +1,114 @@
-import React, { useState } from "react";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import DownloadIcon from "@mui/icons-material/Download";
-import DescriptionIcon from "@mui/icons-material/Description";
-import ImageIcon from "@mui/icons-material/Image";
-import LabelIcon from '@mui/icons-material/Label';
-import ImageSearchIcon from "@mui/icons-material/ImageSearch";
-import colors from "../../colors.js";
-import { getImageFile } from "../../utils/get-data-from-server.js";
-import { useSnackbar} from "../../SnackbarContext/index.jsx"
-import { hexToRgbTuple } from "../../utils/color-utils.js";
-import HeaderButton from "../HeaderButton/index.jsx";
+import React, { useState } from "react"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import DownloadIcon from "@mui/icons-material/Download"
+import DescriptionIcon from "@mui/icons-material/Description"
+import ImageIcon from "@mui/icons-material/Image"
+import LabelIcon from "@mui/icons-material/Label"
+import ImageSearchIcon from "@mui/icons-material/ImageSearch"
+import colors from "../../colors.js"
+import { getImageFile } from "../../utils/get-data-from-server.js"
+import { useSnackbar } from "../../SnackbarContext/index.jsx"
+import { hexToRgbTuple } from "../../utils/color-utils.js"
+import HeaderButton from "../HeaderButton/index.jsx"
 import { useTranslation } from "react-i18next"
-import config from "../../config.js";
+import config from "../../config.js"
 
-const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled, selectedImages}) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const getImageNames = () => { 
-    return selectedImages.map(image => decodeURIComponent(image.src.split('/').pop()))
+const DownloadButton = ({
+  selectedImageName,
+  classList,
+  hideHeaderText,
+  disabled,
+  selectedImages,
+}) => {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const getImageNames = () => {
+    return selectedImages.map((image) =>
+      decodeURIComponent(image.src.split("/").pop()),
+    )
   }
-  const { showSnackbar } = useSnackbar();
-  const {t} = useTranslation();
+  const { showSnackbar } = useSnackbar()
+  const { t } = useTranslation()
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  
+    setAnchorEl(event.currentTarget)
+  }
 
   const classColorMap = classList.reduce((acc, className, index) => {
-    acc[className] = hexToRgbTuple(colors[index]);
-    return acc;
-  }, {});
+    acc[className] = hexToRgbTuple(colors[index])
+    return acc
+  }, {})
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleDownload = (format) => {
     const config_data = {}
-    config_data['image_name'] = selectedImageName
-    config_data['image_names'] = getImageNames()
-    config_data['colorMap'] = classColorMap
-    config_data['outlineThickness'] = config.OUTLINE_THICKNESS_CONFIG
+    config_data["image_name"] = selectedImageName
+    config_data["image_names"] = getImageNames()
+    config_data["colorMap"] = classColorMap
+    config_data["outlineThickness"] = config.OUTLINE_THICKNESS_CONFIG
     let url = ""
     switch (format) {
-        case "configuration":
-            url = "download_configuration"
-            break;
-        case "masked-image":
-            url = "download_image_mask"
-            break;
-        case "annotated-image":
-            url = "download_image_with_annotations"
-            break;
-        case "yolo-annotations":
-            url = "download_yolo_annotations"
-            break;
-        default:
-            url = "imagesName"
+      case "configuration":
+        url = "download_configuration"
+        break
+      case "masked-image":
+        url = "download_image_mask"
+        break
+      case "annotated-image":
+        url = "download_image_with_annotations"
+        break
+      case "yolo-annotations":
+        url = "download_yolo_annotations"
+        break
+      default:
+        url = "imagesName"
+    }
+    const withoutExtension = selectedImageName.slice(
+      0,
+      selectedImageName.lastIndexOf("."),
+    )
+    getImageFile(url, config_data)
+      .then((response) => {
+        // Create a link element and click it to trigger the download
+        const link = document.createElement("a")
+        link.href = response
+        if (format === "configuration") {
+          link.setAttribute("download", `configuration`)
+        } else if (format === "yolo-annotations") {
+          link.setAttribute("download", `yolo_annotations`)
+        } else if (format === "masked-image") {
+          link.setAttribute("download", "image_masks")
+        } else if (format == "annotated-image") {
+          link.setAttribute("download", "images_with_annotations")
+        } else {
+          link.setAttribute("download", `${withoutExtension}_${format}.png`)
         }
-        const withoutExtension = selectedImageName.slice(0, selectedImageName.lastIndexOf('.'));
-        getImageFile(url, config_data)
-            .then(response => {
-                 // Create a link element and click it to trigger the download
-                const link = document.createElement('a');
-                link.href = response;
-                if (format === "configuration") {
-                    link.setAttribute('download', `configuration`); 
-                } else if (format === "yolo-annotations") {
-                    link.setAttribute('download', `yolo_annotations`);
-                } else if (format === "masked-image") {
-                    link.setAttribute('download', "image_masks");
-                } else if (format == "annotated-image"){
-                    link.setAttribute('download', "images_with_annotations");
-                } else {
-                    link.setAttribute('download', `${withoutExtension}_${format}.png`);
-                }
-                document.body.appendChild(link);
-                link.click();
+        document.body.appendChild(link)
+        link.click()
 
-                // Cleanup
-                window.URL.revokeObjectURL(url);
-                handleClose();
-            })
-            .catch(error => {
-                console.log(error, "error");
-                showSnackbar(t("error.downloading_file"), 'error');
-            });
-  };
+        // Cleanup
+        window.URL.revokeObjectURL(url)
+        handleClose()
+      })
+      .catch((error) => {
+        console.log(error, "error")
+        showSnackbar(t("error.downloading_file"), "error")
+      })
+  }
 
   return (
     <>
       <HeaderButton
-       key={"download-button"}
-       hideText={hideHeaderText}
-       name={"Download"}
-       label={t("btn.download")}
-       onClick={handleClick}
-       disabled={disabled}
-       icon={<DownloadIcon />}
-     />
+        key={"download-button"}
+        hideText={hideHeaderText}
+        name={"Download"}
+        label={t("btn.download")}
+        onClick={handleClick}
+        disabled={disabled}
+        icon={<DownloadIcon />}
+      />
       <Menu
         id="download-menu"
         anchorEl={anchorEl}
@@ -136,7 +146,7 @@ const DownloadButton = ({selectedImageName, classList, hideHeaderText, disabled,
         </MenuItem>
       </Menu>
     </>
-  );
-};
+  )
+}
 
-export default DownloadButton;
+export default DownloadButton

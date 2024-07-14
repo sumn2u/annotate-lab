@@ -1,14 +1,20 @@
-import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react"
-import {Matrix} from "transformation-matrix-js"
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+import { Matrix } from "transformation-matrix-js"
 import Crosshairs from "../Crosshairs"
-import {createTheme, ThemeProvider} from "@mui/material/styles"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import styles from "./styles"
 import PreventScrollToParents from "../PreventScrollToParents"
 import useWindowSize from "../hooks/use-window-size.js"
 import useMouse from "./use-mouse"
 import useProjectRegionBox from "./use-project-box"
 import useExcludePattern from "../hooks/use-exclude-pattern"
-import {useRafState} from "react-use"
+import { useRafState } from "react-use"
 import PointDistances from "../PointDistances"
 import RegionTags from "../RegionTags"
 import RegionLabel from "../RegionLabel"
@@ -17,11 +23,11 @@ import VideoOrImageCanvasBackground from "../VideoOrImageCanvasBackground"
 import useEventCallback from "use-event-callback"
 import RegionShapes from "../RegionShapes"
 import useWasdMode from "./use-wasd-mode"
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types"
 
 const theme = createTheme()
 
-const getDefaultMat = (allowedArea = null, {iw, ih} = {}) => {
+const getDefaultMat = (allowedArea = null, { iw, ih } = {}) => {
   let mat = Matrix.from(1, 0, 0, 1, -10, -10)
   if (allowedArea && iw) {
     mat = mat
@@ -71,7 +77,7 @@ export const ImageCanvas = ({
   zoomOnAllowedArea = true,
   modifyingAllowedArea = false,
   keypointDefinitions,
-  enabledRegionProps
+  enabledRegionProps,
 }) => {
   const canvasEl = useRef(null)
   const layoutParams = useRef({})
@@ -82,9 +88,9 @@ export const ImageCanvas = ({
   const windowSize = useWindowSize()
 
   const getLatestMat = useEventCallback(() => mat)
-  useWasdMode({getLatestMat, changeMat})
+  useWasdMode({ getLatestMat, changeMat })
 
-  const {mouseEvents, mousePosition} = useMouse({
+  const { mouseEvents, mousePosition } = useMouse({
     canvasEl,
     dragging,
     mat,
@@ -99,40 +105,40 @@ export const ImageCanvas = ({
     dragWithPrimary,
     onMouseMove,
     onMouseDown,
-    onMouseUp
+    onMouseUp,
   })
 
   useLayoutEffect(() => changeMat(mat.clone()), [windowSize])
 
-  const projectRegionBox = useProjectRegionBox({layoutParams, mat})
+  const projectRegionBox = useProjectRegionBox({ layoutParams, mat })
 
   const [imageDimensions, changeImageDimensions] = useState()
   const imageLoaded = Boolean(imageDimensions && imageDimensions.naturalWidth)
 
   const onVideoOrImageLoaded = useEventCallback(
-    ({naturalWidth, naturalHeight, duration}) => {
-      const dims = {naturalWidth, naturalHeight, duration}
+    ({ naturalWidth, naturalHeight, duration }) => {
+      const dims = { naturalWidth, naturalHeight, duration }
       if (onImageOrVideoLoaded) onImageOrVideoLoaded(dims)
       changeImageDimensions(dims)
       // Redundant update to fix rerendering issues
       setTimeout(() => changeImageDimensions(dims), 10)
-    }
+    },
   )
 
   const excludePattern = useExcludePattern()
 
   const canvas = canvasEl.current
   if (canvas && imageLoaded) {
-    const {clientWidth, clientHeight} = canvas
+    const { clientWidth, clientHeight } = canvas
 
     const fitScale = Math.max(
       imageDimensions.naturalWidth / (clientWidth - 20),
-      imageDimensions.naturalHeight / (clientHeight - 20)
+      imageDimensions.naturalHeight / (clientHeight - 20),
     )
 
     const [iw, ih] = [
       imageDimensions.naturalWidth / fitScale,
-      imageDimensions.naturalHeight / fitScale
+      imageDimensions.naturalHeight / fitScale,
     ]
 
     layoutParams.current = {
@@ -140,7 +146,7 @@ export const ImageCanvas = ({
       ih,
       fitScale,
       canvasWidth: clientWidth,
-      canvasHeight: clientHeight
+      canvasHeight: clientHeight,
     }
   }
 
@@ -149,15 +155,15 @@ export const ImageCanvas = ({
     changeMat(
       getDefaultMat(
         zoomOnAllowedArea ? allowedArea : null,
-        layoutParams.current
-      )
+        layoutParams.current,
+      ),
     )
     // eslint-disable-next-line
   }, [imageLoaded])
 
   useLayoutEffect(() => {
     if (!imageDimensions) return
-    const {clientWidth, clientHeight} = canvas
+    const { clientWidth, clientHeight } = canvas
     canvas.width = clientWidth
     // TODO: This might a problem - Content window becoming bigger comes from this
     canvas.height = clientHeight
@@ -165,24 +171,24 @@ export const ImageCanvas = ({
     context.save()
     context.transform(...mat.clone().inverse().toArray())
 
-    const {iw, ih} = layoutParams.current
+    const { iw, ih } = layoutParams.current
 
     if (allowedArea) {
       // Pattern to indicate the NOT allowed areas
-      const {x, y, w, h} = allowedArea
+      const { x, y, w, h } = allowedArea
       context.save()
       context.globalAlpha = 1
       const outer = [
         [0, 0],
         [iw, 0],
         [iw, ih],
-        [0, ih]
+        [0, ih],
       ]
       const inner = [
         [x * iw, y * ih],
         [x * iw + w * iw, y * ih],
         [x * iw + w * iw, y * ih + h * ih],
-        [x * iw, y * ih + h * ih]
+        [x * iw, y * ih + h * ih],
       ]
       context.moveTo(...outer[0])
       outer.forEach((p) => context.lineTo(...p))
@@ -203,16 +209,16 @@ export const ImageCanvas = ({
     context.restore()
   })
 
-  const {iw, ih} = layoutParams.current
+  const { iw, ih } = layoutParams.current
 
   let zoomBox =
     !zoomStart || !zoomEnd
       ? null
       : {
-        ...mat.clone().inverse().applyToPoint(zoomStart.x, zoomStart.y),
-        w: (zoomEnd.x - zoomStart.x) / mat.a,
-        h: (zoomEnd.y - zoomStart.y) / mat.d
-      }
+          ...mat.clone().inverse().applyToPoint(zoomStart.x, zoomStart.y),
+          w: (zoomEnd.x - zoomStart.x) / mat.a,
+          h: (zoomEnd.y - zoomStart.y) / mat.d,
+        }
   if (zoomBox) {
     if (zoomBox.w < 0) {
       zoomBox.x += zoomBox.w
@@ -226,7 +232,7 @@ export const ImageCanvas = ({
 
   const imagePosition = {
     topLeft: mat.clone().inverse().applyToPoint(0, 0),
-    bottomRight: mat.clone().inverse().applyToPoint(iw, ih)
+    bottomRight: mat.clone().inverse().applyToPoint(iw, ih),
   }
 
   const highlightedRegion = useMemo(() => {
@@ -254,7 +260,7 @@ export const ImageCanvas = ({
                   ? mat.a < 1
                     ? "zoom-out"
                     : "zoom-in"
-                  : undefined
+                  : undefined,
         }}
       >
         {showCrosshairs && (
@@ -267,19 +273,19 @@ export const ImageCanvas = ({
               !modifyingAllowedArea || !allowedArea
                 ? regions
                 : [
-                  {
-                    type: "box",
-                    id: "$$allowed_area",
-                    cls: "allowed_area",
-                    highlighted: true,
-                    x: allowedArea.x,
-                    y: allowedArea.y,
-                    w: allowedArea.w,
-                    h: allowedArea.h,
-                    visible: true,
-                    color: "#ff0"
-                  }
-                ]
+                    {
+                      type: "box",
+                      id: "$$allowed_area",
+                      cls: "allowed_area",
+                      highlighted: true,
+                      x: allowedArea.x,
+                      y: allowedArea.y,
+                      w: allowedArea.w,
+                      h: allowedArea.h,
+                      visible: true,
+                      color: "#ff0",
+                    },
+                  ]
             }
             mouseEvents={mouseEvents}
             projectRegionBox={projectRegionBox}
@@ -345,7 +351,7 @@ export const ImageCanvas = ({
               left: zoomBox.x,
               top: zoomBox.y,
               width: zoomBox.w,
-              height: zoomBox.h
+              height: zoomBox.h,
             }}
           />
         )}
@@ -359,12 +365,12 @@ export const ImageCanvas = ({
           />
         )}
         <PreventScrollToParents
-          style={{width: "100%", height: "100%"}}
+          style={{ width: "100%", height: "100%" }}
           {...mouseEvents}
         >
           <>
-              <canvas
-              style={{opacity: 0.25, ...styles.canvas}}
+            <canvas
+              style={{ opacity: 0.25, ...styles.canvas }}
               ref={canvasEl}
             />
             <RegionShapes
@@ -409,14 +415,23 @@ ImageCanvas.propTypes = {
   zoomWithPrimary: PropTypes.bool,
   createWithPrimary: PropTypes.bool,
   showTags: PropTypes.bool,
-  realSize: PropTypes.shape({width: PropTypes.number, height: PropTypes.number, unitName: PropTypes.string}),
+  realSize: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    unitName: PropTypes.string,
+  }),
   showCrosshairs: PropTypes.bool,
   showHighlightBox: PropTypes.bool,
   showPointDistances: PropTypes.bool,
   pointDistancePrecision: PropTypes.number,
   regionClsList: PropTypes.arrayOf(PropTypes.string),
   regionTagList: PropTypes.arrayOf(PropTypes.string),
-  allowedArea: PropTypes.shape({x: PropTypes.number, y: PropTypes.number, w: PropTypes.number, h: PropTypes.number}),
+  allowedArea: PropTypes.shape({
+    x: PropTypes.number,
+    y: PropTypes.number,
+    w: PropTypes.number,
+    h: PropTypes.number,
+  }),
   RegionEditLabel: PropTypes.element,
   videoPlaying: PropTypes.bool,
   zoomOnAllowedArea: PropTypes.bool,

@@ -1,8 +1,8 @@
 // @flow
 
-import React, {memo, useRef} from "react"
+import React, { memo, useRef } from "react"
 import Paper from "@mui/material/Paper"
-import {createTheme, styled, ThemeProvider} from "@mui/material/styles"
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
 import styles from "./styles"
 import IconButton from "@mui/material/IconButton"
 import Button from "@mui/material/Button"
@@ -11,9 +11,9 @@ import CheckIcon from "@mui/icons-material/Check"
 import TextField from "@mui/material/TextField"
 import Select from "react-select"
 import CreatableSelect from "react-select/creatable"
-import {useTranslation} from "react-i18next"
-import Alert from '@mui/material/Alert';
-import {asMutable} from "seamless-immutable"
+import { useTranslation } from "react-i18next"
+import Alert from "@mui/material/Alert"
+import { asMutable } from "seamless-immutable"
 
 const theme = createTheme()
 const StyledPaper = styled(Paper)(({ theme }) => styles.regionInfo)
@@ -28,14 +28,14 @@ export const RegionLabel = ({
   onClose,
   onOpen,
   onRegionClassAdded,
-  enabledProperties
+  enabledProperties,
 }) => {
   const commentInputRef = useRef(null)
-  const {t} = useTranslation();
+  const { t } = useTranslation()
   const onCommentInputClick = (_) => {
     // The TextField wraps the <input> tag with two divs
     const commentInput = commentInputRef.current.children[0].children[0]
-      
+
     if (commentInput) return commentInput.focus()
   }
   // I have no idea why the click is not working, so I copied the solution from above...
@@ -45,7 +45,7 @@ export const RegionLabel = ({
 
     if (nameInput) return nameInput.focus()
   }
-  
+
   return (
     <ThemeProvider theme={theme}>
       <StyledPaper
@@ -58,7 +58,7 @@ export const RegionLabel = ({
               <div className="name">
                 <div
                   className="circle"
-                  style={{backgroundColor: region.color}}
+                  style={{ backgroundColor: region.color }}
                 />
                 {region.cls}
               </div>
@@ -81,8 +81,8 @@ export const RegionLabel = ({
             )}
           </div>
         ) : (
-          <div style={{width: 200}}>
-            <div style={{display: "flex", flexDirection: "row"}}>
+          <div style={{ width: 200 }}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
                   display: "flex",
@@ -98,63 +98,67 @@ export const RegionLabel = ({
               >
                 {region.type}
               </div>
-              <div style={{flexGrow: 1}} />
+              <div style={{ flexGrow: 1 }} />
               <IconButton
                 onClick={() => onDelete(region)}
                 tabIndex={-1}
-                style={{width: 22, height: 22}}
+                style={{ width: 22, height: 22 }}
                 size="small"
                 variant="outlined"
                 aria-label="delete"
               >
-                <TrashIcon style={{marginTop: -8, width: 16, height: 16}} />
+                <TrashIcon style={{ marginTop: -8, width: 16, height: 16 }} />
               </IconButton>
             </div>
-            {enabledProperties.includes("class") && (allowedClasses || []).length > 0 && (
-              <div style={{marginTop: 6}}>
-                <CreatableSelect
-                  aria-label="classification"
-                  placeholder="Classification"
-                  onChange={(o, actionMeta) => {
-                    if (actionMeta.action === "create-option") {
-                      onRegionClassAdded(o.value)
+            {enabledProperties.includes("class") &&
+              (allowedClasses || []).length > 0 && (
+                <div style={{ marginTop: 6 }}>
+                  <CreatableSelect
+                    aria-label="classification"
+                    placeholder="Classification"
+                    onChange={(o, actionMeta) => {
+                      if (actionMeta.action === "create-option") {
+                        onRegionClassAdded(o.value)
+                      }
+                      return onChange({
+                        ...region,
+                        cls: o.value,
+                      })
+                    }}
+                    value={
+                      region.cls
+                        ? { label: region.cls, value: region.cls }
+                        : null
                     }
-                    return onChange({
-                      ...(region),
-                      cls: o.value,
-                    })
-                  }}
-                  value={
-                    region.cls ? {label: region.cls, value: region.cls} : null
-                  }
-                  options={asMutable(
-                    allowedClasses.map((c) => ({value: c, label: c}))
-                  )}
-                />
-              </div>
-            )}
-            {enabledProperties.includes("tags") && (allowedTags || []).length > 0 && (
-              <div style={{marginTop: 4}}>
-                <Select
-                 aria-label="tags"
-                 onChange={(newTags) =>
-                    onChange({
-                      ...(region),
-                      tags: newTags.map((t) => t.value),
-                    })
-                  }
-                  placeholder="Tags"
-                  value={(region.tags || []).map((c) => ({
-                    label: c,
-                    value: c,
-                  }))}
-                  isMulti
-                  options={asMutable(
-                    allowedTags.map((c) => ({value: c, label: c}))
-                  )}
-                />
-              </div>
-            )}
+                    options={asMutable(
+                      allowedClasses.map((c) => ({ value: c, label: c })),
+                    )}
+                  />
+                </div>
+              )}
+            {enabledProperties.includes("tags") &&
+              (allowedTags || []).length > 0 && (
+                <div style={{ marginTop: 4 }}>
+                  <Select
+                    aria-label="tags"
+                    onChange={(newTags) =>
+                      onChange({
+                        ...region,
+                        tags: newTags.map((t) => t.value),
+                      })
+                    }
+                    placeholder="Tags"
+                    value={(region.tags || []).map((c) => ({
+                      label: c,
+                      value: c,
+                    }))}
+                    isMulti
+                    options={asMutable(
+                      allowedTags.map((c) => ({ value: c, label: c })),
+                    )}
+                  />
+                </div>
+              )}
             {enabledProperties.includes("comment") && (
               <TextField
                 InputProps={{
@@ -171,7 +175,7 @@ export const RegionLabel = ({
                 onClick={onCommentInputClick}
                 value={region.comment || ""}
                 onChange={(event) =>
-                  onChange({...(region), comment: event.target.value})
+                  onChange({ ...region, comment: event.target.value })
                 }
               />
             )}
@@ -186,20 +190,23 @@ export const RegionLabel = ({
                 style={styles.nameField}
                 value={region.name || ""}
                 onChange={(event) =>
-                  onChange({...(region), name: event.target.value})
+                  onChange({ ...region, name: event.target.value })
                 }
                 autoFocus
                 focused={true}
               />
-            ) 
-            }
+            )}
             {onClose && (
               <div style={styles.div}>
-                  <div>
-                    {region?.falseInput ? 
-                      <Alert style={styles.alert} severity="error">{t("region.no.name")}</Alert> : <></>
-                    }
-                  </div>
+                <div>
+                  {region?.falseInput ? (
+                    <Alert style={styles.alert} severity="error">
+                      {t("region.no.name")}
+                    </Alert>
+                  ) : (
+                    <></>
+                  )}
+                </div>
                 <Button
                   onClick={() => onClose(region)}
                   size="small"
@@ -210,7 +217,7 @@ export const RegionLabel = ({
                   <CheckIcon />
                 </Button>
               </div>
-            )}         
+            )}
           </div>
         )}
       </StyledPaper>
@@ -222,5 +229,5 @@ export default memo(
   RegionLabel,
   (prevProps, nextProps) =>
     prevProps.editing === nextProps.editing &&
-    prevProps.region === nextProps.region
+    prevProps.region === nextProps.region,
 )

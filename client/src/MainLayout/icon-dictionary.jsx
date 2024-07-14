@@ -13,7 +13,7 @@ import {
   faSearch,
   faCircleDot,
   faTag,
-  faVectorSquare
+  faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons"
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew"
 const faStyle = { marginTop: 4, width: 16, height: 16, marginBottom: 4 }
@@ -56,12 +56,7 @@ export const iconDictionary = {
     />
   ),
   "create-circle": () => (
-    <FontAwesomeIcon
-      style={faStyle}
-      size="xs"
-      fixedWidth
-      icon={faCircleDot}
-      />
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faCircleDot} />
   ),
   "create-expanding-line": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faGripLines} />
@@ -72,7 +67,7 @@ export const iconDictionary = {
   "modify-allowed-area": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faEdit} />
   ),
-  "create-keypoints": AccessibilityNewIcon
+  "create-keypoints": AccessibilityNewIcon,
 }
 
 export default iconDictionary

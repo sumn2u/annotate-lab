@@ -9,6 +9,6 @@ export default (state) => {
   // TODO memoize
   return useMemo(
     () => getImpliedVideoRegions(keyframes, currentVideoTime),
-    [keyframes, currentVideoTime]
+    [keyframes, currentVideoTime],
   )
 }

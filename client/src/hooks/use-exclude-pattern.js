@@ -18,7 +18,7 @@ export default () => {
     excludePattern.current.image.onload = () => {
       excludePattern.current.pattern = context.createPattern(
         excludePattern.current.image,
-        "repeat"
+        "repeat",
       )
     }
     excludePattern.current.image.src = excludePatternSrc
