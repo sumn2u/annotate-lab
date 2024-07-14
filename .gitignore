@@ -35,3 +35,5 @@ secret.story.*
 .idea
 .idea/*
 server/uploads/*
+
+server/tests/__pycache__/
