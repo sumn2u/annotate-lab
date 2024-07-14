@@ -189,7 +189,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 
 This command discovers and runs all test files (`test_*.py`) in the `server/tests` directory using unittest.
 
-## Code Formatting
+## Code Formatting [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/code-formatting)
 
 ### Client-side (Vite React Application)
 - **Code Formatter:** [Prettier](https://prettier.io/)
@@ -199,7 +199,7 @@ This command discovers and runs all test files (`test_*.py`) in the `server/test
 ### Server-side (Flask Application)
 - **Code Formatter:** [Black](https://pypi.org/project/black/)
 - **Configuration File:** `pyproject.toml`
-- **Command:**  Run `black .` or `yarn format` to format server-side code using Black.
+- **Command:**  Run `black .` to format server-side code using Black.
 
 ## Usage
 
