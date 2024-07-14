@@ -1,22 +1,44 @@
-<div style="text-align: center;">
-
-# Annotate-Lab
-
-Annotate-Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our [documentation](https://annotate-docs.dwaste.live/).
-
-[![Open Source Helpers](https://www.codetriage.com/sumn2u/annotate-lab/badges/users.svg)](https://www.codetriage.com/sumn2u/annotate-lab)
-[![Test Workflow](https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml/badge.svg)](https://github.com/sumn2u/annotate-lab/actions)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9112/badge)](https://www.bestpractices.dev/projects/9112)
-[![Test Workflow](https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml/badge.svg)](https://github.com/sumn2u/annotate-lab/actions)
-[![GitHub issues](https://img.shields.io/github/issues/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/issues) [![GitHub forks](https://img.shields.io/github/forks/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/network)
-[![GitHub stars](https://img.shields.io/github/stars/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/stargazers)
-[![GitHub license](https://img.shields.io/github/license/sumn2u/annotate-lab)](https://github.com/sumn2u/annotate-lab/blob/master/LICENSE)
-[![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
-</div>
 
 ![example](./sample_images/example.png)
+
+<h2 align="center">Annotate Lab</h2> 
+<p align="center">
+Annotate Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our <a href="https://annotate-docs.dwaste.live/">documentation</a>.
+
+</p>
+
+<p align="center">
+  <a href="https://www.codetriage.com/sumn2u/annotate-lab">
+    <img src="https://www.codetriage.com/sumn2u/annotate-lab/badges/users.svg" alt="Open Source Helpers">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml">
+    <img src="https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml/badge.svg" alt="Test Workflow">
+  </a>
+  <a href="https://www.bestpractices.dev/projects/9112">
+    <img src="https://www.bestpractices.dev/projects/9112/badge" alt="OpenSSF Best Practices">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml">
+    <img src="https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml/badge.svg" alt="Test Workflow">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/issues">
+    <img src="https://img.shields.io/github/issues/sumn2u/annotate-lab" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/network">
+    <img src="https://img.shields.io/github/forks/sumn2u/annotate-lab" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/stargazers">
+    <img src="https://img.shields.io/github/stars/sumn2u/annotate-lab" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/sumn2u/annotate-lab/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/sumn2u/annotate-lab" alt="GitHub license">
+  </a>
+  <a href="https://github.com/prettier/prettier">
+    <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="Code style: prettier">
+  </a>
+  <a href="https://github.com/psf/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
+  </a>
+</p>
 
 
 <br/>
@@ -242,13 +264,25 @@ const config = {
 ```
 
 ## Demo [V2.0](https://github.com/sumn2u/annotate-lab/releases/tag/2.0.0)
-[![Annotate Lab](https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg)](https://www.youtube.com/watch?v=iUI6MKWqCeg)
+ <div style="text-align: center;">
+    <a href="https://www.youtube.com/watch?v=iUI6MKWqCeg">
+      <img src="https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg" alt="Annotate Lab" style="display: inline-block; margin: 0 auto;">
+    </a>
+  </div>
 
 ## Outputs [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs)
 Sample of annotated image along with its mask and settings is show below.
 
-![orange_annotation](./sample_images/orange_annotated-image.png)
-![orange_annotation_mask](./sample_images/orange_masked-image.png)
+<div style="display: flex; justify-content: center;">
+    <img src="./sample_images/orange_annotated-image.png" alt="orange_annotation" style="margin-right: 20px;">
+    <img src="./sample_images/orange_masked-image.png" alt="orange_annotation_mask" style="margin-left: 20px;">
+  </div>
+
+  <div style="text-align: center; margin-top: 10px;">
+    <strong>Orange Annotation</strong>
+    <strong style="margin-left: 15rem;">Orange Annotation Mask</strong>
+  </div>
+  <br/>
 
 ```json
 {
