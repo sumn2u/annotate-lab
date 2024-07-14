@@ -189,6 +189,18 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 
 This command discovers and runs all test files (`test_*.py`) in the `server/tests` directory using unittest.
 
+## Code Formatting
+
+### Client-side (Vite React Application)
+- **Code Formatter:** [Prettier](https://prettier.io/)
+- **Configuration File:** `.prettierrc`
+- **Command:**  Run `npm run format` or `yarn format` to format client-side code using Prettier.
+
+### Server-side (Flask Application)
+- **Code Formatter:** [Black](https://pypi.org/project/black/)
+- **Configuration File:** `pyproject.toml`
+- **Command:**  Run `black .` or `yarn format` to format server-side code using Black.
+
 ## Usage
 
 1. Open your web browser and navigate to [http://localhost:5173](http://localhost:5173).
