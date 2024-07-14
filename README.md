@@ -278,10 +278,6 @@ Sample of annotated image along with its mask and settings is show below.
     <img src="./sample_images/orange_masked-image.png" alt="orange_annotation_mask" style="margin-left: 20px;">
   </p>
 
-  <p align="center">
-    <strong>Orange Annotation</strong>
-    <strong style="margin-left: 15rem;">Orange Annotation Mask</strong>
-  </p>
   <br/>
 
 ```json
