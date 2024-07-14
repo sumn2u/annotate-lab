@@ -1,3 +1,5 @@
+<div style="text-align: center;">
+
 # Annotate-Lab
 
 Annotate-Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our [documentation](https://annotate-docs.dwaste.live/).
@@ -12,28 +14,34 @@ Annotate-Lab is an open-source application designed for image annotation, compri
 [![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-
+</div>
 
 ![example](./sample_images/example.png)
-
-# Demo [V2.0](https://github.com/sumn2u/annotate-lab/releases/tag/2.0.0)
-[![Annotate Lab](https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg)](https://www.youtube.com/watch?v=iUI6MKWqCeg)
 
 
 <br/>
 
 
 ## Table of Contents
-- [Project Structure](#project-structure)
-- [Dependencies](#dependencies)
-- [Setup and Installation](#setup-and-installation)
+- [Project Structure](#project-structure-documentation-page)
+- [Dependencies](#dependencies-documentation-page)
+- [Setup and Installation](#setup-and-installation-documentation-page)
 - [Running the Application](#running-the-application)
-- [Running Tests](#running-tests)
+    - [Running the Client](#running-the-client)
+    - [Running the Server](#running-the-server)
+    - [Running using Docker](#running-using-docker)
+- [Running Tests](#running-tests-documentation-page)
     - [Client Tests](#client-tests)
     - [Server Tests](#server-tests)
+- [Code Formatting](#code-formatting-documentation-page)
 - [Usage](#usage)
-- [Outputs](#outputs)
-- [Troubleshooting](#troubleshooting)
+- [Settings](#settings-documentation-page)
+- [Configurations (Optional)](#configurations-optional-documentation-page)
+- [Demo](#demo-v20)
+- [Outputs](#outputs-documentation-page)
+- [YOLO Format](#yolo-format-documentation-page)
+    - [Normalization process of YOLO annotations](#normalization-process-of-yolo-annotations-documentation-page)
+- [Troubleshooting](#troubleshooting-documentation-page)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -70,10 +78,6 @@ annotation-lab/
 - **app.py**: Main Flask application file.
 - **requirements.txt**: Contains server dependencies.
 
-## Settings [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/configuration)
-One can configure the tools, tags, upload images and do many more from the settings.
-
-![configuration](./sample_images/configuration.png)
 ## Dependencies [[documentation page]](https://annotate-docs.dwaste.live/overview/project-structure#dependencies)
 
 ### Client
@@ -86,6 +90,8 @@ One can configure the tools, tags, upload images and do many more from the setti
 - [Pandas](https://pandas.pydata.org/)
 - [NumPy](https://numpy.org/)
 - Other dependencies as listed in `requirements.txt`
+
+
 
 ## Setup and Installation [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run)
 
@@ -143,7 +149,7 @@ The application should now be running on [http://localhost:5173](http://localhos
     ```
 The server should now be running on [http://localhost:5000](http://localhost:5000).
 
-### Running using Docker.
+### Running using Docker
 Navigate to the root directory and run the following command to start the application: 
 ```sh
 docker-compose build
@@ -209,6 +215,11 @@ This command discovers and runs all test files (`test_*.py`) in the `server/test
 2. Use the user interface to upload and annotate images.
 3. The annotations and other interactions will be handled by the Flask server running at [http://localhost:5000](http://localhost:5000).
 
+## Settings [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/configuration)
+One can configure the tools, tags, upload images and do many more from the settings.
+
+![configuration](./sample_images/configuration.png)
+
 ## Configurations (Optional) [[documentation page]](https://annotate-docs.dwaste.live/overview/customization)
 You can customize various aspects of Annotate-Lab through configuration settings. To do this, modify the `config.py` file in the `server` directory or the `config.js` file in the `client` directory.
 ```python
@@ -229,6 +240,9 @@ const config = {
     SHOW_CLASS_DISTRIBUTION: true // displays annotated class distribution bar chart
   };
 ```
+
+## Demo [V2.0](https://github.com/sumn2u/annotate-lab/releases/tag/2.0.0)
+[![Annotate Lab](https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg)](https://www.youtube.com/watch?v=iUI6MKWqCeg)
 
 ## Outputs [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs)
 Sample of annotated image along with its mask and settings is show below.
