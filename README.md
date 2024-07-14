@@ -206,12 +206,13 @@ MASK_BACKGROUND_COLOR = (0, 0, 0)  # Black background for masks
 // config.js
 const config = {
     SERVER_URL, // url of server
-    UPLOAD_LIMIT: 5, // image upload limit
+    UPLOAD_LIMIT: 500, // image upload limit
     OUTLINE_THICKNESS_CONFIG : { // outline thickness of tools
       POLYGON: 2,
       CIRCLE: 2,
       BOUNDING_BOX: 2
-    }
+    },
+    SHOW_CLASS_DISTRIBUTION: true // display annotated class distribution
   };
 ```
 
