@@ -358,7 +358,7 @@ Applying the generated labels we get following results.
 
 ![yolo_with_generated_labels](./sample_images/yolo_applied_annotation.jpg)
 
-### Normalization process of YOLO annotations
+### Normalization process of YOLO annotations [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs#normalization-process-of-yolo-annotations)
 
 #### Example Conversion
 
