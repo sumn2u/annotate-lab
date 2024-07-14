@@ -14,7 +14,7 @@ import { getLabels } from "../utils/get-data-from-server"
 import colors from "../colors"
 
 const theme = createTheme()
-export const ClassDistributionSidebarBox = ({ regionClsList }) => {
+export const ClassDistributionSidebarBox = ({ regionClsList, shouldExpand=false }) => {
   const { t } = useTranslation()
   const [labelsInfo, setLabelsInfo] = useState([])
   const assignRandomColors = (responseList, classList) => {
@@ -77,11 +77,12 @@ export const ClassDistributionSidebarBox = ({ regionClsList }) => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>       
       <SidebarBoxContainer
         title={t("menu.class_distribution")}
         icon={<BarChartIcon style={{ color: grey[700] }} />}
         noScroll={true}
+        expandedByDefault={shouldExpand}
       >
         <div
           style={{
