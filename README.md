@@ -212,7 +212,7 @@ const config = {
       CIRCLE: 2,
       BOUNDING_BOX: 2
     },
-    SHOW_CLASS_DISTRIBUTION: true // display annotated class distribution
+    SHOW_CLASS_DISTRIBUTION: true // displays annotated class distribution bar chart
   };
 ```
 
