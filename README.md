@@ -264,24 +264,24 @@ const config = {
 ```
 
 ## Demo [V2.0](https://github.com/sumn2u/annotate-lab/releases/tag/2.0.0)
- <div style="text-align: center;">
+ <p style="text-align: center;">
     <a href="https://www.youtube.com/watch?v=iUI6MKWqCeg">
       <img src="https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg" alt="Annotate Lab" style="display: inline-block; margin: 0 auto;">
     </a>
-  </div>
+  </p>
 
 ## Outputs [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs)
 Sample of annotated image along with its mask and settings is show below.
 
-<div style="display: flex; justify-content: center;">
+<p style="display: flex; justify-content: center;">
     <img src="./sample_images/orange_annotated-image.png" alt="orange_annotation" style="margin-right: 20px;">
     <img src="./sample_images/orange_masked-image.png" alt="orange_annotation_mask" style="margin-left: 20px;">
-  </div>
+  </p>
 
-  <div style="text-align: center; margin-top: 10px;">
+  <p style="text-align: center; margin-top: 10px;">
     <strong>Orange Annotation</strong>
     <strong style="margin-left: 15rem;">Orange Annotation Mask</strong>
-  </div>
+  </p>
   <br/>
 
 ```json
