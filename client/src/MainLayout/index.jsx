@@ -27,6 +27,7 @@ import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
 import { useSnackbar } from "../SnackbarContext"
 import ClassDistributionSidebarBox from "../ClassDistributionSidebarBox"
+import config from "../config"
 
 const emptyArr = []
 const theme = createTheme()
@@ -382,10 +383,11 @@ export const MainLayout = ({
               history={state.history}
               onRestoreHistory={action("RESTORE_HISTORY")}
             />,
+            config.SHOW_CLASS_DISTRIBUTION && (
             <ClassDistributionSidebarBox
               key="ClassDistributionSidebarBox"
               regionClsList={state.regionClsList}
-            />,
+            />),
           ].filter(Boolean)}
         >
           {canvas}

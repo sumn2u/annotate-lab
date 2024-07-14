@@ -15,6 +15,7 @@ const config = {
     CIRCLE: 2,
     BOUNDING_BOX: 2,
   },
+  SHOW_CLASS_DISTRIBUTION: true,
 }
 
 export default config
