@@ -342,7 +342,7 @@ Sample of annotated image along with its mask and settings is show below.
 ```
 ### YOLO Format [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs#yolo-format)
 
-YOLO format is also supported by A.Lab. Below is an example of annotated ripe and unripe tomatoes.The entire dataset can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). In this example, `0` represents ripe tomatoes and `1` represents unripe ones.
+YOLO format is also supported by A.Lab. Below is an example of annotated ripe and unripe tomatoes. The entire dataset can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). In this example, `0` represents ripe tomatoes and `1` represents unripe ones.
 
 ![yolo_annotation_example](./sample_images/yolo_annotation_example.png)
 
@@ -356,6 +356,48 @@ The label of the above image are as follows:
 Applying the generated labels we get following results.
 
 ![yolo_with_generated_labels](./sample_images/yolo_applied_annotation.jpg)
+
+### Normalization process of YOLO annotations
+
+#### Example Conversion
+
+To convert non-normalized bounding box coordinates (x<sub style="font-size: 0.8em;">max</sub>, y<sub style="font-size: 0.8em;">max</sub>, x<sub style="font-size: 0.8em;">min</sub>, y<sub style="font-size: 0.8em;">min</sub>) to YOLO format (x<sub style="font-size: 0.8em;">center</sub>, y<sub style="font-size: 0.8em;">center</sub>, <span style="font-variant: small-caps;">width</span>, <span style="font-variant: small-caps;">height</span>):
+
+
+
+![yolo-normalization](./sample_images/yolo-normalization.png)
+Image Credit: Leandro de Oliveira
+```python
+# Assuming row contains your bounding box coordinates
+row = {'xmax': 400, 'xmin': 200, 'ymax': 300, 'ymin': 100}
+class_id = 0  # Example class id (replace with actual class id)
+
+# Image dimensions
+WIDTH = 640  # annotated image width
+HEIGHT = 640  # annotated image height
+
+# Calculate width and height of the bounding box
+width = row['xmax'] - row['xmin']
+height = row['ymax'] - row['ymin']
+
+# Calculate the center of the bounding box
+x_center = row['xmin'] + (width / 2)
+y_center = row['ymin'] + (height / 2)
+
+# Normalize the coordinates
+normalized_x_center = x_center / WIDTH
+normalized_y_center = y_center / HEIGHT
+normalized_width = width / WIDTH
+normalized_height = height / HEIGHT
+
+# Create the annotation string in YOLO format
+content = f"{class_id} {normalized_x_center} {normalized_y_center} {normalized_width} {normalized_height}"
+print(content)
+``` 
+The above conversion will give us YOLO format string.
+```txt
+0 0.46875 0.3125 0.3125 0.3125
+```
 
 ## Troubleshooting [[documentation page]](https://annotate-docs.dwaste.live/troubleshooting)
 
