@@ -108,11 +108,14 @@ The downloaded configurations provides the regions information along with co-ord
    ]
 }
 ```
+This tool also supports the [YOLO format](https://docs.ultralytics.com/datasets/detect/#ultralytics-yolo-format). A dataset of ripe and unripe tomatoes has been created and can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). \autoref{fig:annotated_tomatoes} shows the original and annotated tomatoes from that dataset.
+
+![Annotated Tomatoes \label{fig:annotated_tomatoes}](./annotated_tomatoes.png)
 
 
 # Conclusion
 
-Annotate-Lab stands out as a robust and user-friendly open-source solution for image annotation. By leveraging a client-server architecture, it effectively separates the user interface from backend processes, ensuring a smooth and efficient annotation workflow. The React-based client provides an intuitive interface for performing annotations, while the Flask-based server handles data persistence, configuration, and the generation of annotated images. This comprehensive approach makes Annotate-Lab a valuable tool for various applications, including machine learning, computer vision, and medical imaging, among others. Its open-source nature also encourages community contributions and customization, enhancing its versatility and potential for widespread adoption.
+Annotate-Lab stands out as a robust and user-friendly open-source solution for image annotation. By leveraging a client-server architecture, it effectively separates the user interface from backend processes, ensuring a smooth and efficient annotation workflow. The React-based client provides an intuitive interface for performing annotations, while the Flask-based server handles data persistence, configuration, and the generation of annotated images. This comprehensive approach makes Annotate-Lab a valuable tool for various applications, including machine learning, computer vision, and medical imaging, among others. Its open-source nature also encourages community contributions and customization, enhancing its potential for widespread adoption.
 
 # Acknowledgements
 
