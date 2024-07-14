@@ -149,7 +149,7 @@ docker-compose up -d #running in detached mode
 ```
 The  application should be running on [http://localhost](http://localhost). 
 
-## Running Tests
+## Running Tests [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/running-tests)
 
 ### Client Tests
 
