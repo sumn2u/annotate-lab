@@ -58,6 +58,8 @@ Annotate Lab is an open-source application designed for image annotation, compri
 - [Troubleshooting](#troubleshooting-documentation-page)
 - [Contributing](#contributing)
 - [License](#license)
+- [Reporting Security Issues](#reporting-security-issues)
+- [Acknowledgment](#acknowledgment)
 
 ## Project Structure [[documentation page]](https://annotate-docs.dwaste.live/overview/project-structure)
 ```sh
@@ -464,6 +466,10 @@ If you would like to contribute to this project, please fork the repository and 
 
 This project is licensed under the [MIT License](./LICENSE).
 
+## Reporting Security Issues
+
+If you find a security vulnerability in annotate-lab, please read our [Security Policy](./SECURITY.md) for instructions on how to report it securely.
+
 ## Acknowledgment
 
-This project is detached from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9) and uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master). 
+This project is detached from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9) and uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).
