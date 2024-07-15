@@ -8,36 +8,14 @@ Annotate Lab is an open-source application designed for image annotation, compri
 
 
 <p align="center">
-  <a href="https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml">
-    <img src="https://github.com/sumn2u/annotate-lab/actions/workflows/python-app.yml/badge.svg" alt="Test Workflow">
-  </a>
-  <a href="https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml">
-    <img src="https://github.com/sumn2u/annotate-lab/actions/workflows/vite-app.yml/badge.svg" alt="Test Workflow">
-  </a>
-  <a href="https://www.bestpractices.dev/projects/9112">
-    <img src="https://www.bestpractices.dev/projects/9112/badge" alt="OpenSSF Best Practices">
-  </a>
+  
   <a href="https://github.com/sumn2u/annotate-lab/network">
     <img src="https://img.shields.io/github/forks/sumn2u/annotate-lab" alt="GitHub forks">
   </a>
   <a href="https://github.com/sumn2u/annotate-lab/stargazers">
     <img src="https://img.shields.io/github/stars/sumn2u/annotate-lab" alt="GitHub stars">
   </a>
-  <a href="https://github.com/sumn2u/annotate-lab/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/sumn2u/annotate-lab" alt="GitHub license">
-  </a>
-  <a href="https://github.com/prettier/prettier">
-    <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="Code style: prettier">
-  </a>
-  <a href="https://github.com/psf/black">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
-  </a>
-  <a href="https://github.com/sumn2u/annotate-lab/issues">
-    <img src="https://img.shields.io/github/issues/sumn2u/annotate-lab" alt="GitHub issues">
-  </a>
-   <a href="https://www.codetriage.com/sumn2u/annotate-lab">
-    <img src="https://www.codetriage.com/sumn2u/annotate-lab/badges/users.svg" alt="Open Source Helpers">
-  </a>
+ 
 </p>
 
 
