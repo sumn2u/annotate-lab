@@ -3,7 +3,7 @@
 
 <h2 align="center">Annotate Lab</h2> 
 <p align="center">
-Annotate Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our <a href="https://annotate-docs.dwaste.live/">documentation</a>.
+Annotate Lab is an open-source application designed for image annotation, comprising two main components: the client and the server. The client, a React application, is responsible for the user interface where users perform annotations. On the other hand, the server, a Flask application, manages persisting the annotated changes and generating masked and annotated images, along with configuration settings. More information can be found in our
 
 </p>
 
