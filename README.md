@@ -10,11 +10,9 @@ Annotate Lab is an open-source application designed for image annotation, compri
 <p align="center">
   
   <a href="https://github.com/sumn2u/annotate-lab/network">
-    <img src="https://img.shields.io/github/forks/sumn2u/annotate-lab" alt="GitHub forks">
-  </a>
+    <img src="https://img.shields.io/github/forks/sumn2u/annotate-lab" alt="GitHub forks"></a>
   <a href="https://github.com/sumn2u/annotate-lab/stargazers">
-    <img src="https://img.shields.io/github/stars/sumn2u/annotate-lab" alt="GitHub stars">
-  </a>
+    <img src="https://img.shields.io/github/stars/sumn2u/annotate-lab" alt="GitHub stars"></a>
  
 </p>
 
