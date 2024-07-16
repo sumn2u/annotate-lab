@@ -272,13 +272,23 @@ export default () => {
         setSettings(savedConfiguration)
         if (savedConfiguration.images.length > 0) {
           fetchImages(savedConfiguration.images, lastSavedImageIndex)
+          const showLab = settingsConfig.settings?.showLab || false
+          if (!isSettingsOpen && showLab) {
+            setShowLabel(showLab)
+          }
+        } else {
+          setSettings((prevSettings) => ({ 
+            ...prevSettings, 
+            images: [],
+            imagesBlob: [],
+          }))
         }
       }
-      const showLab = settingsConfig.settings?.showLab || false
-      if (!isSettingsOpen && showLab) {
-        setShowLabel(showLab)
-      }
+      
     } catch (error) {
+      if(!error) {
+        showSnackbar(t("error.server_connection"), "error")
+      }
       console.error(error)
     }
   }
