@@ -47,6 +47,7 @@
   },
   "scripts": {
     "start": "vite --force",
+    "windows-start": "node client-server.js",
     "build": "vite build",
     "test": "jest",
     "format": "prettier --write ."
