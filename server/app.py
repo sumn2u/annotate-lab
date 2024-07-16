@@ -73,6 +73,7 @@ path = os.path.abspath("./uploads")
 
 
 @app.route("/save", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def save_annotate_info():
     try:
         request_data = request.get_json()
@@ -131,11 +132,13 @@ def save_settings(settings):
 
 
 @app.route("/settings", methods=["GET"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def get_settings():
     return jsonify(initial_settings)
 
 
 @app.route("/settings", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def update_settings():
     new_settings = request.json
     initial_settings.update(new_settings)
@@ -144,6 +147,7 @@ def update_settings():
 
 
 @app.route("/settings/reset", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def reset_settings():
     global initial_settings
     initial_settings = default_settings.copy()
@@ -152,6 +156,7 @@ def reset_settings():
 
 
 @app.route("/upload", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def upload_file():
     try:
         uploaded_files = []
@@ -222,6 +227,7 @@ def delete_file(filename):
 
 
 @app.route("/activeImage", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def save_active_image_info():
     try:
         request_data = request.get_json()
@@ -338,6 +344,7 @@ def create_json_response(image_name, color_map=None):
 
 
 @app.route("/imagesName", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def images_name():
     try:
         data = request.get_json()
@@ -371,6 +378,7 @@ def clear_upload_folder():
 
 
 @app.route("/clearSession", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def clear_session():
     global initial_settings
     try:
@@ -385,6 +393,7 @@ def clear_session():
 
 
 @app.route("/download_configuration", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def download_configuration():
     try:
         data = request.get_json()
@@ -418,6 +427,7 @@ def download_configuration():
 
 
 @app.route("/class_distribution", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def class_distribution():
     try:
         class_data = dbModule.get_class_distribution()
@@ -435,6 +445,7 @@ def class_distribution():
 
 
 @app.route("/download_image_with_annotations", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def download_image_with_annotations():
     temp_dir = None  # Initialize temporary directory variable
 
@@ -740,6 +751,7 @@ def get_image_annotations():
 
 
 @app.route("/download_image_mask", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def download_image_mask():
     try:
         data = request.get_json()
@@ -1068,6 +1080,7 @@ def create_yolo_annotations(image_names, color_map=None):
 
 
 @app.route("/download_yolo_annotations", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def download_yolo_annotations():
     data = request.get_json()
     image_names = data.get("image_names", [])
@@ -1120,6 +1133,7 @@ def download_yolo_annotations():
 
 
 @app.route("/imagesInfo", methods=["GET"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
 def get_images_info():
     global path
 
