@@ -472,4 +472,5 @@ If you find a security vulnerability in annotate-lab, please read our [Security 
 
 ## Acknowledgment
 
-This project is detached from idapgroup [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9) and uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).
+
+This project is detached from idapgroup's [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9), which is licensed under the [MIT license](https://github.com/idapgroup/react-image-annotate?tab=License-1-ov-file), and it uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).

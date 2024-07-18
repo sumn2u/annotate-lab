@@ -13,6 +13,8 @@ def generateUid(id):
     uid = uuid.uuid1() if (id == None) else id
     return uid
 
+# This class is adapted from the image_annotator
+# Source: https://github.com/gnamiro/image_annotator
 
 class Module:
     def __init__(self):

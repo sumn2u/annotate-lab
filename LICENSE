@@ -1,6 +1,9 @@
 MIT License
 
-Copyright (c) 2024 Suman Kunwar
+This project is detached from idapgroup's react-image-annotate, which is licensed under the MIT License, and it uses some work from image_annotator.
+
+Original work (react-image-annotate) Copyright (c) 2019 WorkAround Online Inc
+Modified and distributed under the MIT License by Suman Kunwar, 2024.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
