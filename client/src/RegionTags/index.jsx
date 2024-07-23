@@ -105,7 +105,7 @@ export const RegionTags = ({
                 pointerEvents: "none",
               }}
             >
-              <LockIcon style={{ width: 16, height: 16, color: "#333" }} />
+              <LockIcon style={{ width: 16, height: 16}} />
             </Paper>
           </div>
         )

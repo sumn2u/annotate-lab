@@ -4,6 +4,7 @@ import React from "react"
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
 import { SnackbarProvider } from "../SnackbarContext"
 import { useTheme } from "../ThemeContext"
+import { grey } from "@mui/material/colors"
 
 export const themes = {
   light: createTheme({
@@ -44,6 +45,10 @@ export const themes = {
       },
       text: {
         primary: '#fff',
+        secondary: grey[400],
+      },
+      default: {
+        main: "#ffffff", // Default color for dark mode buttons
       },
     },
     components: {
@@ -60,7 +65,6 @@ export const themes = {
 
 export const Theme = ({ children }) => {
   const { theme } = useTheme(); // Get current theme from context
-  console.log('Theme:', themes[theme]);
   return (
     <MuiThemeProvider theme={themes[theme]}>
       <SnackbarProvider>

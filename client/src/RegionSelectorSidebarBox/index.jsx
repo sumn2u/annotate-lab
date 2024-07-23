@@ -27,7 +27,7 @@ const ChipSpan = styled("span")(() => styles.chip)
 const RowDiv = styled("div")(() => styles.row)
 const ContainerDiv = styled("div")(() => styles.container)
 const HeaderSep = styled("div")(({ theme }) => ({
-  borderTop: `1px solid ${grey[200]}`,
+  // borderTop: `1px solid ${grey[200]}`,
   marginTop: 2,
   marginBottom: 2,
 }))
