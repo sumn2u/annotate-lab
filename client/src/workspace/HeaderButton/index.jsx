@@ -7,8 +7,8 @@ import { useIconDictionary } from "../icon-dictionary.js"
 import { iconMapping } from "../icon-mapping.js"
 import { colors } from "@mui/material"
 import useMediaQuery from "@mui/material/useMediaQuery"
-
-const theme = createTheme()
+import { useTheme } from '../../ThemeContext'
+const defaultTheme = createTheme()
 const defaultNameIconMapping = iconMapping
 
 const getIcon = (name, customIconMapping) => {
@@ -32,8 +32,12 @@ const ButtonInnerContent = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 }))
-const IconContainer = styled("div")(({ textHidden, disabled }) => ({
-  color: disabled ? colors.grey[400] : colors.grey[700],
+const IconContainer = styled("div")(({defaultTheme, theme, textHidden, disabled }) => ({
+  color: disabled
+  ? defaultTheme.palette.action.disabled
+  : theme === "dark"
+  ? colors.grey[200]
+  :  colors.grey[700],
   height: textHidden ? 32 : 20,
   paddingTop: textHidden ? 8 : 0,
   "& .MuiSvgIcon-root": {
@@ -41,10 +45,14 @@ const IconContainer = styled("div")(({ textHidden, disabled }) => ({
     height: 18,
   },
 }))
-const Text = styled("div")(({ theme, disabled }) => ({
+const Text = styled("div")(({ defaultTheme, theme, disabled }) => ({
   fontWeight: "bold",
   fontSize: 11,
-  color: disabled ? colors.grey[500] : colors.grey[800],
+  color: disabled
+  ? defaultTheme.palette.action.disabled
+  : theme === "dark"
+  ? colors.grey[200]
+  :  colors.grey[700],
   display: "flex",
   alignItems: "center",
   lineHeight: 1,
@@ -60,17 +68,17 @@ export const HeaderButton = ({
   hideText = false,
 }) => {
   const customIconMapping = useIconDictionary()
-  const isSmallDevice = useMediaQuery(theme.breakpoints.down("sm"))
-
+  const isSmallDevice = useMediaQuery(defaultTheme.breakpoints.down("sm"))
+  const { theme } = useTheme();
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
       <StyledButton onClick={onClick} disabled={disabled}>
         <ButtonInnerContent>
-          <IconContainer textHidden={hideText} disabled={disabled}>
+          <IconContainer  defaultTheme={defaultTheme} theme={theme} textHidden={hideText} disabled={disabled}>
             {icon || getIcon(name, customIconMapping)}
           </IconContainer>
           {!hideText && !isSmallDevice && (
-            <Text disabled={disabled}>
+            <Text defaultTheme={defaultTheme} theme={theme} disabled={disabled}>
               <div>{label}</div>
             </Text>
           )}

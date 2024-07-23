@@ -3,7 +3,8 @@ import { grey } from "@mui/material/colors"
 export default {
   container: {
     borderBottom: `2px solid ${grey[400]}`,
-    "&:firstChild": { borderTop: `1px solid ${grey[400]}` },
+    "&:firstChild": { 
+      borderTop: `1px solid ${grey[400]}` },
   },
   header: {
     display: "flex",
@@ -13,7 +14,6 @@ export default {
     paddingLeft: 16,
     paddingRight: 12,
     "& .iconContainer": {
-      color: grey[600],
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -28,7 +28,6 @@ export default {
     flexGrow: 1,
     fontWeight: 800,
     paddingLeft: 8,
-    color: grey[800],
     "& span": {
       color: grey[600],
       fontSize: 11,
@@ -38,7 +37,7 @@ export default {
     padding: 0,
     width: 30,
     height: 30,
-    color: grey[800],
+    // color: grey[800],
     "& .icon": {
       width: 20,
       height: 20,
