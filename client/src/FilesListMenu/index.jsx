@@ -100,7 +100,7 @@ export const FilesListMenu = ({
                   padding: 0,
                   "& .MuiSvgIcon-root": {
                     fontSize: 14, // Set size
-                    color: image.processed ? "green" : "", // Set color conditionally
+                    color: image.processed ? "green" : "#1976d2", // Set color conditionally
                   },
                   cursor:
                     selectedImage !== null && selectedImage !== index

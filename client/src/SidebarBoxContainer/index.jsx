@@ -1,10 +1,8 @@
 // @flow
 
 import React, { memo } from "react"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
 import SidebarBox from "../workspace/SidebarBox"
 
-const theme = createTheme()
 export const SidebarBoxContainer = ({
   icon,
   title,
@@ -14,7 +12,7 @@ export const SidebarBoxContainer = ({
   expandedByDefault = false,
 }) => {
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <SidebarBox
         icon={icon}
         title={title}
@@ -23,7 +21,7 @@ export const SidebarBoxContainer = ({
       >
         {children}
       </SidebarBox>
-    </ThemeProvider>
+    </>
   )
 }
 
