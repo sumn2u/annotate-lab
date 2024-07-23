@@ -20,6 +20,15 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
+
 describe("FilesListMenu", () => {
   const state = {
     annotationType: "image",

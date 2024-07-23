@@ -15,6 +15,14 @@ jest.mock("../icon-dictionary.js", () => ({
   useIconDictionary: () => mockIconDictionary,
 }))
 
+// Mock the useTheme hook
+jest.mock('../../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("SidebarBox", () => {
   beforeEach(() => {
     // Reset localStorage

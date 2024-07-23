@@ -19,6 +19,14 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("ClassSelectionMenu", () => {
   it("renders correctly", () => {
     const { getByText } = render(

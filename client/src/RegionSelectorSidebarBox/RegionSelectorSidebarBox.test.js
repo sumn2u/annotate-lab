@@ -8,6 +8,14 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key) => key }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("RegionSelectorSidebarBox", () => {
   const mockRegions = [
     {

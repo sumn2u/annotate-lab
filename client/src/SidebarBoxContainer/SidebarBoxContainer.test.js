@@ -3,6 +3,14 @@ import { render, screen } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import SidebarBoxContainer from "./index"
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("SidebarBoxContainer", () => {
   const icon = <span data-testid="test-icon" />
   const title = "Test Title"
