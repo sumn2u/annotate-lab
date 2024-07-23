@@ -25,8 +25,10 @@ import CloseIcon from "@mui/icons-material/Close"
 import useMediaQuery from "@mui/material/useMediaQuery"
 import config from "../config.js"
 import { saveSettings } from "../utils/send-data-to-server.js"
-
-const theme = createTheme()
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useTheme } from "../ThemeContext"
+const defaultTheme = createTheme()
 
 const Container = styled("div")({
   marginTop: "2rem",
@@ -68,9 +70,9 @@ export const SetupPage = ({
   const [currentTab, setTab] = useState(false)
   const [hasConfig, setHasConfig] = useState(false)
   const settingsConfig = useSettings()
-  const isSmallDevice = useMediaQuery(theme.breakpoints.down("sm"))
-  const isLargeDevice = useMediaQuery(theme.breakpoints.up("md"))
-
+  const isSmallDevice = useMediaQuery(defaultTheme.breakpoints.down("sm"))
+  const isLargeDevice = useMediaQuery(defaultTheme.breakpoints.up("md"))
+  const { theme, toggleTheme } = useTheme()
   const updateConfiguration = (newConfig) => {
     const {
       labels,
@@ -216,6 +218,25 @@ export const SetupPage = ({
           <Box minWidth="55vw" paddingTop={"1rem"}>
             <>
               <ConfigurationTask config={settings} onChange={updateTaskInfo} />
+              <Button
+                sx={(theme) => ({
+                  paddingTop: isSmallDevice ? "0" : "0.5rem",
+                  fontSize: "1rem",
+                  padding: isSmallDevice ? "1.5rem" : "1rem",
+                  [defaultTheme.breakpoints.down("sm")]: {
+                    padding: "1rem",
+                  },
+                })}
+                onClick={() =>
+                  toggleTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+                }
+                color="inherit"
+                endIcon={
+                  theme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />
+                }
+              >
+                {theme === 'dark' ? 'Light' : 'Dark'} mode
+              </Button>
               <NoteSection
                 icon={Info}
                 text={t("more_info")}
@@ -296,7 +317,7 @@ export const SetupPage = ({
               sx={(theme) => ({
                 paddingTop: isSmallDevice ? "0" : "0.5rem",
                 padding: isSmallDevice ? "1.5rem" : "1rem",
-                [theme.breakpoints.down("sm")]: {
+                [defaultTheme.breakpoints.down("sm")]: {
                   padding: "1rem",
                 },
               })}
