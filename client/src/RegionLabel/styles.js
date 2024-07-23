@@ -44,10 +44,6 @@ export default {
       },
     },
   },
-  commentBox: {
-    fontWeight: 400,
-    fontSize: 13,
-  },
   nameField: {
     marginTop: 6,
   },
