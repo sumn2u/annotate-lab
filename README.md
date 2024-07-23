@@ -19,7 +19,7 @@ Annotate Lab is an open-source application designed for image annotation, compri
   <a href="https://github.com/sumn2u/annotate-lab/stargazers">
     <img src="https://img.shields.io/github/stars/sumn2u/annotate-lab" alt="GitHub stars"></a>
   <a href="https://github.com/sumn2u/annotate-lab/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/sumn2u/annotate-lab" alt="GitHub license"></a>
+    <img src="https://img.shields.io/badge/license-MIT-red" alt="GitHub license"></a>
   <a href="https://github.com/prettier/prettier">
     <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="Code style: prettier"></a>
   <a href="https://github.com/psf/black">
