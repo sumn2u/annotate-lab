@@ -4,6 +4,7 @@ import SetupPage from "../SetupPage"
 import { useSettings } from "../SettingsProvider"
 import { setIn } from "seamless-immutable"
 import config from "../config.js"
+import { CssBaseline } from "@mui/material"
 import { useSnackbar } from "../SnackbarContext"
 import { getImagesAnnotation } from "../utils/send-data-to-server"
 import CircularProgress from "@mui/material/CircularProgress"
@@ -12,6 +13,8 @@ import AlertDialog from "../AlertDialog"
 import { clear_db, getSettings } from "../utils/get-data-from-server"
 import colors from "../colors.js"
 import { useTranslation } from "react-i18next"
+import { themes } from "../Theme"
+import { useTheme } from '../ThemeContext'
 
 const extractRelevantProps = (region) => ({
   cls: region.cls,
@@ -63,6 +66,7 @@ export default () => {
   const settingsConfig = useSettings()
   const [isLoading, setIsLoading] = useState(true)
   const { showSnackbar } = useSnackbar()
+  const { toggleTheme, theme } = useTheme();
   const [settings, setSettings] = useState({
     taskDescription: "",
     taskChoice: "image_classification",
@@ -306,6 +310,7 @@ export default () => {
 
   return (
     <>
+      <CssBaseline />
       {!showLabel ? (
         <SetupPage
           setConfiguration={setConfiguration}
@@ -368,6 +373,7 @@ export default () => {
                   setIsSettingsOpen(!isSettingsOpen)
                   setShowLabel(false)
                 }}
+                rootTheme={themes[theme]}
                 selectedImageIndex={selectedImageIndex}
               />
             </>

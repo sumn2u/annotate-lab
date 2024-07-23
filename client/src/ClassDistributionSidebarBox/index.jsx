@@ -77,7 +77,7 @@ export const ClassDistributionSidebarBox = ({ regionClsList, shouldExpand=false 
   }
 
   return (
-    <ThemeProvider theme={theme}>       
+    <ThemeProvider theme={theme}>    
       <SidebarBoxContainer
         title={t("menu.class_distribution")}
         icon={<BarChartIcon style={{ color: grey[700] }} />}

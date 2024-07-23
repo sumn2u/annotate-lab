@@ -2,6 +2,7 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
 import Theme from "./Theme"
+import { ThemeProvider  } from "./ThemeContext"
 import Annotation from "./Annotation"
 import "./site.css"
 import { SettingsProvider } from "./SettingsProvider"
@@ -12,11 +13,13 @@ const Site = () => {
     .split("/")
     .slice(-1)[0]
   return (
-    <Theme>
-      <SettingsProvider>
-        <Annotation />
-      </SettingsProvider>
-    </Theme>
+    <ThemeProvider>
+      <Theme>
+        <SettingsProvider>
+          <Annotation />
+        </SettingsProvider>
+      </Theme>
+    </ThemeProvider>
   )
 }
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { createTheme } from "@mui/material/styles"
-import { Box, Typography, IconButton } from "@mui/material"
+import { CssBaseline, Box, Typography, IconButton } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import axios from "axios"
 import { useSnackbar } from "../SnackbarContext"
@@ -157,6 +157,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
 
   return (
     <>
+      <CssBaseline />
       <Box
         {...getRootProps()}
         sx={{
