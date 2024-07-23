@@ -11,7 +11,7 @@ const theme = createTheme()
 const Container = styled("div")(({ theme }) => ({
   width: "100%",
   display: "flex",
-  backgroundColor: "#fff",
+  // backgroundColor: "#fff",
   borderBottom: "1px solid #ccc",
   alignItems: "center",
   flexShrink: 1,

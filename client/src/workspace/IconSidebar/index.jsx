@@ -11,7 +11,7 @@ const Container = styled("div")(({ theme }) => ({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  backgroundColor: "#fff",
+  // backgroundColor: "#fff",
   flexShrink: 0,
 }))
 

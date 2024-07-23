@@ -2,7 +2,7 @@ export default {
   editBar: {
     padding: 10,
     borderBottom: "1px solid #ccc",
-    backgroundColor: "#f8f8f8",
+    // backgroundColor: "#f8f8f8",
     display: "flex",
     alignItems: "center",
     "& .button": { margin: 5 },

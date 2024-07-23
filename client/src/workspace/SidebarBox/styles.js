@@ -38,6 +38,7 @@ export default {
     padding: 0,
     width: 30,
     height: 30,
+    color: grey[800],
     "& .icon": {
       width: 20,
       height: 20,

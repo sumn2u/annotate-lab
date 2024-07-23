@@ -12,7 +12,7 @@ const Container = styled("div")(({ theme }) => ({
   flexDirection: "column",
   height: "100%",
   flexShrink: 0,
-  backgroundColor: "#fff",
+  // backgroundColor: "#fff",
   position: "relative",
   transition: "width 500ms",
   "&.expanded": {
@@ -34,7 +34,7 @@ const Expander = styled(ButtonBase)(({ theme }) => ({
   borderBottom: `1px solid ${grey[400]}`,
   borderLeft: `1px solid ${grey[400]}`,
   boxShadow: "-1px 2px 5px rgba(0,0,0,0.2)",
-  backgroundColor: "#fff",
+  // backgroundColor: "#fff",
   position: "absolute",
   top: "calc(50% - 20px)",
   left: -23,
