@@ -30,6 +30,7 @@ const listItemTextStyle = {
   fontSize: 11,
   paddingTop: 0,
   paddingBottom: 0,
+  color: "inherit",
 }
 
 export const HistorySidebarBox = ({ history, onRestoreHistory }) => {

@@ -76,7 +76,7 @@ export const SidebarBox = ({
           <TitleTypography>
             {title} <span>{subTitle}</span>
           </TitleTypography>
-          <IconButton onClick={toggleExpanded} sx={styles.expandButton}>
+          <IconButton onClick={toggleExpanded} sx={styles.expandButton} color="inherit">
             <ExpandIcon
               className={classnames("icon", expanded && "expanded")}
             />
