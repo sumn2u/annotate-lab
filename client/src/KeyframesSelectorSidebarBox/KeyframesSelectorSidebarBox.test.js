@@ -11,6 +11,14 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("KeyframesSelectorSidebarBox", () => {
   const mockOnChangeVideoTime = jest.fn()
   const mockOnDeleteKeyframe = jest.fn()

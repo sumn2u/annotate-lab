@@ -14,6 +14,14 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("HistorySidebarBox", () => {
   const history = [
     { name: "History 1", time: new Date("2022-06-15T12:00:00Z") },

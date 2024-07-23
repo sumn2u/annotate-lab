@@ -3,6 +3,15 @@ import { render } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import DebugSidebarBox from "./index"
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
+
 describe("DebugSidebarBox", () => {
   const mockState = {
     images: [

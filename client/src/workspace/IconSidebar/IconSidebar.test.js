@@ -8,6 +8,14 @@ jest.mock("../icon-dictionary.js", () => ({
   useIconDictionary: jest.fn(),
 }))
 
+// Mock the useTheme hook
+jest.mock('../../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 const mockIconMapping = {
   sampleicon: () => <div>Sample Icon</div>,
 }

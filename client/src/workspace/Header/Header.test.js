@@ -8,6 +8,14 @@ jest.mock("../../config.js", () => ({
   SERVER_URL: "http://localhost:5000",
 }))
 
+// Mock the useTheme hook
+jest.mock('../../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 // Mock the useTranslation hook with actual translations
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
