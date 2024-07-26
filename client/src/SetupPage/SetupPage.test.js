@@ -4,6 +4,14 @@ import "@testing-library/jest-dom"
 import { SetupPage } from "./index"
 import { useSettings } from "../SettingsProvider"
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 // Mock useTranslation hook
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({

@@ -20,7 +20,7 @@ const theme = createTheme()
 const EmptyTextDiv = styled("div")(() => ({
   fontSize: 14,
   fontWeight: "bold",
-  color: grey[500],
+  // color: grey[500],
   textAlign: "center",
   padding: 20,
 }))
@@ -30,6 +30,7 @@ const listItemTextStyle = {
   fontSize: 11,
   paddingTop: 0,
   paddingBottom: 0,
+  color: "inherit",
 }
 
 export const HistorySidebarBox = ({ history, onRestoreHistory }) => {

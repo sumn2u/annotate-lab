@@ -2,6 +2,7 @@
 
 import React, { useState, memo, useCallback } from "react"
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles"
+import { useTheme } from "../../ThemeContext"
 import ExpandIcon from "@mui/icons-material/ExpandMore"
 import IconButton from "@mui/material/IconButton"
 import Collapse from "@mui/material/Collapse"
@@ -11,7 +12,7 @@ import Typography from "@mui/material/Typography"
 import { useIconDictionary } from "../icon-dictionary.js"
 import styles from "./styles.js"
 
-const theme = createTheme()
+// const theme = createTheme()
 const ContainerDiv = styled("div")(() => styles.container)
 const HeaderDiv = styled("div")(() => styles.header)
 const ContentDiv = styled("div")(() => styles.expandedContent)
@@ -31,6 +32,8 @@ const setExpandedInLocalStorage = (title, expanded) => {
     JSON.stringify(expanded)
 }
 
+// const useStyles = makeStyles(styles)
+
 export const SidebarBox = ({
   icon,
   title,
@@ -39,6 +42,8 @@ export const SidebarBox = ({
   noScroll,
   expandedByDefault,
 }) => {
+
+  
   const content = (
     <ContentDiv className={classnames(noScroll && "noScroll")}>
       {children}
@@ -61,15 +66,17 @@ export const SidebarBox = ({
   const toggleExpanded = useEventCallback(() => changeExpanded(!expanded))
   const customIconMapping = useIconDictionary()
   const TitleIcon = customIconMapping[title.toLowerCase()]
+
+  const { theme } = useTheme();
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <ContainerDiv>
         <HeaderDiv>
           <div className="iconContainer">{icon || <TitleIcon />}</div>
           <TitleTypography>
             {title} <span>{subTitle}</span>
           </TitleTypography>
-          <IconButton onClick={toggleExpanded} sx={styles.expandButton}>
+          <IconButton onClick={toggleExpanded} sx={styles.expandButton} color="inherit">
             <ExpandIcon
               className={classnames("icon", expanded && "expanded")}
             />
@@ -90,7 +97,7 @@ export const SidebarBox = ({
           </Collapse>
         )}
       </ContainerDiv>
-    </ThemeProvider>
+    </>
   )
 }
 

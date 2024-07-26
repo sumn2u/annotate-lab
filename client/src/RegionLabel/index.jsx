@@ -14,8 +14,10 @@ import CreatableSelect from "react-select/creatable"
 import { useTranslation } from "react-i18next"
 import Alert from "@mui/material/Alert"
 import { asMutable } from "seamless-immutable"
+import { colors } from "@mui/material"
+import { useTheme } from "../ThemeContext";
 
-const theme = createTheme()
+const defaultTheme = createTheme()
 const StyledPaper = styled(Paper)(({ theme }) => styles.regionInfo)
 
 export const RegionLabel = ({
@@ -31,6 +33,8 @@ export const RegionLabel = ({
   enabledProperties,
 }) => {
   const commentInputRef = useRef(null)
+  const { theme } = useTheme();
+  const isDarkTheme = theme === 'dark';
   const { t } = useTranslation()
   const onCommentInputClick = (_) => {
     // The TextField wraps the <input> tag with two divs
@@ -47,10 +51,11 @@ export const RegionLabel = ({
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
       <StyledPaper
         onClick={() => (!editing ? onOpen(region) : null)}
         className={region.highlighted ? "highlighted" : ""}
+        style={{ backgroundColor: isDarkTheme ? colors.grey[600]: ""}}
       >
         {!editing ? (
           <div>
@@ -116,6 +121,23 @@ export const RegionLabel = ({
                   <CreatableSelect
                     aria-label="classification"
                     placeholder="Classification"
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        ...(isDarkTheme && { borderColor: colors.grey[600], 
+                          backgroundColor: colors.grey[200],
+                          color: colors.grey[800], 
+                           }),
+                      })
+                    }}
+                    theme={(theme) => ({
+                      ...theme,
+                      borderRadius: 0,
+                      colors: {
+                        ...theme.colors,
+                        ...(isDarkTheme && { primary: colors.grey[400] })
+                      },
+                    })}
                     onChange={(o, actionMeta) => {
                       if (actionMeta.action === "create-option") {
                         onRegionClassAdded(o.value)
@@ -162,7 +184,12 @@ export const RegionLabel = ({
             {enabledProperties.includes("comment") && (
               <TextField
                 InputProps={{
-                  sx: styles.commentBox,
+                  sx: {
+                    color: isDarkTheme ? colors.grey[200] : colors.grey[900],
+                    fontWeight: 400,
+                    fontSize: 13,
+                    borderColor: isDarkTheme ? colors.grey[300] : colors.grey[300],
+                  },
                 }}
                 aria-label="Comment"
                 id="commentField"

@@ -9,6 +9,14 @@ jest.mock("../icon-dictionary.js", () => ({
   useIconDictionary: () => ({}), // Mocking an empty object since iconMapping is directly used
 }))
 
+// Mock the useTheme hook
+jest.mock('../../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("HeaderButton", () => {
   it("renders button with icon and label", () => {
     const handleClick = jest.fn()

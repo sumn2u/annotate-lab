@@ -14,6 +14,14 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 describe("TagsSidebarBox", () => {
   const mockImageClsList = ["Class A", "Class B"]
   const mockImageTagList = ["Tag 1", "Tag 2"]

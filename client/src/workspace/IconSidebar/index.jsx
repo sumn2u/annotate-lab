@@ -4,14 +4,14 @@ import IconButton from "@mui/material/IconButton"
 import { iconMapping } from "../icon-mapping.js"
 import { useIconDictionary } from "../icon-dictionary.js"
 import Tooltip from "@mui/material/Tooltip"
-
-const theme = createTheme()
+import { useTheme } from "../../ThemeContext"
+const defaultTheme = createTheme()
 const Container = styled("div")(({ theme }) => ({
   width: 50,
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  backgroundColor: "#fff",
+  // backgroundColor: "#fff",
   flexShrink: 0,
 }))
 
@@ -23,8 +23,9 @@ export const IconSidebar = ({
   selectedTools = emptyAr,
 }) => {
   const customIconMapping = useIconDictionary()
+  const { theme } = useTheme()
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
       <Container>
         {items.map((item) => {
           let NameIcon =
@@ -38,7 +39,7 @@ export const IconSidebar = ({
               color={
                 item.selected || selectedTools.includes(item.name.toLowerCase())
                   ? "primary"
-                  : "default"
+                  : theme === "dark"? "inherit" :"default"
               }
               disabled={Boolean(item.disabled)}
               onClick={item.onClick ? item.onClick : () => onClickItem(item)}

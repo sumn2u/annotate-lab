@@ -10,6 +10,14 @@ jest.mock("../../SnackbarContext/index.jsx", () => ({
   }),
 }))
 
+// Mock the useTheme hook
+jest.mock('../../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
+
 jest.mock("../../config.js", () => ({
   DOCS_URL: "https://annotate-docs.dwaste.live/",
   SERVER_URL: "http://localhost:5000",

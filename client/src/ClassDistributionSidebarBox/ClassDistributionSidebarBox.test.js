@@ -10,6 +10,13 @@ jest.mock("../utils/get-data-from-server", () => ({
   getLabels: jest.fn(),
 }))
 
+// Mock the useTheme hook
+jest.mock('../ThemeContext', () => ({
+  useTheme: () => ({
+    theme: 'light', // Provide mock theme
+    toggleTheme: jest.fn(), // Mock function
+  }),
+}));
 // Mocking the useTranslation hook
 jest.mock("react-i18next", () => ({
     useTranslation: () => ({
