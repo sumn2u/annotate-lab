@@ -72,6 +72,7 @@ export default () => {
     taskChoice: "image_classification",
     images: [],
     showLab: false,
+    mode: theme,
     lastSavedImageIndex: null,
     configuration: {
       labels: [],
@@ -267,6 +268,11 @@ export default () => {
       let lastSavedImageIndex = savedConfiguration.lastSavedImageIndex || 0
       if (localConfiguration.lastSavedImageIndex) {
         lastSavedImageIndex = localConfiguration.lastSavedImageIndex
+      }
+      if(localConfiguration.mode){
+        if(theme !== localConfiguration.mode){
+          toggleTheme()
+        }
       }
       setSettings(savedConfiguration)
       if (

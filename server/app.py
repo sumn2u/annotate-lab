@@ -42,6 +42,7 @@ default_settings = {
     "taskChoice": "image_classification",
     "images": [],
     "showLab": False,
+    "mode": "light",
     "lastSavedImageIndex": None,
     "configuration": {
         "labels": [],

@@ -95,6 +95,17 @@ export const SetupPage = ({
     setConfiguration({ type: "UPDATE_CONFIGURATION", payload: newConfig })
     showAnnotationLab(newSettings)
   }
+
+  const updateMode = async (mode) => {
+    toggleTheme(mode)
+    const newSettings = {
+      ...settings,
+      mode: mode
+    }
+    settingsConfig.changeSetting("settings", newSettings)
+    await saveSettings(newSettings)
+  }
+  
   const { t } = useTranslation()
 
   const handleImageUpload = (images) => {
@@ -149,7 +160,7 @@ export const SetupPage = ({
     const hasLabels = configuration.labels.length > 0
     setShowLabel(hasLabels)
     if (hasLabels) {
-      const newSettings = { ...settings, showLab: true }
+      const newSettings = { ...settings, mode:theme , showLab: true }
       settingsConfig.changeSetting("settings", newSettings)
       await saveSettings(newSettings)
       showAnnotationLab(newSettings)
@@ -228,7 +239,7 @@ export const SetupPage = ({
                   },
                 })}
                 onClick={() =>
-                  toggleTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+                  updateMode(theme === 'light' ? 'dark' : 'light')
                 }
                 color="inherit"
                 endIcon={
