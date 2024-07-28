@@ -33,9 +33,9 @@ const ButtonInnerContent = styled("div")(({ theme }) => ({
   flexDirection: "column",
 }))
 const IconContainer = styled("div")(({defaultTheme, theme, textHidden, disabled }) => ({
-  color: disabled
+  color: disabled && theme === "light"
   ? defaultTheme.palette.action.disabled
-  : theme === "dark"
+  : theme === "dark" && !disabled
   ? colors.grey[200]
   :  colors.grey[700],
   height: textHidden ? 32 : 20,
@@ -48,10 +48,10 @@ const IconContainer = styled("div")(({defaultTheme, theme, textHidden, disabled 
 const Text = styled("div")(({ defaultTheme, theme, disabled }) => ({
   fontWeight: "bold",
   fontSize: 11,
-  color: disabled
+  color: disabled && theme === "light"
   ? defaultTheme.palette.action.disabled
-  : theme === "dark"
-  ? colors.grey[200]
+  : theme === "dark" && !disabled
+  ? colors.grey[300]
   :  colors.grey[700],
   display: "flex",
   alignItems: "center",
@@ -70,6 +70,7 @@ export const HeaderButton = ({
   const customIconMapping = useIconDictionary()
   const isSmallDevice = useMediaQuery(defaultTheme.breakpoints.down("sm"))
   const { theme } = useTheme();
+  console.log(defaultTheme, theme, 'defaultTheme')
   return (
     <ThemeProvider theme={defaultTheme}>
       <StyledButton onClick={onClick} disabled={disabled}>
