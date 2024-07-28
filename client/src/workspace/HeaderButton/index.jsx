@@ -70,7 +70,6 @@ export const HeaderButton = ({
   const customIconMapping = useIconDictionary()
   const isSmallDevice = useMediaQuery(defaultTheme.breakpoints.down("sm"))
   const { theme } = useTheme();
-  console.log(defaultTheme, theme, 'defaultTheme')
   return (
     <ThemeProvider theme={defaultTheme}>
       <StyledButton onClick={onClick} disabled={disabled}>

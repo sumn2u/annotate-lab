@@ -13,6 +13,7 @@ import { hexToRgbTuple } from "../../utils/color-utils.js"
 import HeaderButton from "../HeaderButton/index.jsx"
 import { useTranslation } from "react-i18next"
 import config from "../../config.js"
+import { useTheme } from '../../ThemeContext'
 
 const DownloadButton = ({
   selectedImageName,
@@ -97,7 +98,7 @@ const DownloadButton = ({
         showSnackbar(t("error.downloading_file"), "error")
       })
   }
-
+  const { theme } = useTheme();
   return (
     <>
       <HeaderButton
@@ -114,6 +115,8 @@ const DownloadButton = ({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        sx={{ mt: "1px", "& .MuiMenu-paper":  theme === "dark" ? { backgroundColor: "#333", color: "#fff" } : {}, 
+      }}
       >
         <MenuItem
           onClick={() => handleDownload("configuration")}
