@@ -3,6 +3,7 @@
     "taskChoice": "image_classification",
     "images": [],
     "showLab": true,
+    "mode": "light",
     "lastSavedImageIndex": null,
     "configuration": {
         "labels": [],
