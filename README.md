@@ -476,3 +476,18 @@ If you find a security vulnerability in annotate-lab, please read our [Security 
 
 
 This project is detached from idapgroup's [react-image-annotate](https://github.com/idapgroup/react-image-annotate/commit/d35c761ac748ed690c67575002a820843672cde9), which is licensed under the [MIT license](https://github.com/idapgroup/react-image-annotate?tab=License-1-ov-file), and it uses some work from [image_annotator](https://github.com/gnamiro/image_annotator/tree/master).
+
+## Heroku Deployment
+```sh
+
+docker build --platform linux/amd64 -t annotate-lab-flask-server ./server  
+
+docker tag annotate-lab-flask-server registry.heroku.com/rocky-badlands-09400/web
+
+docker push registry.heroku.com/rocky-badlands-09400/web
+
+heroku container:release web -a rocky-badlands-09400
+
+
+heroku logs --tail -a rocky-badlands-09400
+```
