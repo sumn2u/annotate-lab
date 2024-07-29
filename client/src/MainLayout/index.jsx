@@ -185,7 +185,8 @@ export const MainLayout = ({
     !nextImage || (nextImage.regions && nextImage.regions.length > 0)
   const selectedImages = state.images.filter((image) => image.selected)
   const hasRegions = state.images[state.selectedImage]?.regions?.length > 0
-  const disableRegion = hasRegions ? false : !state.hasNewChange
+  const disableRegion =  !(state.images.length > 0 && state.regionClsList.length > 0);   // enable save button for all cases
+  // hasRegions ? false : !state.hasNewChange
 
   return (
     <ThemeProvider theme={theme}>
