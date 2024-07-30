@@ -650,9 +650,16 @@ def hex_to_rgb_tuple(hex_color):
 
 
 def map_region_keys(region):
+
+    if "type" not in region:
+        raise KeyError("'type' key is missing in region data")
+    
+
     mapped_region = {}
     for key, value in region.items():
-        if key == "class":
+        if key == "type":
+            mapped_region["type"] = convert_nan(value)
+        elif key == "class":
             mapped_region["cls"] = convert_nan(value)
         elif key == "region-id":
             mapped_region["id"] = convert_nan(value)
@@ -689,6 +696,212 @@ def map_region_keys(region):
     print(f"Mapped Region: {mapped_region}")
     return mapped_region
 
+def convert_to_coco(image_name):
+    base_url = request.host_url + "uploads/"
+    image_url = base_url + image_name
+    width, height = Image.open(os.path.join(UPLOAD_FOLDER, image_name)).size
+
+    coco_output = {
+        "images": [{"file_name": image_name, "height": height, "width": width, "id": 1}],
+        "annotations": [],
+        "categories": []
+    }
+
+    annotations = []
+    categories = []
+
+    # Fetch regions from different databases
+    polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, "image-src", image_url)
+    boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, "image-src", image_url)
+    circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, "image-src", image_url)
+
+    # Convert to dict only if they are not None
+    polygonRegions_dict = polygonRegions.to_dict(orient="records") if polygonRegions is not None else []
+    boxRegions_dict = boxRegions.to_dict(orient="records") if boxRegions is not None else []
+    circleRegions_dict = circleRegions.to_dict(orient="records") if circleRegions is not None else []
+
+    region_id = 1
+    all_regions = polygonRegions_dict + boxRegions_dict + circleRegions_dict
+    
+    for region in all_regions:
+        # Determine type based on the source collection
+        if region in polygonRegions_dict:
+            region["type"] = "polygon"
+        elif region in boxRegions_dict:
+            region["type"] = "box"
+        elif region in circleRegions_dict:
+            region["type"] = "circle"
+        else:
+            region["type"] = "unknown"  # Default value if type cannot be determined
+
+        print(f"Processing Region: {region}")  # Log region data
+
+            
+        mapped_region = map_region_keys(region)
+        if mapped_region["type"] == "polygon":
+            points = mapped_region["points"]
+            segmentation = [coord for point in points for coord in point]
+            annotations.append({
+                "segmentation": [segmentation],
+                "area": mapped_region["area"],
+                "iscrowd": 0,
+                "image_id": 1,
+                "bbox": mapped_region["bbox"],
+                "category_id": 1,
+                "id": region_id
+            })
+        elif mapped_region["type"] == "box":
+            annotations.append({
+                "segmentation": [],
+                "area": mapped_region["w"] * mapped_region["h"],
+                "iscrowd": 0,
+                "image_id": 1,
+                "bbox": [mapped_region["x"], mapped_region["y"], mapped_region["w"], mapped_region["h"]],
+                "category_id": 1,
+                "id": region_id
+            })
+        elif mapped_region["type"] == "circle":
+            annotations.append({
+                "segmentation": [],
+                "area": math.pi * (mapped_region["rw"] / 2) * (mapped_region["rh"] / 2),
+                "iscrowd": 0,
+                "image_id": 1,
+                "bbox": [mapped_region["rx"], mapped_region["ry"], mapped_region["rw"], mapped_region["rh"]],
+                "category_id": 1,
+                "id": region_id
+            })
+        region_id += 1
+
+    coco_output["annotations"] = annotations
+    coco_output["categories"] = [{"supercategory": "none", "id": 1, "name": "default"}]
+
+    return coco_output
+# def convert_to_coco(image_name):
+#     base_url = request.host_url + "uploads/"
+#     image_url = base_url + image_name
+
+#     print(f"Image URL: {image_url}")
+#     width, height = Image.open(os.path.join(UPLOAD_FOLDER, image_name)).size
+
+#     coco_output = {
+#         "images": [{"file_name": image_name, "height": height, "width": width, "id": 1}],
+#         "annotations": [],
+#         "categories": []
+#     }
+
+#     annotations = []
+#     categories = []
+
+#     polygonRegions = dbModule.findInfoInPolygonDb(dbModule.imagePolygonRegions, "image-src", image_url)
+#     boxRegions = dbModule.findInfoInBoxDb(dbModule.imageBoxRegions, "image-src", image_url)
+#     circleRegions = dbModule.findInfoInCircleDb(dbModule.imageCircleRegions, "image-src", image_url)
+
+#     region_id = 1
+#     for region in (polygonRegions.to_dict(orient="records") if polygonRegions is not None else []) + \
+#                    (boxRegions.to_dict(orient="records") if boxRegions is not None else []) + \
+#                    (circleRegions.to_dict(orient="records") if circleRegions is not None else []):
+#         mapped_region = map_region_keys(region)
+#         if mapped_region["type"] == "polygon":
+#             points = mapped_region["points"]
+#             segmentation = [coord for point in points for coord in point]
+#             annotations.append({
+#                 "segmentation": [segmentation],
+#                 "area": mapped_region["area"],
+#                 "iscrowd": 0,
+#                 "image_id": 1,
+#                 "bbox": mapped_region["bbox"],
+#                 "category_id": 1,
+#                 "id": region_id
+#             })
+#         elif mapped_region["type"] == "box":
+#             annotations.append({
+#                 "segmentation": [],
+#                 "area": mapped_region["w"] * mapped_region["h"],
+#                 "iscrowd": 0,
+#                 "image_id": 1,
+#                 "bbox": [mapped_region["x"], mapped_region["y"], mapped_region["w"], mapped_region["h"]],
+#                 "category_id": 1,
+#                 "id": region_id
+#             })
+#         elif mapped_region["type"] == "circle":
+#             annotations.append({
+#                 "segmentation": [],
+#                 "area": math.pi * (mapped_region["rw"] / 2) * (mapped_region["rh"] / 2),
+#                 "iscrowd": 0,
+#                 "image_id": 1,
+#                 "bbox": [mapped_region["rx"], mapped_region["ry"], mapped_region["rw"], mapped_region["rh"]],
+#                 "category_id": 1,
+#                 "id": region_id
+#             })
+#         region_id += 1
+
+#     coco_output["annotations"] = annotations
+#     coco_output["categories"] = [{"supercategory": "none", "id": 1, "name": "default"}]
+
+#     return coco_output
+
+@app.route("/convert_to_coco", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
+def convert_to_coco_route():
+    try:
+        data = request.get_json()
+        image_name = data.get("image_name")
+        if not image_name:
+            return jsonify({"status": "error", "message": "Image name not provided"}), 400
+
+        coco_output = convert_to_coco(image_name)
+        return jsonify(coco_output), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route("/download_coco_annotations", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
+def download_coco_annotations():
+    try:
+        data = request.get_json()
+        image_names = data.get("image_names", [])
+
+        if not image_names:
+            return jsonify({"status": "error", "message": "No image names provided"}), 400
+
+        temp_dir = tempfile.mkdtemp()
+        zip_filename = "coco_annotations.zip"
+        zip_file_path = os.path.join(temp_dir, zip_filename)
+
+        with zipfile.ZipFile(zip_file_path, "w") as zipf:
+            for image_name in image_names:
+                coco_output = convert_to_coco(image_name)
+                print(f"COCO Output: {coco_output}")
+                annotation_filename = os.path.splitext(image_name)[0] + "_coco.json"
+                annotation_path = os.path.join(temp_dir, annotation_filename)
+
+                with open(annotation_path, "w") as f:
+                    json.dump(coco_output, f)
+
+                zipf.write(annotation_path, arcname=annotation_filename)
+
+        return send_file(
+            zip_file_path,
+            mimetype="application/zip",
+            as_attachment=True,
+            download_name=zip_filename,
+        )
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        try:
+            if temp_dir:
+                for file in os.listdir(temp_dir):
+                    file_path = os.path.join(temp_dir, file)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                os.rmdir(temp_dir)
+        except Exception as e:
+            print(f"Error cleaning up temporary directory: {e}")
 
 @app.route("/get_image_annotations", methods=["POST"])
 @cross_origin(origin="*", headers=["Content-Type"])
