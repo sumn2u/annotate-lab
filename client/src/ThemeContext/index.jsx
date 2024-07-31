@@ -12,7 +12,6 @@ export const ThemeProvider = ({ children }) => {
   }
   
   const preferredColorScheme = getPreferredColorScheme();
-  console.log(`Preferred color scheme: ${preferredColorScheme}`);
 
   const [theme, setTheme] = useState(preferredColorScheme); // Default to browser theme
 

@@ -175,7 +175,9 @@ export default (state, action) => {
     case "SELECT_FILE": {
       const { selected } = action
       if (!activeImage) return state
-      return setIn(state, [...pathToActiveImage, "selected"], selected)
+      const updatedState = setIn(state, [...pathToActiveImage, "selected"], selected);
+      const isAnyImageSelected = updatedState.images.some(image => image.selected);
+      return setIn(updatedState, ["enabledDownload"], isAnyImageSelected);
     }
 
     case "SELECT_REGION": {
