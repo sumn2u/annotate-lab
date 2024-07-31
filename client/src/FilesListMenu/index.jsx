@@ -106,6 +106,13 @@ export const FilesListMenu = ({
                     selectedImage !== null && selectedImage !== index
                       ? "not-allowed"
                       : "pointer",
+                   "&.Mui-disabled": {
+                        background: !hasRegions(index) ? muiColors.grey[400] : "auto",
+                        cursor: "not-allowed",
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      },
                 }}
                 checked={image.selected}
                 onClick={() => handleCheckBoxClick(image, index)}
