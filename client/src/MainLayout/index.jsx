@@ -318,7 +318,7 @@ export const MainLayout = ({
             },
             {
               name: "auto-annotate",
-              alwaysShowing: true,
+              alwaysShowing: config.SAM_MODEL_ENABLED,
               helperText:t("helptext_auto_annotate") + getHotkeyHelpText("auto_annotate"),
             },
 

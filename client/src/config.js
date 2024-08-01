@@ -16,6 +16,7 @@ const config = {
     BOUNDING_BOX: 2,
   },
   SHOW_CLASS_DISTRIBUTION: true,
+  SAM_MODEL_ENABLED: false
 }
 
 export default config
