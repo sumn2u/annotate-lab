@@ -270,7 +270,7 @@ const config = {
 
 ## Auto Bounding Box Selection with Segment Anything Model (SAM)[[documentation page]](https://annotate-docs.dwaste.live/example/auto-bounding-box-selection-with-segment-anything-model-sam)
 
-Automatic bounding box selection is enabled using the [Segment Anything Model (SAM)](https://segment-anything.com/). You can toggle this feature in the settings. When enabled, a wand icon will appear in the toolbar. Clicking the wand icon will initiate auto-annotation and display the results
+Selection of bounding box automatically is made possible with the [Segment Anything Model (SAM)](https://segment-anything.com/). One can toggle this feature from the configuration of server and client. When enabled, a wand icon will appear in the toolbar. Clicking the wand icon will initiate auto-annotation and display the results
 
 <p align="center">
     <img src="./sample_images/sam_example.png" alt="auto_annotation" 
