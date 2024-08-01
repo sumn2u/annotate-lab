@@ -170,22 +170,11 @@ def get_auto_annotations():
             raise ValueError("Invalid JSON data format: 'image_name' not found.")
 
         image_annotations = []
-        
         base_url = request.host_url + "uploads/"
-        
-        print(f"Base URL: {base_url}")
         image_url = base_url + image_name
-
-        print(f"Image URL: {image_url}")
-
         image = load_image_from_url(image_url)
-
         regions = sam_model.predict(image)
-
         formatted_regions = format_regions_for_frontend(regions, image_url, image.shape[1], image.shape[0])
-
-        print(f"Regions: {formatted_regions}")
-
         image_annotations.append(
             {
                 "image_name": image_name,
@@ -193,8 +182,6 @@ def get_auto_annotations():
                 "regions": formatted_regions,
             }
         )
-
-        print(f"Image Annotations: {image_annotations}")
         return jsonify(image_annotations), 200
 
     except ValueError as ve:
