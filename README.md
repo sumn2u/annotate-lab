@@ -54,6 +54,7 @@ Annotate Lab is an open-source application designed for image annotation, compri
 - [Settings](#settings-documentation-page)
 - [Configurations (Optional)](#configurations-optional-documentation-page)
 - [Demo](#demo-v20)
+- [Auto Bounding Box Selection with Segment Anything Model (SAM)](#auto-bounding-box-selection-with-segment-anything-model-samdocumentation-page)
 - [Outputs](#outputs-documentation-page)
 - [YOLO Format](#yolo-format-documentation-page)
     - [Normalization process of YOLO annotations](#normalization-process-of-yolo-annotations-documentation-page)
@@ -242,6 +243,7 @@ You can customize various aspects of Annotate-Lab through configuration settings
 ```python
 # config.py
 MASK_BACKGROUND_COLOR = (0, 0, 0)  # Black background for masks
+SAM_MODEL_ENABLED = False # Segment Anything Model for Auto Annotation
 ```
 
 ```Javascript
@@ -254,6 +256,7 @@ const config = {
       CIRCLE: 2,
       BOUNDING_BOX: 2
     },
+    SAM_MODEL_ENABLED: false, // displays button that allows auto annotation using SAM
     SHOW_CLASS_DISTRIBUTION: true // displays annotated class distribution bar chart
   };
 ```
@@ -263,6 +266,14 @@ const config = {
     <a href="https://www.youtube.com/watch?v=iUI6MKWqCeg">
       <img src="https://img.youtube.com/vi/iUI6MKWqCeg/0.jpg" alt="Annotate Lab" style="display: inline-block; margin: 0 auto;">
     </a>
+  </p>
+
+## Auto Bounding Box Selection with Segment Anything Model (SAM)[[documentation page]](https://annotate-docs.dwaste.live/example/auto-bounding-box-selection-with-segment-anything-model-sam)
+
+Automatic bounding box selection is enabled using the [Segment Anything Model (SAM)](https://segment-anything.com/). You can toggle this feature in the settings. When enabled, a wand icon will appear in the toolbar. Clicking the wand icon will initiate auto-annotation and display the results
+
+<p align="center">
+    <img src="./sample_images/sam_example.png" alt="auto_annotation" 
   </p>
 
 ## Outputs [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs)
