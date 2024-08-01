@@ -1,5 +1,5 @@
 ---
-title: 'Efficient Image Annotation with Annotate-Lab: An Open-Source Solution'
+title: 'Annotate-Lab: Simplifying Image Annotation'
 tags:
   - Image Annotation
   - Open-Source Tools
@@ -108,7 +108,7 @@ The downloaded configurations provides the regions information along with co-ord
    ]
 }
 ```
-This tool also supports the [YOLO format](https://docs.ultralytics.com/datasets/detect/#ultralytics-yolo-format). A dataset of ripe and unripe tomatoes has been created and can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). \autoref{fig:annotated_tomatoes} shows the original and annotated tomatoes from that dataset.
+This tool also supports the [YOLO format](https://docs.ultralytics.com/datasets/detect/#ultralytics-yolo-format). A dataset of ripe and unripe tomatoes has been created and can be found on [Kaggle](https://www.kaggle.com/datasets/sumn2u/riped-and-unriped-tomato-dataset). \autoref{fig:annotated_tomatoes} shows the original and annotated tomatoes from that dataset. Besides this, it also selects the bounding box using the Segment Anything Model (SAM) \autoref{kirillov_segment_2023}.
 
 ![Annotated Tomatoes \label{fig:annotated_tomatoes}](./annotated_tomatoes.png)
 
