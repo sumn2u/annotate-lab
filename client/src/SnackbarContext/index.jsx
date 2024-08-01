@@ -28,7 +28,7 @@ export const SnackbarProvider = ({ children }) => {
         <Snackbar
           key={msg.id + index}
           open
-          autoHideDuration={6000}
+          autoHideDuration={null}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           onClose={() => handleClose(index)}
           sx={{ mb: index * 8 }}

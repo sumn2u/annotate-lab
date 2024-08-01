@@ -13,10 +13,19 @@ import tempfile
 import shutil
 import zipfile
 import math
+from sam_model import SamModel
+from utils import load_image_from_url, format_regions_for_frontend
 
 app = Flask(__name__)
 app.config.from_object("config")
 
+# URL of the sam_model to download
+model_type = 'vit_h'
+model_url = 'https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth'
+model_path = 'sam_model.pth'  # Path to save the model
+
+
+sam_model = SamModel(model_url, model_path, model_type)
 
 # Get the CLIENT_URL environment variable, set a default to 80
 client_url = os.getenv("CLIENT_URL", "http://localhost")
@@ -147,6 +156,56 @@ def update_settings():
     return jsonify({"message": "Settings updated successfully"})
 
 
+@app.route("/get_auto_annotations", methods=["POST"])
+@cross_origin(origin="*", headers=["Content-Type"])
+def get_auto_annotations():
+    try:
+        data = request.get_json()
+        image_name = data.get("image_name")
+        if not image_name:
+            raise ValueError("Invalid JSON data format: 'image_name' not found.")
+
+        image_annotations = []
+        
+        base_url = request.host_url + "uploads/"
+        
+        print(f"Base URL: {base_url}")
+        image_url = base_url + image_name
+
+        print(f"Image URL: {image_url}")
+
+        image = load_image_from_url(image_url)
+
+        regions = sam_model.predict(image)
+
+        formatted_regions = format_regions_for_frontend(regions, image_url, image.shape[1], image.shape[0])
+
+        print(f"Regions: {formatted_regions}")
+
+        image_annotations.append(
+            {
+                "image_name": image_name,
+                "image_source": image_url,
+                "regions": formatted_regions,
+            }
+        )
+
+        print(f"Image Annotations: {image_annotations}")
+        return jsonify(image_annotations), 200
+
+    except ValueError as ve:
+        print("ValueError:", ve)
+        traceback.print_exc()
+        return jsonify({"error": str(ve)}), 400
+    except requests.exceptions.RequestException as re:
+        print("RequestException:", re)
+        traceback.print_exc()
+        return jsonify({"error": "Error fetching image from URL"}), 500
+    except Exception as e:
+        print("General error:", e)
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+    
 @app.route("/settings/reset", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])
 def reset_settings():
@@ -1196,4 +1255,5 @@ def main():
 
 # If the file is run directly,start the app.
 if __name__ == "__main__":
+    print("Starting server...")
     app.run(debug=False)
