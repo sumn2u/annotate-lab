@@ -57,7 +57,7 @@ Several image annotation tools are available, each catering to different aspects
 
 # Example: Annotating a Bicycle
 
-This example guides users through the process of annotating a bicycle and reviewing the results. The process begins with reviewing task details in the "Task Info" tab to understand the objectives for segmenting the annotated image. In the "Configuration" tab, users set up annotation tools and label names to prepare for annotation. Following setup, users upload images to be annotated in the "Image" tab to initiate the annotation process. \autoref{fig:carbon_emission} shows the tabs.
+This example guides users through the process of annotating a bicycle and reviewing the results. The process begins with reviewing task details in the "Task Info" tab to understand the objectives for segmenting the annotated image. In the "Configuration" tab, users set up annotation tools and label names to prepare for annotation. Following setup, users upload images to be annotated in the "Image" tab to initiate the annotation process. \autoref{fig:configuration_setup} shows the tabs.
 
 ![Setup Configuration \label{fig:configuration_setup}](./setup.png)
 
