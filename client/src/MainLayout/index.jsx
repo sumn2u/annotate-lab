@@ -171,12 +171,12 @@ export const MainLayout = ({
     const image = state.images[state.selectedImage]
     const imageName = decodeURIComponent(image.src.split("/").pop())
 
-    showSnackbar(t('auto_annotation_processing'), "info")
+    showSnackbar(t('auto_bounding_box_processing'), "info")
     try {
       const response = await getAutoAnnotation({image_name: imageName})
       dispatch({ type: "AUTO_ANNOTATE_IMAGE", annotations: response})
   
-      showSnackbar(t('auto_annotation_done'), "success")
+      showSnackbar(t('auto_bounding_box_done'), "success")
     } catch (error) {
       showSnackbar(error.message, "error")
     }
@@ -319,7 +319,7 @@ export const MainLayout = ({
             {
               name: "auto-annotate",
               alwaysShowing: config.SAM_MODEL_ENABLED,
-              helperText:t("helptext_auto_annotate") + getHotkeyHelpText("auto_annotate"),
+              helperText:t("helptext_auto_bounding_box") + getHotkeyHelpText("auto_annotate"),
             },
 
             {
