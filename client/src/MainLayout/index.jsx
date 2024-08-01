@@ -26,6 +26,7 @@ import { Save, ExitToApp } from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
 import { useSnackbar } from "../SnackbarContext"
+import { getAutoAnnotation } from "../utils/send-data-to-server"
 import ClassDistributionSidebarBox from "../ClassDistributionSidebarBox"
 import config from "../config"
 
@@ -166,9 +167,27 @@ export const MainLayout = ({
     />
   )
 
+  const onAutoAnnotate = useEventCallback(async () => {
+    const image = state.images[state.selectedImage]
+    const imageName = decodeURIComponent(image.src.split("/").pop())
+
+    showSnackbar(t('auto_annotation_processing'), "info")
+    try {
+      const response = await getAutoAnnotation({image_name: imageName})
+      dispatch({ type: "AUTO_ANNOTATE_IMAGE", annotations: response})
+  
+      showSnackbar(t('auto_annotation_done'), "success")
+    } catch (error) {
+      showSnackbar(error.message, "error")
+    }
+  }, []);
+
   const onClickIconSidebarItem = useEventCallback((item) => {
     const { selectedTool } = state
     if (selectedTool.length > 0 && item.name !== null) {
+      if(item.name === "auto-annotate") {
+        onAutoAnnotate()
+      }
       dispatch({ type: "SELECT_TOOL", selectedTool: item.name })
     }
   })
@@ -297,6 +316,12 @@ export const MainLayout = ({
               helperText:
                 t("helptext_polypolygon") + getHotkeyHelpText("create_polygon"),
             },
+            {
+              name: "auto-annotate",
+              alwaysShowing: true,
+              helperText:t("helptext_auto_annotate") + getHotkeyHelpText("auto_annotate"),
+            },
+
             {
               name: "create-line",
               helperText: "Add Line",

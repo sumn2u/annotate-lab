@@ -896,6 +896,25 @@ export default (state, action) => {
         (activeImage.regions || []).filter((r) => !r.highlighted),
       )
     }
+    case "AUTO_ANNOTATE_IMAGE": {
+      const { annotations } = action;
+      const updatedImages = state.images.map(image => {
+        const matchingResponse = annotations.find(item => item.image_source === decodeURI(image.src));
+        if (matchingResponse) {
+          return {
+            ...image,
+            regions: matchingResponse.regions,
+          };
+        }
+        return image;
+      });
+      return setIn(
+        state,
+        ['images'],
+        updatedImages,
+      );
+    }
+
     case "HEADER_BUTTON_CLICKED": {
       const buttonName = action.buttonName.toLowerCase()
       switch (buttonName) {

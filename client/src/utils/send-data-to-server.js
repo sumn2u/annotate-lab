@@ -43,6 +43,19 @@ export const getImagesAnnotation = (imageData) => {
   })
 }
 
+export const getAutoAnnotation = (imageData) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${config.SERVER_URL}/get_auto_annotations`, imageData)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error.response.data)
+      })
+  })
+}
+
 export const saveSettings = (settings) => {
   return new Promise((resolve, reject) => {
     axios

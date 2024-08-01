@@ -9,6 +9,7 @@ import {
   faEdit,
   faGripLines,
   faHandPaper,
+  faWandMagicSparkles,
   faMousePointer,
   faSearch,
   faCircleDot,
@@ -66,6 +67,9 @@ export const iconDictionary = {
   ),
   "modify-allowed-area": () => (
     <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faEdit} />
+  ),
+  "auto-annotate": () => (
+    <FontAwesomeIcon style={faStyle} size="xs" fixedWidth icon={faWandMagicSparkles}/>
   ),
   "create-keypoints": AccessibilityNewIcon,
 }

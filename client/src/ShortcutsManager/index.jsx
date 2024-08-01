@@ -106,6 +106,13 @@ export const useDispatchHotkeyHandlers = ({ dispatch }) => {
           selectedTool: "create-polygon",
         })
       },
+
+      auto_annotate: () => {
+        dispatch({
+          type: "SELECT_TOOL",
+          selectedTool: "auto-annotate",
+        })
+      },
       create_pixel: () => {
         dispatch({
           type: "SELECT_TOOL",
