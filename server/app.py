@@ -20,12 +20,16 @@ app = Flask(__name__)
 app.config.from_object("config")
 
 # URL of the sam_model to download
-model_type = 'vit_h'
-model_url = 'https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth'
-model_path = 'sam_model.pth'  # Path to save the model
+if app.config['SAM_MODEL_ENABLED']:
+    from sam_model import SamModel
+    # URL of the sam_model to download
+    model_type = 'vit_h'
+    model_url = 'https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth'
+    model_path = 'sam_model.pth'  # Path to save the model
 
-
-sam_model = SamModel(model_url, model_path, model_type)
+    sam_model = SamModel(model_url, model_path, model_type)
+else:
+    sam_model = None
 
 # Get the CLIENT_URL environment variable, set a default to 80
 client_url = os.getenv("CLIENT_URL", "http://localhost")
