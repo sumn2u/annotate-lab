@@ -243,7 +243,7 @@ You can customize various aspects of Annotate-Lab through configuration settings
 ```python
 # config.py
 MASK_BACKGROUND_COLOR = (0, 0, 0)  # Black background for masks
-SAM_MODEL_ENABLED = False # Segment Anything Model for Auto Annotation
+SAM_MODEL_ENABLED = False # Segment Anything Model for auto bounding box selection
 ```
 
 ```Javascript
@@ -256,7 +256,7 @@ const config = {
       CIRCLE: 2,
       BOUNDING_BOX: 2
     },
-    SAM_MODEL_ENABLED: false, // displays button that allows auto annotation using SAM
+    SAM_MODEL_ENABLED: false, // displays button that allows auto bounding box selection
     SHOW_CLASS_DISTRIBUTION: true // displays annotated class distribution bar chart
   };
 ```
