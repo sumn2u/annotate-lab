@@ -15,7 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.21",
-    "@mui/x-charts": "^7.8.0",
+    "@mui/x-charts": "^7.9.0",
     "axios": "^1.7.2",
     "cash-dom": "^8.1.5",
     "classnames": "^2.3.2",
