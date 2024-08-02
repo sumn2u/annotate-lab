@@ -111,10 +111,10 @@ export const SetupPage = ({
   const handleImageUpload = (images) => {
     const extractedNames = images.map((image) => {
       let src = image.preview || image.src
-      if (src.includes("http://annotate-lab.onrender.com")) {
+      if (src.includes("http://rocky-badlands-09400-2bb445641857.herokuapp.com")) {
         src = src.replace(
-          "http://annotate-lab.onrender.com",
-          "https://annotate-lab.onrender.com",
+          "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
+          "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
         )
       }
       const selectedClsList = "" || image.selectedClsList // Assuming 'cls' information is not present
