@@ -537,10 +537,10 @@ def download_image_with_annotations():
                 # Docker container uses port 5000, so replace 5001 with 5000
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
-                elif "http://annotate-lab.onrender.com" in image_url:
+                elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
                     image_url = image_url.replace(
-                        "http://annotate-lab.onrender.com",
-                        "https://annotate-lab.onrender.com",
+                        "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                        "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
                     )
 
                 response = requests.get(image_url)
@@ -766,10 +766,10 @@ def get_image_annotations():
                 image_url = region.get("image-src")
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
-                elif "http://annotate-lab.onrender.com" in image_url:
+                elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
                     image_url = image_url.replace(
-                        "http://annotate-lab.onrender.com",
-                        "https://annotate-lab.onrender.com",
+                        "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                        "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
                     )
                 # Handle NaN values in regions
                 cleaned_regions = cleaned_regions = [
@@ -844,10 +844,10 @@ def download_image_mask():
                         image_url = image_url.replace(
                             "127.0.0.1:5001", "127.0.0.1:5000"
                         )
-                    elif "http://annotate-lab.onrender.com" in image_url:
+                    elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
                         image_url = image_url.replace(
-                            "http://annotate-lab.onrender.com",
-                            "https://annotate-lab.onrender.com",
+                            "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                            "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
                         )
 
                     response = requests.get(image_url)
