@@ -34,7 +34,7 @@ const translationEnEN = {
   "setup.tabs.images": "Images",
   "setup.tabs.taskinfo.task_info": "Task Information",
   "setup.tabs.taskinfo.task_choice": "Choice of Task",
-  "setup.tabs.taskinfo.task_choice_object_detection": "Object Detection",
+  "setup.tabs.taskinfo.task_choice_classification": "Object Detection",
   "setup.tabs.taskinfo.task_choice_segmentation": "Image Segmentation",
   "configuration.multiple_regions": "Can Multiple Regions Be Created?",
   "configuration.multiple_region_labels": "Multiple Region Labels Allowed?",
