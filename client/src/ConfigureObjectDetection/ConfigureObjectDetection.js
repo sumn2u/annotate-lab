@@ -1,6 +1,6 @@
 import React from "react"
 import { render, screen, fireEvent } from "@testing-library/react"
-import ConfigureImageClassification from "./index"
+import ConfigureObjectDetection from "./index"
 import "@testing-library/jest-dom"
 
 // Mock the useTranslation hook with actual translations
@@ -73,13 +73,13 @@ jest.mock("material-survey/components/Survey", () => ({
   )),
 }))
 
-describe("ConfigureImageClassification", () => {
+describe("ConfigureObjectDetection", () => {
   test("renders form with questions and calls onChange on answer change", () => {
     const mockConfig = {}
     const mockOnChange = jest.fn()
 
     render(
-      <ConfigureImageClassification
+      <ConfigureObjectDetection
         config={mockConfig}
         onChange={mockOnChange}
       />,

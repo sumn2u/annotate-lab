@@ -22,8 +22,8 @@ export default ({ config, onChange }) => {
         isRequired: true,
         choices: [
           {
-            value: "image_classification",
-            text: t("setup.tabs.taskinfo.task_choice_classification"),
+            value: "object_detection",
+            text: t("setup.tabs.taskinfo.task_choice_object_detection"),
           },
           {
             value: "image_segmentation",
@@ -42,7 +42,7 @@ export default ({ config, onChange }) => {
           taskChoice:
             config.taskChoice !== undefined
               ? config.taskChoice
-              : "image_classification",
+              : "object_detection",
         },
         { deep: true },
       ),

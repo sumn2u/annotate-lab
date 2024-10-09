@@ -30,8 +30,8 @@ jest.mock("../SettingsProvider", () => ({
 }))
 
 // Mock dependent components
-jest.mock("../ConfigureImageClassification", () =>
-  jest.fn(() => <div data-testid="ConfigureImageClassification" />),
+jest.mock("../ConfigureObjectDetection", () =>
+  jest.fn(() => <div data-testid="ConfigureObjectDetection" />),
 )
 jest.mock("../ConfigureImageSegmentation", () =>
   jest.fn(() => <div data-testid="ConfigureImageSegmentation" />),
@@ -53,7 +53,7 @@ describe("SetupPage", () => {
     taskDescription: "",
     configuration: { labels: [] },
     images: [],
-    taskChoice: "image_classification",
+    taskChoice: "object_detection",
   }
   const mockSetConfiguration = jest.fn()
   const mockSetShowLabel = jest.fn()

@@ -9,7 +9,7 @@ jest.mock("react-i18next", () => ({
     t: (key) =>
       ({
         image_tags: "Image Tags",
-        image_tags_classification_placeholder: "Image Classification",
+        image_tags_object_detection_placeholder: "Object Detection",
       })[key],
   }),
 }))
@@ -38,7 +38,7 @@ describe("TagsSidebarBox", () => {
       />,
     )
 
-  it("renders correctly with image classification and tags", () => {
+  it("renders correctly with object detection and tags", () => {
     renderComponent()
     // Check if title is rendered
     expect(screen.getByText("Image Tags")).toBeInTheDocument()
