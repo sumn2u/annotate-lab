@@ -10,8 +10,8 @@ jest.mock("react-i18next", () => ({
       ({
         "setup.tabs.taskinfo.task_info": "Task Information",
         "setup.tabs.taskinfo.task_choice": "Choice of Task",
-        "setup.tabs.taskinfo.task_choice_classification":
-          "Image Classification",
+        "setup.tabs.taskinfo.task_choice_object_detection":
+          "Object Detection",
         "setup.tabs.taskinfo.task_choice_segmentation": "Image Segmentation",
       })[key],
   }),
@@ -61,7 +61,7 @@ describe("ConfigurationTask", () => {
           title: "Task Choice",
           type: "radiogroup",
           choices: [
-            { value: "image_classification", text: "Image Classification" },
+            { value: "object_detection", text: "Object Detection" },
             { value: "image_segmentation", text: "Image Segmentation" },
           ],
         },
@@ -81,13 +81,13 @@ describe("ConfigurationTask", () => {
     expect(screen.getByText("Choice of Task")).toBeInTheDocument()
 
     // Assert radio buttons are rendered
-    const imageClassificationRadio = screen.getByTestId(
-      `radio-taskChoice-image_classification`,
+    const imageObjectDetectionRadio = screen.getByTestId(
+      `radio-taskChoice-object_detection`,
     )
     const imageSegmentationRadio = screen.getByTestId(
       `radio-taskChoice-image_segmentation`,
     )
-    expect(imageClassificationRadio).toBeInTheDocument()
+    expect(imageObjectDetectionRadio).toBeInTheDocument()
     expect(imageSegmentationRadio).toBeInTheDocument()
 
     // Simulate changing radio button and verify onChange is called

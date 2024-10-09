@@ -35,7 +35,7 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(data["taskDescription"], "")
-        self.assertEqual(data["taskChoice"], "image_classification")
+        self.assertEqual(data["taskChoice"], "object_detection")
 
     def test_update_settings(self):
         updated_settings = {

@@ -54,7 +54,7 @@ export const TagsSidebarBox = ({
       {imageClsList.length > 0 && (
         <div style={{ padding: 8 }}>
           <Select
-            placeholder={t("image_tags_classification_placeholder")}
+            placeholder={t("image_tags_object_detection_placeholder")}
             onChange={onChangeClassification}
             value={selectValue}
             options={memoImgClsList}
