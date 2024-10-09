@@ -23,7 +23,7 @@ export default ({ config, onChange }) => {
         choices: [
           {
             value: "object_detection",
-            text: t("setup.tabs.taskinfo.task_choice_object_detection"),
+            text: t("setup.tabs.taskinfo.task_choice_classification"),
           },
           {
             value: "image_segmentation",

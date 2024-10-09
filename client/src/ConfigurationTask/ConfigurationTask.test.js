@@ -10,7 +10,7 @@ jest.mock("react-i18next", () => ({
       ({
         "setup.tabs.taskinfo.task_info": "Task Information",
         "setup.tabs.taskinfo.task_choice": "Choice of Task",
-        "setup.tabs.taskinfo.task_choice_object_detection":
+        "setup.tabs.taskinfo.task_choice_classification":
           "Object Detection",
         "setup.tabs.taskinfo.task_choice_segmentation": "Image Segmentation",
       })[key],

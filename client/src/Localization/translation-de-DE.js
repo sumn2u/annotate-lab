@@ -34,7 +34,7 @@ const translationDeDE = {
   "setup.tabs.images": "Bilder",
   "setup.tabs.taskinfo.task_info": "Aufgabeninformation",
   "setup.tabs.taskinfo.task_choice": "Aufgabenwahl",
-  "setup.tabs.taskinfo.task_choice_object_detection": "Bildklassifikation",
+  "setup.tabs.taskinfo.task_choice_classification": "Bildklassifikation",
   "setup.tabs.taskinfo.task_choice_segmentation": "Bildsegmentierung",
   "configuration.multiple_regions": "Können mehrere Regionen erstellt werden?",
   "configuration.multiple_region_labels": "Mehrere Regionslabels erlaubt?",
