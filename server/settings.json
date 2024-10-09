@@ -1,8 +1,8 @@
 {
     "taskDescription": "",
-    "taskChoice": "image_classification",
+    "taskChoice": "object_detection",
     "images": [],
-    "showLab": true,
+    "showLab": false,
     "mode": "light",
     "lastSavedImageIndex": null,
     "configuration": {

@@ -69,7 +69,7 @@ export default () => {
   const { toggleTheme, theme } = useTheme();
   const [settings, setSettings] = useState({
     taskDescription: "",
-    taskChoice: "image_classification",
+    taskChoice: "object_detection",
     images: [],
     showLab: false,
     mode: theme,

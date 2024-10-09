@@ -9,7 +9,7 @@ const defaultSettings = {
   wasdMode: true,
   settings: {
     taskDescription: "",
-    taskChoice: "image_classification",
+    taskChoice: "object_detection",
     images: [],
     showLab: false,
     lastSavedImageIndex: null,

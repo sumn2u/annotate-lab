@@ -52,7 +52,7 @@ JSON_FILE = "settings.json"
 
 default_settings = {
     "taskDescription": "",
-    "taskChoice": "image_classification",
+    "taskChoice": "object_detection",
     "images": [],
     "showLab": False,
     "mode": "light",

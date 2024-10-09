@@ -12,7 +12,7 @@ import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography"
 import IconButton from "@mui/material/IconButton"
 import PropTypes from "prop-types"
-import ConfigureImageClassification from "../ConfigureImageClassification"
+import ConfigureObjectDetection from "../ConfigureObjectDetection"
 import ConfigureImageSegmentation from "../ConfigureImageSegmentation"
 import Button from "@mui/material/Button"
 import ConfigurationTask from "../ConfigurationTask"
@@ -274,9 +274,9 @@ export const SetupPage = ({
 
         {currentTab === "configure" && (
           <Box minWidth="55vw" paddingTop={"1rem"}>
-            {settings.taskChoice === "image_classification" && (
+            {settings.taskChoice === "object_detection" && (
               <>
-                <ConfigureImageClassification
+                <ConfigureObjectDetection
                   config={settings.configuration}
                   onChange={updateConfiguration}
                 />
