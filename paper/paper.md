@@ -41,6 +41,8 @@ Several image annotation tools are available, each catering to different aspects
 
 5. **[CVAT (Computer Vision Annotation Tool)](https://github.com/cvat-ai/cvat)**: An open-source tool designed for the annotation of images and videos, providing a robust set of features for different types of annotations such as bounding boxes, polylines, and segmentation [@cvat_ai_corporation_computer_2024].
 
+Compared to these tools, Annotate-Lab stands out for its open-source, community-driven nature and its client-server architecture. This setup enhances customizability, flexibility, and scalability by separating the React-based client from the Flask-based server.
+
 # Application Overview
 
 **Annotate-Lab** is an open-source image annotation application designed to streamline the annotation process through a client-server architecture. The application comprises two main components:
