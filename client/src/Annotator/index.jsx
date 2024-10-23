@@ -51,6 +51,7 @@ export const Annotator = ({
   videoTime = 0,
   videoName,
   onExit,
+  onShortcutClick,
   settings,
   keypointDefinitions,
   onSelectJump,
@@ -148,7 +149,7 @@ export const Annotator = ({
 
   const dispatch = useEventCallback(async (action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {
-      if (["Exit", "Done", "Save", "Complete"].includes(action.buttonName)) {
+      if (["Exit", "Done", "Save", "Complete", "Shortcuts"].includes(action.buttonName)) {
         // save the current data
         if (action.buttonName === "Save") {
           const result = await preprocessDataBeforeSend(
@@ -163,6 +164,8 @@ export const Annotator = ({
             payload: result,
           })
           return null
+        }else if(action.buttonName === "Shortcuts") {
+          return onShortcutClick()
         } else {
           return onExit(without(state, "history"))
         }
@@ -219,6 +222,7 @@ export const Annotator = ({
       hideSave={hideSave}
       allImages={allImages}
       onExit={onExit}
+      onShortcutClick={onShortcutClick}
       enabledRegionProps={enabledRegionProps}
       onSelectJump={onSelectJump}
       saveActiveImage={saveCurrentData}

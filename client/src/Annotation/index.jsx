@@ -10,6 +10,7 @@ import { getImagesAnnotation } from "../utils/send-data-to-server"
 import CircularProgress from "@mui/material/CircularProgress"
 import Box from "@mui/material/Box"
 import AlertDialog from "../AlertDialog"
+import ShortcutsDialog from "../ShortcutsDialog"
 import { clear_db, getSettings } from "../utils/get-data-from-server"
 import colors from "../colors.js"
 import { useTranslation } from "react-i18next"
@@ -58,6 +59,7 @@ const userReducer = (state, action) => {
 
 export default () => {
   const [selectedImageIndex, changeSelectedImageIndex] = useState(0)
+  const [openDialog, setOpenDialog] = useState(false)
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
   const [showLabel, setShowLabel] = useState(true)
@@ -91,6 +93,14 @@ export default () => {
   const handleExit = () => {
     logout()
     handleClose()
+  }
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
   }
 
   const [loading, setLoading] = useState(true) // Add loading state
@@ -348,6 +358,7 @@ export default () => {
                 exitCancel={t("exit_alert_cancel")}
                 handleExit={handleExit}
               />
+              <ShortcutsDialog open={openDialog} handleClose={handleCloseDialog} />
               <Annotator
                 taskDescription={
                   settings.taskDescription ||
@@ -367,6 +378,7 @@ export default () => {
                 onExit={(output) => {
                   handleClickOpen()
                 }}
+                onShortcutClick={() => handleOpenDialog()}
                 settings={settings}
                 onSelectJump={onSelectJumpHandle}
                 showTags={true}
