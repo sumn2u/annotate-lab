@@ -80,7 +80,27 @@ export const MainLayout = ({
     nextImage = state.images[currentImageIndex + 1]
   }
 
-  useKey("Escape", () => dispatch({ type: "CANCEL" }))
+
+  const handleKey = (key, actionType, selectedTool = null) => {
+    useKey(
+      (event) => event.ctrlKey && event.shiftKey && event.key.toLowerCase() === key,
+      () => {
+        const action = { type: actionType };
+        if (selectedTool) {
+          action.selectedTool = selectedTool;
+        }
+        dispatch(action);
+      },
+      { event: 'keydown' }
+    );
+  };
+  
+  handleKey('escape', 'CANCEL');
+  handleKey('b', 'SELECT_TOOL', 'create-box');
+  handleKey('z', 'SELECT_TOOL', 'zoom');
+  handleKey('p', 'SELECT_TOOL', 'create-polygon');
+  handleKey('c', 'SELECT_TOOL', 'create-circle');
+  
 
   const innerContainerRef = useRef()
   const hotkeyHandlers = useDispatchHotkeyHandlers({ dispatch })
