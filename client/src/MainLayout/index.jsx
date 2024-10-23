@@ -22,7 +22,7 @@ import getHotkeyHelpText from "../utils/get-hotkey-help-text"
 import { useKey } from "react-use"
 import { useSettings } from "../SettingsProvider"
 import { withHotKeys } from "react-hotkeys"
-import { Save, ExitToApp } from "@mui/icons-material"
+import { Save, ExitToApp, QuestionMark } from "@mui/icons-material"
 import capitalize from "lodash/capitalize"
 import { useTranslation } from "react-i18next"
 import { useSnackbar } from "../SnackbarContext"
@@ -47,6 +47,7 @@ export const MainLayout = ({
   hideHeader,
   hideHeaderText,
   onExit,
+  onShortcutClick,
   hideClone = true,
   hideSettings = false,
   hideSave = false,
@@ -215,6 +216,8 @@ export const MainLayout = ({
   const onClickHeaderItem = useEventCallback((item) => {
     if (item.name === "Exit") {
       onExit()
+    } else if (item.name === "Shortcuts") {
+      onShortcutClick()
     } else {
       dispatch({ type: "HEADER_BUTTON_CLICKED", buttonName: item.name })
     }
@@ -286,6 +289,7 @@ export const MainLayout = ({
             },
             { name: "Docs", label: t("btn.docs") },
             !hideSettings && { name: "Settings", label: t("btn.settings") },
+            { name: "Shortcuts", label: t("btn.shortcuts"), icon: <QuestionMark/> },
             { name: "Exit", label: t("btn.exit"), icon: <ExitToApp /> },
           ].filter(Boolean)}
           onClickHeaderItem={onClickHeaderItem}

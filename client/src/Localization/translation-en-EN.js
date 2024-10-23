@@ -20,6 +20,7 @@ const translationEnEN = {
   "btn.previous": "Prev",
   "btn.save": "Save",
   "btn.settings": "Settings",
+  "btn.shortcuts": "Shortcuts",
   "btn.exit": "Exit",
   "btn.clone": "Clone",
   "btn.play": "Play",
@@ -96,6 +97,8 @@ const translationEnEN = {
     "Do you really want to exit? This action will clear the storage and all data will be lost.",
   exit_alert_cancel: "Cancel",
   exit_alert_confirm: "Exit",
+  short_key_up: "Navigate Up",
+  short_key_down: "Navigate Down",
 }
 
 export default translationEnEN

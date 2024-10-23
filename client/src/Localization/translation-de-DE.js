@@ -21,6 +21,7 @@ const translationDeDE = {
   "btn.previous": "Zurück",
   "btn.save": "Speichern",
   "btn.settings": "Einstellungen",
+  "btn.shortcuts": "Verknüpfungen",
   "btn.exit": "Beenden",
   "btn.clone": "Klonen",
   "btn.play": "Abspielen",
@@ -97,6 +98,8 @@ const translationDeDE = {
     "Möchten Sie wirklich beenden? Diese Aktion wird den Speicher löschen und alle Daten werden verloren gehen.",
   exit_alert_cancel: "Abbrechen",
   exit_alert_confirm: "Zustimmen",
+  short_key_up: "Nach oben navigieren",
+  short_key_down: "Nach unten navigieren",
 }
 
 export default translationDeDE
