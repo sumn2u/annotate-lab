@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Box from "@mui/material/Box"
@@ -67,6 +67,43 @@ export const FilesListMenu = ({
   onClick,
 }) => {
   const { t } = useTranslation()
+
+  // Track the index of the selected image
+  const [selectedIndex, setSelectedIndex] = useState(
+    allImages.findIndex((img) => img.name === selectedImage) || 0
+  );
+
+  // Handle ArrowUp and ArrowDown key presses for navigation
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowUp") {
+      setSelectedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : allImages.length - 1
+      );
+    } else if (event.key === "ArrowDown") {
+      setSelectedIndex((prevIndex) =>
+        prevIndex < allImages.length - 1 ? prevIndex + 1 : 0
+      );
+    }
+  };
+
+  // Add keydown event listener when the component mounts
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Update selected image when selectedIndex changes
+  useEffect(() => {
+    if (allImages[selectedIndex]) {
+      onSelectJump(allImages[selectedIndex].name);
+    }
+  }, [selectedIndex]);
+
+
   const handleClickLabel = (label) => {
     onClick(getActiveImage(state))
     onSelectJump(label)
