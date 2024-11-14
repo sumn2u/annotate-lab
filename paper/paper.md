@@ -11,7 +11,7 @@ authors:
     orcid: 0000-0002-4345-1050
     affiliation: "1" # (Multiple affiliations must be quoted)
 affiliations:
- - name: Faculty of Computer Science, Selinus University of Science and Literature, Ragusa, Italy
+ - name: Faculty of Computer Science, Selinus University of Sciences and Literature, Ragusa, Italy
    index: 1
 date: 12 Jun 2024
 bibliography: paper.bib
