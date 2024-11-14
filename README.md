@@ -27,7 +27,9 @@ Annotate Lab is an open-source application designed for image annotation, compri
     <img src="https://img.shields.io/github/issues/sumn2u/annotate-lab" alt="GitHub issues"></a>
    <a href="https://www.codetriage.com/sumn2u/annotate-lab">
     <img src="https://www.codetriage.com/sumn2u/annotate-lab/badges/users.svg" alt="Open Source Helpers"></a>
-
+  <a style="border-width:0" href="https://doi.org/10.21105/joss.07210">
+  <img src="https://joss.theoj.org/papers/10.21105/joss.07210/status.svg" alt="DOI badge" >
+</a>
  
 </p>
 
