@@ -1,6 +1,8 @@
 // @flow weak
 
 import { useRef } from "react"
+const clamp = (n, lo, hi) => (n < lo ? lo : n > hi ? hi : n)
+const isInside01 = (x, y) => x >= 0 && x <= 1 && y >= 0 && y <= 1
 import { Matrix } from "transformation-matrix-js"
 
 const getDefaultMat = () => Matrix.from(1, 0, 0, 1, -10, -10)
@@ -23,6 +25,7 @@ export default ({
   dragging,
 }) => {
   const mousePosition = useRef({ x: 0, y: 0 })
+  const insideRef = useRef(true) // tracks if pointer is inside the rendered image
   const prevMousePosition = useRef({ x: 0, y: 0 })
 
   const zoomIn = (direction, point) => {
@@ -57,7 +60,16 @@ export default ({
       }
 
       const { iw, ih } = layoutParams.current
-      onMouseMove({ x: projMouse.x / iw, y: projMouse.y / ih })
+      // onMouseMove({ x: projMouse.x / iw, y: projMouse.y / ih })
+      const nx = projMouse.x / iw
+      const ny = projMouse.y / ih
+      const inside = isInside01(nx, ny)
+      insideRef.current = inside
+      
+      // Only notify annotators while the pointer is over the image
+      if (inside) {
+        onMouseMove({ x: nx, y: ny })
+      }
 
       if (dragging) {
         mat.translate(
@@ -89,14 +101,20 @@ export default ({
         return
       }
       if (e.button === 0) {
+        const { iw, ih } = layoutParams.current
+        const nx = projMouse.x / iw
+        const ny = projMouse.y / ih
+        // Block starting any annotation outside the image
+        if (!isInside01(nx, ny)) return
         if (specialEvent.type === "resize-box") {
           // onResizeBox()
         }
         if (specialEvent.type === "move-region") {
           // onResizeBox()
         }
-        const { iw, ih } = layoutParams.current
-        onMouseDown({ x: projMouse.x / iw, y: projMouse.y / ih })
+        // const { iw, ih } = layoutParams.current
+        // onMouseDown({ x: projMouse.x / iw, y: projMouse.y / ih })
+        onMouseDown({ x: nx, y: ny })
       }
     },
     onMouseUp: (e) => {
@@ -152,7 +170,11 @@ export default ({
         return changeDragging(false)
       if (e.button === 0) {
         const { iw, ih } = layoutParams.current
-        onMouseUp({ x: projMouse.x / iw, y: projMouse.y / ih })
+        // onMouseUp({ x: projMouse.x / iw, y: projMouse.y / ih })
+        // Clamp release to the image edge so we never create/update out of bounds
+        const nx = clamp(projMouse.x / iw, 0, 1)
+        const ny = clamp(projMouse.y / ih, 0, 1)
+        onMouseUp({ x: nx, y: ny })
       }
     },
     onWheel: (e) => {
