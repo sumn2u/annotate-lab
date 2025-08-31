@@ -82,63 +82,6 @@ def save_settings(settings):
         json.dump(settings, f, indent=4)
 
 
-def clamp_region_coordinates(region):
-    """Clamps the coordinates of a region to be within image bounds [0.0, 1.0].
-       This version is robust to handle data formats from the database."""
-
-    def _parse_coord(v):
-        """Helper to parse coordinate values that might be strings or lists."""
-        if isinstance(v, str) and v.startswith("[") and v.endswith("]"):
-            return float(v[1:-1])
-        if isinstance(v, list) and len(v) > 0:
-            return float(v[0])
-        # Return the value as is if it doesn't match the above conditions,
-        # it will be converted to float in _clamp_value.
-        return v
-
-    def _clamp_value(v):
-        """Helper to clamp a single float value after parsing."""
-        try:
-            # Parse first, then convert to float and clamp
-            val = float(_parse_coord(v))
-            return max(0.0, min(val, 1.0))
-        except (ValueError, TypeError):
-            return 0.0 # Default to 0.0 if parsing fails
-
-    region_type = region.get("type")
-
-    if region_type == "polygon" and "points" in region and region["points"]:
-        clamped_points = [
-            [_clamp_value(p[0]), _clamp_value(p[1])] for p in region["points"]
-        ]
-        region["points"] = clamped_points
-
-    elif region_type == "box" and all(k in region for k in ("x", "y", "w", "h")):
-        x = _clamp_value(region["x"])
-        y = _clamp_value(region["y"])
-        # Width and height are deltas, so we just parse them, not clamp them to 1.0
-        w = float(_parse_coord(region["w"]))
-        h = float(_parse_coord(region["h"]))
-
-        if x + w > 1.0: w = 1.0 - x
-        if y + h > 1.0: h = 1.0 - y
-
-        region.update({"x": x, "y": y, "w": w, "h": h})
-
-    elif region_type == "circle" and all(k in region for k in ("rx", "ry", "rw", "rh")):
-        rx = _clamp_value(region["rx"])
-        ry = _clamp_value(region["ry"])
-        rw = float(_parse_coord(region["rw"]))
-        rh = float(_parse_coord(region["rh"]))
-
-        if rx + rw > 1.0: rw = 1.0 - rx
-        if ry + rh > 1.0: rh = 1.0 - ry
-        
-        region.update({"rx": rx, "ry": ry, "rw": rw, "rh": rh})
-
-    return region
-
-
 dbModule = Module()
 path = os.path.abspath("./uploads")
 
@@ -148,12 +91,6 @@ path = os.path.abspath("./uploads")
 def save_annotate_info():
     try:
         request_data = request.get_json()
-        
-        if "regions" in request_data and isinstance(request_data["regions"], list):
-            request_data["regions"] = [
-                clamp_region_coordinates(r) for r in request_data["regions"]
-            ]
-        
         if dbModule.handleNewData(request_data):
             # Return success response
             return (
@@ -345,12 +282,6 @@ def delete_file(filename):
 def save_active_image_info():
     try:
         request_data = request.get_json()
-        
-        if "regions" in request_data and isinstance(request_data["regions"], list):
-            request_data["regions"] = [
-                clamp_region_coordinates(r) for r in request_data["regions"]
-            ]
-        
         # Assume handleActiveImageData returns True if successful
         if dbModule.handleActiveImageData(request_data):
             # Return success response
@@ -439,8 +370,7 @@ def create_json_response(image_name, color_map=None):
                                 ]
                                 region["points"] = decoded_points
                             region["type"] = region_type
-                            clamped_region = clamp_region_coordinates(region)
-                            main_dict["regions"].append(clamped_region)
+                            main_dict["regions"].append(region)
 
                 if polygonRegions is not None:
                     add_regions(polygonRegions, "polygon")
@@ -1093,26 +1023,26 @@ def create_yolo_annotations(image_names, color_map=None):
 
         # Process polygon regions
         if polygonRegions is not None:
-            for index, region_series in polygonRegions.iterrows():
-                region = region_series.to_dict()
-                region['type'] = 'polygon'
-                # Decode points string
+            for index, region in polygonRegions.iterrows():
+                class_name = region.get("class", "unknown")
                 points_str = region.get("points", "")
-                if points_str:
-                    region['points'] = [[float(c) for c in p.split('-')] for p in points_str.split(';')]
-                else:
-                    region['points'] = []
-                
-                clamped_region = clamp_region_coordinates(region)
-                clamped_points = clamped_region.get('points', [])
-                
+
+                # Split points string into individual points
+                points_list = points_str.split(";")
+
+                # Convert points to list of tuples
+                points = []
+                for point_str in points_list:
+                    x, y = map(float, point_str.split("-"))
+                    points.append((x, y))
+
                 # Convert points to normalized YOLO format
-                if clamped_points:
-                    class_name = clamped_region.get("class", "unknown")
-                    xmin = min(p[0] for p in clamped_points)
-                    ymin = min(p[1] for p in clamped_points)
-                    xmax = max(p[0] for p in clamped_points)
-                    ymax = max(p[1] for p in clamped_points)
+                if points:
+                    xmin = min(point[0] for point in points)
+                    ymin = min(point[1] for point in points)
+                    xmax = max(point[0] for point in points)
+                    ymax = max(point[1] for point in points)
+
                     # YOLO format: class_index x_center y_center width height (all normalized)
                     annotations.append(
                         f"{class_name} {(xmin + xmax) / 2:.6f} {(ymin + ymax) / 2:.6f} {xmax - xmin:.6f} {ymax - ymin:.6f}"
@@ -1120,13 +1050,33 @@ def create_yolo_annotations(image_names, color_map=None):
 
         # Process box regions
         if boxRegions is not None:
-            for index, region_series in boxRegions.iterrows():
-                region = region_series.to_dict()
-                region['type'] = 'box'
-                clamped_region = clamp_region_coordinates(region)
-                
-                class_name = clamped_region.get("class", "unknown")
-                x, y, w, h = clamped_region['x'], clamped_region['y'], clamped_region['w'], clamped_region['h']
+            for index, region in boxRegions.iterrows():
+                class_name = region.get("class", "unknown")
+                try:
+                    x = (
+                        float(region["x"][1:-1])
+                        if isinstance(region["x"], str)
+                        else float(region["x"][0])
+                    )
+                    y = (
+                        float(region["y"][1:-1])
+                        if isinstance(region["y"], str)
+                        else float(region["y"][0])
+                    )
+                    w = (
+                        float(region["w"][1:-1])
+                        if isinstance(region["w"], str)
+                        else float(region["w"][0])
+                    )
+                    h = (
+                        float(region["h"][1:-1])
+                        if isinstance(region["h"], str)
+                        else float(region["h"][0])
+                    )
+                except (ValueError, TypeError) as e:
+                    raise ValueError(
+                        f"Invalid format in region dimensions: {region}, Error: {e}"
+                    )
                 # YOLO format: class_index x_center y_center width height (all normalized)
                 annotations.append(
                     f"{class_name} {x + w / 2:.6f} {y + h / 2:.6f} {w:.6f} {h:.6f}"
@@ -1134,18 +1084,44 @@ def create_yolo_annotations(image_names, color_map=None):
 
         # Process circle/ellipse regions
         if circleRegions is not None:
-            for index, region_series in circleRegions.iterrows():
-                region = region_series.to_dict()
-                region['type'] = 'circle'
-                clamped_region = clamp_region_coordinates(region)
-                
-                class_name = clamped_region.get("class", "unknown")
-                rx, ry, rw, rh = clamped_region['rx'], clamped_region['ry'], clamped_region['rw'], clamped_region['rh']
+            for index, region in circleRegions.iterrows():
+                class_name = region.get("class", "unknown")
+                try:
+                    rx = (
+                        float(region["rx"][1:-1]) * width
+                        if isinstance(region["rx"], str)
+                        else float(region["rx"][0])
+                    )
+                    ry = (
+                        float(region["ry"][1:-1]) * height
+                        if isinstance(region["ry"], str)
+                        else float(region["ry"][0])
+                    )
+                    rw = (
+                        float(region["rw"][1:-1]) * width
+                        if isinstance(region["rw"], str)
+                        else float(region["rw"][0])
+                    )
+                    rh = (
+                        float(region["rh"][1:-1]) * height
+                        if isinstance(region["rh"], str)
+                        else float(region["rh"][0])
+                    )
+                except (ValueError, TypeError) as e:
+                    raise ValueError(
+                        f"Invalid format in region dimensions: {region}, Error: {e}"
+                    )
 
-                # Treat circle/ellipse as a bounding box for YOLO format (YOLO does not directly support ellipses)
-                annotations.append(
-                    f"{class_name} {rx + rw / 2:.6f} {ry + rh / 2:.6f} {rw:.6f} {rh:.6f}"
-                )
+                # For YOLO, if width and height are equal, it represents a circle
+                if rw == rh:
+                    annotations.append(
+                        f"{class_name} {rx:.6f} {ry:.6f} {rw:.6f} {rw:.6f}"
+                    )  # Treat as circle
+                else:
+                    # Treat as ellipse (YOLO does not directly support ellipse, so treat as box)
+                    annotations.append(
+                        f"{class_name} {rx + rw / 2:.6f} {ry + rh / 2:.6f} {rw:.6f} {rh:.6f}"
+                    )
 
         # Append annotations for current image to all_annotations list
         all_annotations.extend(annotations)
