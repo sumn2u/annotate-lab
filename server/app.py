@@ -544,7 +544,7 @@ def download_image_with_annotations():
                     )
 
                 response = requests.get(image_url)
-                image = Image.open(BytesIO(response.content))
+                image = Image.open(BytesIO(response.content)).convert("RGBA")
                 draw = ImageDraw.Draw(image)
 
                 for region in image_info.get("regions", []):
@@ -852,7 +852,7 @@ def download_image_mask():
 
                     response = requests.get(image_url)
                     response.raise_for_status()
-                    image = Image.open(BytesIO(response.content))
+                    image = Image.open(BytesIO(response.content)).convert("RGBA")
                     width, height = image.size
                     mask = Image.new(
                         "RGB", (width, height), app.config["MASK_BACKGROUND_COLOR"]
