@@ -9,3 +9,4 @@ pillow
 requests
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 black
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
