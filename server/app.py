@@ -831,24 +831,59 @@ def extract_numeric_value(value):
     if isinstance(value, (int, float)):
         return float(value)
     
-    if isinstance(value, str):
-        # Remove brackets if present
-        value = value.strip()
-        if value.startswith('[') and value.endswith(']'):
-            value = value[1:-1]
-        try:
-            return float(value)
-        except ValueError:
-            return 0.0
+    if isinstance(value, list):
+        if len(value) > 0:
+            try:
+                return float(value[0])
+            except (ValueError, TypeError):
+                pass
+        return 0.0
     
-    if isinstance(value, list) and len(value) > 0:
-        try:
-            return float(value[0])
-        except (ValueError, TypeError):
+    if isinstance(value, str):
+        value = value.strip()
+        
+        if not value:
             return 0.0
+        
+
+        if value.startswith('array(') and value.endswith(')'):
+            value = value[6:-1].strip()
+        
+        if (value.startswith('[') and value.endswith(']')) or \
+           (value.startswith('(') and value.endswith(')')):
+            value = value[1:-1].strip()
+        
+        # Extract all numbers from the string
+        # This pattern matches integers, decimals, and scientific notation
+        numbers = re.findall(r'-?\d+\.?\d*(?:[eE][-+]?\d+)?', value)
+        
+        if numbers:
+            try:
+                return float(numbers[0])
+            except ValueError:
+                pass
     
     return 0.0
 
+def calculate_polygon_area(points):
+    """
+    Calculate the area of a polygon using the shoelace formula.
+    Points should be in absolute coordinates as a flat list [x1, y1, x2, y2, ...].
+    """
+    if len(points) < 6:  # Need at least 3 points (6 coordinates)
+        return 0.0
+    
+    area = 0
+    n = len(points) // 2  # Number of points
+    
+    for i in range(n):
+        x1 = points[2 * i]
+        y1 = points[2 * i + 1]
+        x2 = points[2 * ((i + 1) % n)]
+        y2 = points[2 * ((i + 1) % n) + 1]
+        area += x1 * y2 - x2 * y1
+    
+    return abs(area) / 2.0
 
 @app.route("/download_coco_annotations", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])
@@ -936,18 +971,21 @@ def create_coco_annotations(image_names):
     next_category_id = 1
     next_annotation_id = 1
     
+    # Build a lookup from filename (lowercased) to full image path once
+    print(f"Building image path lookup from {path}...")
+    image_path_map = {}
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            if f.lower().endswith((".png", ".jpg", ".jpeg")):
+                # Store with lowercase key for case-insensitive matching
+                image_path_map[f.lower()] = os.path.join(root, f)
+    
+    print(f"Found {len(image_path_map)} images in directory")
+    
     # Process each image
     for image_name in image_names:
-        # Find image path
-        image_path = None
-        for root, dirs, files in os.walk(path):
-            for f in files:
-                if (f.lower().endswith((".png", ".jpg", ".jpeg")) and 
-                    f.lower() == image_name.lower()):
-                    image_path = os.path.join(root, f)
-                    break
-            if image_path:
-                break
+        # Find image path using the precomputed map
+        image_path = image_path_map.get(image_name.lower())
         
         if not image_path:
             raise ValueError(f"Image '{image_name}' not found in the upload directory.")
@@ -1026,10 +1064,10 @@ def create_coco_annotations(image_names):
                     "image_id": image_id,
                     "category_id": category_map[class_name],
                     "bbox": [round(abs_x, 2), round(abs_y, 2), round(abs_w, 2), round(abs_h, 2)],
-                    "area": round(abs_w * abs_h, 2),
+                    "area": round(abs_w * abs_h, 2),  # Area for box is width * height
                     "segmentation": [],
                     "iscrowd": 0,
-                    "region_id": region.get("region-id", f"box_{next_annotation_id}")  # Optional: keep original region ID
+                    "region_id": region.get("region-id", f"box_{next_annotation_id}")
                 })
                 next_annotation_id += 1
         
@@ -1056,6 +1094,7 @@ def create_coco_annotations(image_names):
                 if points_str:
                     points_list = points_str.split(";")
                     segmentation = []
+                    absolute_points = []  # Store for area calculation
                     x_coords = []
                     y_coords = []
                     
@@ -1067,11 +1106,12 @@ def create_coco_annotations(image_names):
                             abs_y = y * height
                             
                             segmentation.extend([round(abs_x, 2), round(abs_y, 2)])
+                            absolute_points.extend([abs_x, abs_y])  # For shoelace formula
                             x_coords.append(abs_x)
                             y_coords.append(abs_y)
                     
                     if segmentation:
-                        # Calculate bbox from segmentation
+                        # Calculate bbox from segmentation (for COCO compatibility)
                         x_min = min(x_coords)
                         y_min = min(y_coords)
                         x_max = max(x_coords)
@@ -1079,13 +1119,17 @@ def create_coco_annotations(image_names):
                         bbox_width = x_max - x_min
                         bbox_height = y_max - y_min
                         
+                        # Calculate actual polygon area using shoelace formula
+                        polygon_area = calculate_polygon_area(absolute_points)
+                        
                         # Add annotation
                         coco_data["annotations"].append({
                             "id": next_annotation_id,
                             "image_id": image_id,
                             "category_id": category_map[class_name],
-                            "bbox": [round(x_min, 2), round(y_min, 2), round(bbox_width, 2), round(bbox_height, 2)],
-                            "area": round(bbox_width * bbox_height, 2),
+                            "bbox": [round(x_min, 2), round(y_min, 2), 
+                                    round(bbox_width, 2), round(bbox_height, 2)],
+                            "area": round(polygon_area, 2),  # Use actual polygon area
                             "segmentation": [segmentation],
                             "iscrowd": 0,
                             "region_id": region.get("region-id", f"poly_{next_annotation_id}")
@@ -1131,13 +1175,17 @@ def create_coco_annotations(image_names):
                 abs_rw = rw * width
                 abs_rh = rh * height
                 
-                # For circles/ellipses, use bbox
+                # Calculate ellipse area: π * (rw/2) * (rh/2) = π * rw * rh / 4
+                ellipse_area = math.pi * abs_rw * abs_rh / 4.0
+                
+                # For circles/ellipses, use bbox but area should be ellipse area
                 coco_data["annotations"].append({
                     "id": next_annotation_id,
                     "image_id": image_id,
                     "category_id": category_map[class_name],
-                    "bbox": [round(abs_rx, 2), round(abs_ry, 2), round(abs_rw, 2), round(abs_rh, 2)],
-                    "area": round(abs_rw * abs_rh, 2),
+                    "bbox": [round(abs_rx, 2), round(abs_ry, 2), 
+                            round(abs_rw, 2), round(abs_rh, 2)],
+                    "area": round(ellipse_area, 2),  # Use actual ellipse area
                     "segmentation": [],
                     "iscrowd": 0,
                     "region_id": region.get("region-id", f"circle_{next_annotation_id}")
@@ -1157,6 +1205,7 @@ def create_coco_annotations(image_names):
           f"{len(coco_data['categories'])} categories")
     
     return coco_data
+
 
 @app.route("/download_image_mask", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])
