@@ -13,6 +13,7 @@ import tempfile
 import shutil
 import zipfile
 import math
+from datetime import datetime
 from sam_model import SamModel
 from utils import load_image_from_url, format_regions_for_frontend
 
@@ -802,6 +803,360 @@ def get_image_annotations():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
+def get_class_labels_from_settings():
+    """Extract class labels from settings.json"""
+    try:
+        with open(JSON_FILE, "r") as f:
+            settings = json.load(f)
+            labels = settings.get('configuration', {}).get('labels', [])
+            # Create a mapping from id to description
+            class_map = {}
+            for label in labels:
+                if isinstance(label, dict):
+                    label_id = str(label.get('id', ''))
+                    description = label.get('description', '')
+                    if label_id and description:
+                        class_map[label_id] = description
+            return class_map
+    except Exception as e:
+        print(f"Error reading settings: {e}")
+        return {}
+
+
+def extract_numeric_value(value):
+    """Extract numeric value from various formats"""
+    if value is None:
+        return 0.0
+    
+    if isinstance(value, (int, float)):
+        return float(value)
+    
+    if isinstance(value, str):
+        # Remove brackets if present
+        value = value.strip()
+        if value.startswith('[') and value.endswith(']'):
+            value = value[1:-1]
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0
+    
+    if isinstance(value, list) and len(value) > 0:
+        try:
+            return float(value[0])
+        except (ValueError, TypeError):
+            return 0.0
+    
+    return 0.0
+
+
+@app.route("/download_coco_annotations", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
+def download_coco_annotations():
+    data = request.get_json()
+    image_names = data.get("image_names", [])
+
+    if not image_names:
+        return (
+            jsonify({"error": "Invalid JSON data format: 'image_names' not found."}),
+            400,
+        )
+
+    temp_dir = tempfile.mkdtemp()
+    zip_filename = "coco_annotations.zip"
+    zip_file_path = os.path.join(temp_dir, zip_filename)
+
+    try:
+        # Create COCO format annotations for all images
+        coco_data = create_coco_annotations(image_names)
+        
+        # Create a temporary JSON file with COCO annotations
+        json_filename = "coco_annotations.json"
+        json_path = os.path.join(temp_dir, json_filename)
+        
+        with open(json_path, "w") as f:
+            json.dump(coco_data, f, indent=2)
+        
+        # Create zip file with the annotations
+        with zipfile.ZipFile(zip_file_path, "w") as zipf:
+            zipf.write(json_path, arcname=json_filename)
+
+        return send_file(
+            zip_file_path,
+            mimetype="application/zip",
+            as_attachment=True,
+            download_name=zip_filename,
+        )
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        try:
+            if temp_dir and os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+        except Exception as e:
+            print(f"Error cleaning up temporary directory: {e}")
+
+
+def create_coco_annotations(image_names):
+    """
+    Create COCO format annotations for the given image names.
+    """
+    base_url = request.host_url + "uploads/"
+    
+    # Get class labels from settings
+    class_labels = get_class_labels_from_settings()
+    print(f"Class labels from settings: {class_labels}")  # Debug print
+    
+    # Initialize COCO data structure
+    coco_data = {
+        "info": {
+            "description": "COCO Format Annotations",
+            "url": request.host_url,
+            "version": "1.0",
+            "year": datetime.now().year,
+            "contributor": "Annotate Lab",
+            "date_created": datetime.now().isoformat()
+        },
+        "licenses": [
+            {
+                "id": 1,
+                "name": "Unknown",
+                "url": ""
+            }
+        ],
+        "images": [],
+        "annotations": [],
+        "categories": []
+    }
+    
+    # Track category IDs and annotation IDs
+    category_map = {}  # category_name -> category_id
+    next_category_id = 1
+    next_annotation_id = 1
+    
+    # Process each image
+    for image_name in image_names:
+        # Find image path
+        image_path = None
+        for root, dirs, files in os.walk(path):
+            for f in files:
+                if (f.lower().endswith((".png", ".jpg", ".jpeg")) and 
+                    f.lower() == image_name.lower()):
+                    image_path = os.path.join(root, f)
+                    break
+            if image_path:
+                break
+        
+        if not image_path:
+            raise ValueError(f"Image '{image_name}' not found in the upload directory.")
+        
+        # Get image dimensions
+        with Image.open(image_path) as img:
+            width, height = img.size
+        
+        # Add image info to COCO
+        image_id = len(coco_data["images"]) + 1
+        image_name_without_ext = os.path.splitext(image_name)[0]
+        coco_data["images"].append({
+            "id": image_id,
+            "file_name": image_name,
+            "width": width,
+            "height": height,
+            "license": 1,
+            "date_captured": datetime.now().isoformat(),
+            "original_name": image_name_without_ext  # Optional: add original name without extension
+        })
+        
+        # Fetch annotations for this image
+        image_url = base_url + image_name
+        polygonRegions = dbModule.findInfoInPolygonDb(
+            dbModule.imagePolygonRegions, "image-src", image_url
+        )
+        boxRegions = dbModule.findInfoInBoxDb(
+            dbModule.imageBoxRegions, "image-src", image_url
+        )
+        circleRegions = dbModule.findInfoInCircleDb(
+            dbModule.imageCircleRegions, "image-src", image_url
+        )
+        
+        # Process box regions
+        if boxRegions is not None and not boxRegions.empty:
+            for index, region in boxRegions.iterrows():
+                # Get class ID and convert to description
+                class_id = str(region.get("class", "unknown"))
+                class_name = class_labels.get(class_id, class_id)  # Use description if available
+                
+                # Get or create category
+                if class_name not in category_map:
+                    category_map[class_name] = next_category_id
+                    coco_data["categories"].append({
+                        "id": next_category_id,
+                        "name": class_name,
+                        "supercategory": "none"
+                    })
+                    next_category_id += 1
+                
+                # Parse bbox coordinates
+                try:
+                    x_val = region.get("x")
+                    y_val = region.get("y")
+                    w_val = region.get("w")
+                    h_val = region.get("h")
+                    
+                    x = extract_numeric_value(x_val)
+                    y = extract_numeric_value(y_val)
+                    w = extract_numeric_value(w_val)
+                    h = extract_numeric_value(h_val)
+                    
+                except (ValueError, TypeError) as e:
+                    print(f"Error parsing region: {region}")
+                    continue
+                
+                # Convert to absolute coordinates (assuming normalized values between 0 and 1)
+                abs_x = x * width
+                abs_y = y * height
+                abs_w = w * width
+                abs_h = h * height
+                
+                # Add annotation
+                coco_data["annotations"].append({
+                    "id": next_annotation_id,
+                    "image_id": image_id,
+                    "category_id": category_map[class_name],
+                    "bbox": [round(abs_x, 2), round(abs_y, 2), round(abs_w, 2), round(abs_h, 2)],
+                    "area": round(abs_w * abs_h, 2),
+                    "segmentation": [],
+                    "iscrowd": 0,
+                    "region_id": region.get("region-id", f"box_{next_annotation_id}")  # Optional: keep original region ID
+                })
+                next_annotation_id += 1
+        
+        # Process polygon regions (segmentation)
+        if polygonRegions is not None and not polygonRegions.empty:
+            for index, region in polygonRegions.iterrows():
+                # Get class ID and convert to description
+                class_id = str(region.get("class", "unknown"))
+                class_name = class_labels.get(class_id, class_id)
+                
+                points_str = region.get("points", "")
+                
+                # Get or create category
+                if class_name not in category_map:
+                    category_map[class_name] = next_category_id
+                    coco_data["categories"].append({
+                        "id": next_category_id,
+                        "name": class_name,
+                        "supercategory": "none"
+                    })
+                    next_category_id += 1
+                
+                # Parse points
+                if points_str:
+                    points_list = points_str.split(";")
+                    segmentation = []
+                    x_coords = []
+                    y_coords = []
+                    
+                    for point_str in points_list:
+                        if point_str and "-" in point_str:
+                            x, y = map(float, point_str.split("-"))
+                            # Convert normalized coordinates to absolute
+                            abs_x = x * width
+                            abs_y = y * height
+                            
+                            segmentation.extend([round(abs_x, 2), round(abs_y, 2)])
+                            x_coords.append(abs_x)
+                            y_coords.append(abs_y)
+                    
+                    if segmentation:
+                        # Calculate bbox from segmentation
+                        x_min = min(x_coords)
+                        y_min = min(y_coords)
+                        x_max = max(x_coords)
+                        y_max = max(y_coords)
+                        bbox_width = x_max - x_min
+                        bbox_height = y_max - y_min
+                        
+                        # Add annotation
+                        coco_data["annotations"].append({
+                            "id": next_annotation_id,
+                            "image_id": image_id,
+                            "category_id": category_map[class_name],
+                            "bbox": [round(x_min, 2), round(y_min, 2), round(bbox_width, 2), round(bbox_height, 2)],
+                            "area": round(bbox_width * bbox_height, 2),
+                            "segmentation": [segmentation],
+                            "iscrowd": 0,
+                            "region_id": region.get("region-id", f"poly_{next_annotation_id}")
+                        })
+                        next_annotation_id += 1
+        
+        # Process circle/ellipse regions
+        if circleRegions is not None and not circleRegions.empty:
+            for index, region in circleRegions.iterrows():
+                # Get class ID and convert to description
+                class_id = str(region.get("class", "unknown"))
+                class_name = class_labels.get(class_id, class_id)
+                
+                # Get or create category
+                if class_name not in category_map:
+                    category_map[class_name] = next_category_id
+                    coco_data["categories"].append({
+                        "id": next_category_id,
+                        "name": class_name,
+                        "supercategory": "none"
+                    })
+                    next_category_id += 1
+                
+                # Parse circle/ellipse coordinates
+                try:
+                    rx_val = region.get("rx")
+                    ry_val = region.get("ry")
+                    rw_val = region.get("rw")
+                    rh_val = region.get("rh")
+                    
+                    rx = extract_numeric_value(rx_val)
+                    ry = extract_numeric_value(ry_val)
+                    rw = extract_numeric_value(rw_val)
+                    rh = extract_numeric_value(rh_val)
+                    
+                except (ValueError, TypeError) as e:
+                    print(f"Error parsing circle region: {region}")
+                    continue
+                
+                # Convert to absolute coordinates
+                abs_rx = rx * width
+                abs_ry = ry * height
+                abs_rw = rw * width
+                abs_rh = rh * height
+                
+                # For circles/ellipses, use bbox
+                coco_data["annotations"].append({
+                    "id": next_annotation_id,
+                    "image_id": image_id,
+                    "category_id": category_map[class_name],
+                    "bbox": [round(abs_rx, 2), round(abs_ry, 2), round(abs_rw, 2), round(abs_rh, 2)],
+                    "area": round(abs_rw * abs_rh, 2),
+                    "segmentation": [],
+                    "iscrowd": 0,
+                    "region_id": region.get("region-id", f"circle_{next_annotation_id}")
+                })
+                next_annotation_id += 1
+    
+    # If no categories were added, add a default one
+    if not coco_data["categories"]:
+        coco_data["categories"].append({
+            "id": 1,
+            "name": "unknown",
+            "supercategory": "none"
+        })
+    
+    print(f"Created COCO annotations with {len(coco_data['images'])} images, "
+          f"{len(coco_data['annotations'])} annotations, "
+          f"{len(coco_data['categories'])} categories")
+    
+    return coco_data
 
 @app.route("/download_image_mask", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])

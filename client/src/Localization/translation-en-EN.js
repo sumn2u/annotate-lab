@@ -76,6 +76,7 @@ const translationEnEN = {
   here: "here",
   more_info: "More information can be found in our documentation",
   yolo_annotations: "Annotations Labels",
+  coco_annotations: "COCO Annotations",
   download_checkbox_select: "Select this image for download",
   undo_last_action: "Undo last action",
   delete_regions: "Delete regions",
