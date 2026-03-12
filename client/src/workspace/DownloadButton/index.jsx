@@ -63,6 +63,9 @@ const DownloadButton = ({
       case "yolo-annotations":
         url = "download_yolo_annotations"
         break
+      case "coco-annotations":
+        url = "download_coco_annotations"
+        break
       default:
         url = "imagesName"
     }
@@ -79,6 +82,8 @@ const DownloadButton = ({
           link.setAttribute("download", `configuration`)
         } else if (format === "yolo-annotations") {
           link.setAttribute("download", `yolo_annotations`)
+        } else if (format === "coco-annotations") {
+          link.setAttribute("download", `coco_annotations`)
         } else if (format === "masked-image") {
           link.setAttribute("download", "image_masks")
         } else if (format == "annotated-image") {
@@ -132,6 +137,13 @@ const DownloadButton = ({
         >
           <LabelIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
           {t("yolo_annotations")}
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleDownload("coco-annotations")}
+          sx={{ fontSize: "0.775rem", padding: "4px 8px" }}
+        >
+          <LabelIcon style={{ marginRight: 8, fontSize: "1.05rem" }} />
+          {t("coco_annotations")}
         </MenuItem>
         <MenuItem
           onClick={() => handleDownload("masked-image")}

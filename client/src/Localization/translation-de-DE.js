@@ -77,6 +77,7 @@ const translationDeDE = {
   here: "hier",
   more_info: "Weitere Informationen finden Sie in unserer Dokumentation",
   yolo_annotations: "Anmerkungsetiketten",
+  coco_annotations: "COCO Etiketten",
   download_checkbox_select: "Wähle dieses Bild für den Download aus",
   undo_last_action: "Letzte Aktion rückgängig machen",
   delete_regions: "Regionen löschen",
