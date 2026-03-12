@@ -13,6 +13,7 @@ import tempfile
 import shutil
 import zipfile
 import math
+import re
 from datetime import datetime
 from sam_model import SamModel
 from utils import load_image_from_url, format_regions_for_frontend
@@ -823,10 +824,19 @@ def get_class_labels_from_settings():
         return {}
 
 
-def extract_numeric_value(value):
-    """Extract numeric value from various formats"""
+def extract_numeric_value(value, strict=True):
+    """
+    Extract numeric value from various formats.
+    
+    Args:
+        value: The value to extract a number from
+        strict: If True, returns None on failure; if False, returns 0.0
+    
+    Returns:
+        float or None (if strict=True and parsing fails)
+    """
     if value is None:
-        return 0.0
+        return None if strict else 0.0
     
     if isinstance(value, (int, float)):
         return float(value)
@@ -837,24 +847,26 @@ def extract_numeric_value(value):
                 return float(value[0])
             except (ValueError, TypeError):
                 pass
-        return 0.0
+        return None if strict else 0.0
     
     if isinstance(value, str):
+        # Remove any whitespace
         value = value.strip()
         
+        # Handle empty string
         if not value:
-            return 0.0
+            return None if strict else 0.0
         
-
+        # Remove common array wrappers
         if value.startswith('array(') and value.endswith(')'):
             value = value[6:-1].strip()
         
+        # Remove outer brackets if present
         if (value.startswith('[') and value.endswith(']')) or \
            (value.startswith('(') and value.endswith(')')):
             value = value[1:-1].strip()
         
         # Extract all numbers from the string
-        # This pattern matches integers, decimals, and scientific notation
         numbers = re.findall(r'-?\d+\.?\d*(?:[eE][-+]?\d+)?', value)
         
         if numbers:
@@ -863,7 +875,8 @@ def extract_numeric_value(value):
             except ValueError:
                 pass
     
-    return 0.0
+    return None if strict else 0.0
+
 
 def calculate_polygon_area(points):
     """
@@ -942,7 +955,7 @@ def create_coco_annotations(image_names):
     
     # Get class labels from settings
     class_labels = get_class_labels_from_settings()
-    print(f"Class labels from settings: {class_labels}")  # Debug print
+    print(f"Class labels from settings: {class_labels}")
     
     # Initialize COCO data structure
     coco_data = {
@@ -967,7 +980,7 @@ def create_coco_annotations(image_names):
     }
     
     # Track category IDs and annotation IDs
-    category_map = {}  # category_name -> category_id
+    category_map = {}
     next_category_id = 1
     next_annotation_id = 1
     
@@ -977,7 +990,6 @@ def create_coco_annotations(image_names):
     for root, dirs, files in os.walk(path):
         for f in files:
             if f.lower().endswith((".png", ".jpg", ".jpeg")):
-                # Store with lowercase key for case-insensitive matching
                 image_path_map[f.lower()] = os.path.join(root, f)
     
     print(f"Found {len(image_path_map)} images in directory")
@@ -1004,7 +1016,7 @@ def create_coco_annotations(image_names):
             "height": height,
             "license": 1,
             "date_captured": datetime.now().isoformat(),
-            "original_name": image_name_without_ext  # Optional: add original name without extension
+            "original_name": image_name_without_ext
         })
         
         # Fetch annotations for this image
@@ -1024,7 +1036,33 @@ def create_coco_annotations(image_names):
             for index, region in boxRegions.iterrows():
                 # Get class ID and convert to description
                 class_id = str(region.get("class", "unknown"))
-                class_name = class_labels.get(class_id, class_id)  # Use description if available
+                class_name = class_labels.get(class_id, class_id)
+                
+                # Parse bbox coordinates with strict=True to detect failures
+                x_val = region.get("x")
+                y_val = region.get("y")
+                w_val = region.get("w")
+                h_val = region.get("h")
+                
+                x = extract_numeric_value(x_val, strict=True)
+                y = extract_numeric_value(y_val, strict=True)
+                w = extract_numeric_value(w_val, strict=True)
+                h = extract_numeric_value(h_val, strict=True)
+                
+                # Validate parsed values
+                if any(v is None for v in [x, y, w, h]):
+                    print(f"Skipping box region with invalid coordinates: {region}")
+                    continue
+                
+                # Validate dimensions (must be positive)
+                if w <= 0 or h <= 0:
+                    print(f"Skipping box region with zero/negative dimensions: w={w}, h={h}")
+                    continue
+                
+                # Validate coordinates are within reasonable range (0-1 for normalized)
+                if not (0 <= x <= 1 and 0 <= y <= 1):
+                    print(f"Warning: Box coordinates outside normalized range: x={x}, y={y}")
+                    # Still continue as they might be absolute coordinates
                 
                 # Get or create category
                 if class_name not in category_map:
@@ -1036,23 +1074,7 @@ def create_coco_annotations(image_names):
                     })
                     next_category_id += 1
                 
-                # Parse bbox coordinates
-                try:
-                    x_val = region.get("x")
-                    y_val = region.get("y")
-                    w_val = region.get("w")
-                    h_val = region.get("h")
-                    
-                    x = extract_numeric_value(x_val)
-                    y = extract_numeric_value(y_val)
-                    w = extract_numeric_value(w_val)
-                    h = extract_numeric_value(h_val)
-                    
-                except (ValueError, TypeError) as e:
-                    print(f"Error parsing region: {region}")
-                    continue
-                
-                # Convert to absolute coordinates (assuming normalized values between 0 and 1)
+                # Convert to absolute coordinates
                 abs_x = x * width
                 abs_y = y * height
                 abs_w = w * width
@@ -1064,7 +1086,7 @@ def create_coco_annotations(image_names):
                     "image_id": image_id,
                     "category_id": category_map[class_name],
                     "bbox": [round(abs_x, 2), round(abs_y, 2), round(abs_w, 2), round(abs_h, 2)],
-                    "area": round(abs_w * abs_h, 2),  # Area for box is width * height
+                    "area": round(abs_w * abs_h, 2),
                     "segmentation": [],
                     "iscrowd": 0,
                     "region_id": region.get("region-id", f"box_{next_annotation_id}")
@@ -1080,6 +1102,44 @@ def create_coco_annotations(image_names):
                 
                 points_str = region.get("points", "")
                 
+                # Skip if no points
+                if not points_str:
+                    print(f"Skipping polygon region with no points: {region}")
+                    continue
+                
+                # Parse points
+                points_list = points_str.split(";")
+                segmentation = []
+                absolute_points = []
+                x_coords = []
+                y_coords = []
+                valid_points = True
+                
+                for point_str in points_list:
+                    if point_str and "-" in point_str:
+                        try:
+                            x, y = map(float, point_str.split("-"))
+                            # Validate coordinates
+                            if not (0 <= x <= 1 and 0 <= y <= 1):
+                                print(f"Warning: Point coordinates outside normalized range: x={x}, y={y}")
+                            
+                            # Convert normalized coordinates to absolute
+                            abs_x = x * width
+                            abs_y = y * height
+                            
+                            segmentation.extend([round(abs_x, 2), round(abs_y, 2)])
+                            absolute_points.extend([abs_x, abs_y])
+                            x_coords.append(abs_x)
+                            y_coords.append(abs_y)
+                        except ValueError:
+                            print(f"Invalid point format: {point_str}")
+                            valid_points = False
+                            break
+                
+                if not valid_points or len(segmentation) < 6:  # Need at least 3 points
+                    print(f"Skipping polygon with invalid points: {region}")
+                    continue
+                
                 # Get or create category
                 if class_name not in category_map:
                     category_map[class_name] = next_category_id
@@ -1090,51 +1150,35 @@ def create_coco_annotations(image_names):
                     })
                     next_category_id += 1
                 
-                # Parse points
-                if points_str:
-                    points_list = points_str.split(";")
-                    segmentation = []
-                    absolute_points = []  # Store for area calculation
-                    x_coords = []
-                    y_coords = []
-                    
-                    for point_str in points_list:
-                        if point_str and "-" in point_str:
-                            x, y = map(float, point_str.split("-"))
-                            # Convert normalized coordinates to absolute
-                            abs_x = x * width
-                            abs_y = y * height
-                            
-                            segmentation.extend([round(abs_x, 2), round(abs_y, 2)])
-                            absolute_points.extend([abs_x, abs_y])  # For shoelace formula
-                            x_coords.append(abs_x)
-                            y_coords.append(abs_y)
-                    
-                    if segmentation:
-                        # Calculate bbox from segmentation (for COCO compatibility)
-                        x_min = min(x_coords)
-                        y_min = min(y_coords)
-                        x_max = max(x_coords)
-                        y_max = max(y_coords)
-                        bbox_width = x_max - x_min
-                        bbox_height = y_max - y_min
-                        
-                        # Calculate actual polygon area using shoelace formula
-                        polygon_area = calculate_polygon_area(absolute_points)
-                        
-                        # Add annotation
-                        coco_data["annotations"].append({
-                            "id": next_annotation_id,
-                            "image_id": image_id,
-                            "category_id": category_map[class_name],
-                            "bbox": [round(x_min, 2), round(y_min, 2), 
-                                    round(bbox_width, 2), round(bbox_height, 2)],
-                            "area": round(polygon_area, 2),  # Use actual polygon area
-                            "segmentation": [segmentation],
-                            "iscrowd": 0,
-                            "region_id": region.get("region-id", f"poly_{next_annotation_id}")
-                        })
-                        next_annotation_id += 1
+                # Calculate bbox from segmentation
+                x_min = min(x_coords)
+                y_min = min(y_coords)
+                x_max = max(x_coords)
+                y_max = max(y_coords)
+                bbox_width = x_max - x_min
+                bbox_height = y_max - y_min
+                
+                # Validate bbox dimensions
+                if bbox_width <= 0 or bbox_height <= 0:
+                    print(f"Skipping polygon with zero/negative bbox dimensions")
+                    continue
+                
+                # Calculate actual polygon area using shoelace formula
+                polygon_area = calculate_polygon_area(absolute_points)
+                
+                # Add annotation
+                coco_data["annotations"].append({
+                    "id": next_annotation_id,
+                    "image_id": image_id,
+                    "category_id": category_map[class_name],
+                    "bbox": [round(x_min, 2), round(y_min, 2), 
+                            round(bbox_width, 2), round(bbox_height, 2)],
+                    "area": round(polygon_area, 2),
+                    "segmentation": [segmentation],
+                    "iscrowd": 0,
+                    "region_id": region.get("region-id", f"poly_{next_annotation_id}")
+                })
+                next_annotation_id += 1
         
         # Process circle/ellipse regions
         if circleRegions is not None and not circleRegions.empty:
@@ -1143,6 +1187,31 @@ def create_coco_annotations(image_names):
                 class_id = str(region.get("class", "unknown"))
                 class_name = class_labels.get(class_id, class_id)
                 
+                # Parse circle/ellipse coordinates with strict=True
+                rx_val = region.get("rx")
+                ry_val = region.get("ry")
+                rw_val = region.get("rw")
+                rh_val = region.get("rh")
+                
+                rx = extract_numeric_value(rx_val, strict=True)
+                ry = extract_numeric_value(ry_val, strict=True)
+                rw = extract_numeric_value(rw_val, strict=True)
+                rh = extract_numeric_value(rh_val, strict=True)
+                
+                # Validate parsed values
+                if any(v is None for v in [rx, ry, rw, rh]):
+                    print(f"Skipping circle region with invalid coordinates: {region}")
+                    continue
+                
+                # Validate dimensions (must be positive)
+                if rw <= 0 or rh <= 0:
+                    print(f"Skipping circle region with zero/negative dimensions: rw={rw}, rh={rh}")
+                    continue
+                
+                # Validate coordinates are within reasonable range
+                if not (0 <= rx <= 1 and 0 <= ry <= 1):
+                    print(f"Warning: Circle coordinates outside normalized range: rx={rx}, ry={ry}")
+                
                 # Get or create category
                 if class_name not in category_map:
                     category_map[class_name] = next_category_id
@@ -1153,39 +1222,23 @@ def create_coco_annotations(image_names):
                     })
                     next_category_id += 1
                 
-                # Parse circle/ellipse coordinates
-                try:
-                    rx_val = region.get("rx")
-                    ry_val = region.get("ry")
-                    rw_val = region.get("rw")
-                    rh_val = region.get("rh")
-                    
-                    rx = extract_numeric_value(rx_val)
-                    ry = extract_numeric_value(ry_val)
-                    rw = extract_numeric_value(rw_val)
-                    rh = extract_numeric_value(rh_val)
-                    
-                except (ValueError, TypeError) as e:
-                    print(f"Error parsing circle region: {region}")
-                    continue
-                
                 # Convert to absolute coordinates
                 abs_rx = rx * width
                 abs_ry = ry * height
                 abs_rw = rw * width
                 abs_rh = rh * height
                 
-                # Calculate ellipse area: π * (rw/2) * (rh/2) = π * rw * rh / 4
+                # Calculate ellipse area
                 ellipse_area = math.pi * abs_rw * abs_rh / 4.0
                 
-                # For circles/ellipses, use bbox but area should be ellipse area
+                # Add annotation
                 coco_data["annotations"].append({
                     "id": next_annotation_id,
                     "image_id": image_id,
                     "category_id": category_map[class_name],
                     "bbox": [round(abs_rx, 2), round(abs_ry, 2), 
                             round(abs_rw, 2), round(abs_rh, 2)],
-                    "area": round(ellipse_area, 2),  # Use actual ellipse area
+                    "area": round(ellipse_area, 2),
                     "segmentation": [],
                     "iscrowd": 0,
                     "region_id": region.get("region-id", f"circle_{next_annotation_id}")
@@ -1205,7 +1258,6 @@ def create_coco_annotations(image_names):
           f"{len(coco_data['categories'])} categories")
     
     return coco_data
-
 
 @app.route("/download_image_mask", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])
