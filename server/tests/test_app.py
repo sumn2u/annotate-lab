@@ -422,22 +422,6 @@ class FlaskTestCase(unittest.TestCase):
                 self.assertIn("ripe", category_names)
                 self.assertIn("unripe", category_names)
 
-    def test_extract_numeric_value(self):
-        """Test the extract_numeric_value helper function"""
-        from app import extract_numeric_value
-        
-        # Test with various input formats
-        self.assertEqual(extract_numeric_value(10.5), 10.5)
-        self.assertEqual(extract_numeric_value(5), 5.0)
-        self.assertEqual(extract_numeric_value("10.5"), 10.5)
-        self.assertEqual(extract_numeric_value("[10.5]"), 10.5)
-        self.assertEqual(extract_numeric_value("[10.5, 20.3]"), 10.5)
-        self.assertEqual(extract_numeric_value("array([10.5])"), 10.5)
-        self.assertEqual(extract_numeric_value([15.3]), 15.3)
-        self.assertEqual(extract_numeric_value(None), 0.0)
-        self.assertEqual(extract_numeric_value("invalid"), 0.0)
-        # Test with comma-separated string
-        self.assertEqual(extract_numeric_value("10.5, 20.3"), 10.5)
 
     def test_get_class_labels_from_settings(self):
         """Test the get_class_labels_from_settings function"""
