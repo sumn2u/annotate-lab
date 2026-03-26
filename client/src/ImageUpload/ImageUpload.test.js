@@ -93,7 +93,7 @@ describe("ImageUpload", () => {
 
     axios.post.mockResolvedValueOnce(mockResponse)
 
-    renderComponent({ onImageUpload: jest.fn() })
+    renderComponent({ onImageUpload: jest.fn(), settingsImages: [] })
     global.URL.createObjectURL = jest.fn()
 
     const file = new File(["dummy content"], "example.jpg", {
@@ -108,7 +108,7 @@ describe("ImageUpload", () => {
         "success",
       ),
     )
-    // await waitFor(() => expect(screen.getByText('Upload successful')).toBeInTheDocument())
+
     const image = screen.getByRole("img")
     const expectedSrc = "http://example.com/image.jpg"
 
@@ -151,7 +151,8 @@ describe("ImageUpload", () => {
     axios.post.mockResolvedValueOnce(mockUploadResponse)
     axios.delete.mockResolvedValueOnce(mockDeleteResponse)
 
-    renderComponent({ onImageUpload: jest.fn() })
+    // ✅ Start with no initial images so only one image exists after upload
+    renderComponent({ onImageUpload: jest.fn(), settingsImages: [] })
     global.URL.createObjectURL = jest.fn()
 
     const file = new File(["dummy content"], "example.jpg", {
@@ -167,6 +168,7 @@ describe("ImageUpload", () => {
         "success",
       ),
     )
+
     const image = screen.getByRole("img")
     const expectedSrc = "http://example.com/image.jpg"
 
