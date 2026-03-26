@@ -8,6 +8,7 @@ const translationEnEN = {
   "menu.images": "Images",
   "error.image": "Could not load image",
   "error.imagevideo": "Missing required prop",
+  "error.upload_in_progress": "Upload already in progress. Please wait",
   "error.server_connection": "Couldn't connect to the server",
   "error.downloading_file": "Error downloading the file",
   "no.history": "No History Yet",
