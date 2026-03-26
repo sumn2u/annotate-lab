@@ -1,5 +1,5 @@
 import io
-from flask import Flask, jsonify, request, url_for, send_from_directory, send_file
+from flask import Flask, jsonify, request, url_for, send_from_directory, send_file, after_this_request, current_app
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
 from io import BytesIO
@@ -500,43 +500,31 @@ def class_distribution():
 @app.route("/download_image_with_annotations", methods=["POST"])
 @cross_origin(origin=client_url, headers=["Content-Type"])
 def download_image_with_annotations():
-    temp_dir = None  # Initialize temporary directory variable
-
     try:
         data = request.get_json()
-        # Ensure the expected structure of the JSON data
         image_names = data.get("image_names", [])
         if not image_names:
-            raise ValueError("Invalid JSON data format: 'image_names' not found.")
+            return jsonify({"error": "Invalid JSON data format: 'image_names' not found."}), 400
 
-        # Prepare to store all processed images
-        img_byte_arrs = []
+        color_map = data.get("colorMap", {})
+        outline_thickness = data.get("outlineThickness", {})
+
+        color_map = {key: tuple(value) for key, value in color_map.items()}
+
+        processed_images = []
 
         for image_name in image_names:
-            json_bytes, download_filename = create_json_response(image_name)
-            # Convert BytesIO to string and return as JSON
+            json_bytes, _ = create_json_response(image_name)
             json_str = json_bytes.getvalue().decode("utf-8")
-
             images = json.loads(json_str).get("configuration", [])
 
-            color_map = data.get("colorMap", {})
-            outlineThickness = data.get("outlineThickness", {})
-
-            # Convert color map values to tuples
-            for key in color_map.keys():
-                color_map[key] = tuple(color_map[key])
-
             for image_info in images:
-                # image_url = image_info.get("regions", [])[0].get("image-src")
                 regions = image_info.get("regions", [])
                 if not regions:
-                    continue  # Skip if no regions are present
+                    continue
 
-                region = regions[
-                    0
-                ]  # Take the first region (assuming there is at least one)
-                image_url = region.get("image-src")
-                # Docker container uses port 5000, so replace 5001 with 5000
+                image_url = regions[0].get("image-src")
+
                 if "127.0.0.1:5001" in image_url:
                     image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
                 elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
@@ -546,122 +534,87 @@ def download_image_with_annotations():
                     )
 
                 response = requests.get(image_url)
+                response.raise_for_status()
                 image = Image.open(BytesIO(response.content))
                 if image.mode != "RGBA":
                     image = image.convert("RGBA")
                 draw = ImageDraw.Draw(image)
+                width, height = image.size
 
                 for region in image_info.get("regions", []):
-                    points = region.get("points", [])
-                    width, height = image.size
                     label = region.get("class")
-                    color = color_map.get(
-                        label, (255, 0, 0)
-                    )  # Default to red if label not in color_map
+                    color = color_map.get(label, (255, 0, 0))
+
                     if "points" in region and region["points"]:
                         points = region["points"]
                         scaled_points = [(x * width, y * height) for x, y in points]
-                        # Draw polygon with thicker outline
                         draw.line(
                             scaled_points + [scaled_points[0]],
                             fill=color,
-                            width=outlineThickness.get("POLYGON", 2),
-                        )  # Change width as desired
+                            width=outline_thickness.get("POLYGON", 2),
+                        )
                     elif all(key in region for key in ("x", "y", "w", "h")):
                         try:
-                            x = (
-                                float(region["x"][1:-1]) * width
-                                if isinstance(region["x"], str)
-                                else float(region["x"][0]) * width
-                            )
-                            y = (
-                                float(region["y"][1:-1]) * height
-                                if isinstance(region["y"], str)
-                                else float(region["y"][0]) * height
-                            )
-                            w = (
-                                float(region["w"][1:-1]) * width
-                                if isinstance(region["w"], str)
-                                else float(region["w"][0]) * width
-                            )
-                            h = (
-                                float(region["h"][1:-1]) * height
-                                if isinstance(region["h"], str)
-                                else float(region["h"][0]) * height
-                            )
+                            x = (float(region["x"][1:-1]) if isinstance(region["x"], str) else float(region["x"][0])) * width
+                            y = (float(region["y"][1:-1]) if isinstance(region["y"], str) else float(region["y"][0])) * height
+                            w = (float(region["w"][1:-1]) if isinstance(region["w"], str) else float(region["w"][0])) * width
+                            h = (float(region["h"][1:-1]) if isinstance(region["h"], str) else float(region["h"][0])) * height
                         except (ValueError, TypeError) as e:
-                            raise ValueError(
-                                f"Invalid format in region dimensions: {region}, Error: {e}"
-                            )
-                        # Draw rectangle with thicker outline
+                            raise ValueError(f"Invalid bounding box: {region}, error: {e}")
                         draw.rectangle(
                             [x, y, x + w, y + h],
                             outline=color,
-                            width=outlineThickness.get("BOUNDING_BOX", 2),
+                            width=outline_thickness.get("BOUNDING_BOX", 2),
                         )
                     elif all(key in region for key in ("rx", "ry", "rw", "rh")):
                         try:
-                            rx = (
-                                float(region["rx"][1:-1]) * width
-                                if isinstance(region["rx"], str)
-                                else float(region["rx"][0]) * width
-                            )
-                            ry = (
-                                float(region["ry"][1:-1]) * height
-                                if isinstance(region["ry"], str)
-                                else float(region["ry"][0]) * height
-                            )
-                            rw = (
-                                float(region["rw"][1:-1]) * width
-                                if isinstance(region["rw"], str)
-                                else float(region["rw"][0]) * width
-                            )
-                            rh = (
-                                float(region["rh"][1:-1]) * height
-                                if isinstance(region["rh"], str)
-                                else float(region["rh"][0]) * height
-                            )
+                            rx = (float(region["rx"][1:-1]) if isinstance(region["rx"], str) else float(region["rx"][0])) * width
+                            ry = (float(region["ry"][1:-1]) if isinstance(region["ry"], str) else float(region["ry"][0])) * height
+                            rw = (float(region["rw"][1:-1]) if isinstance(region["rw"], str) else float(region["rw"][0])) * width
+                            rh = (float(region["rh"][1:-1]) if isinstance(region["rh"], str) else float(region["rh"][0])) * height
                         except (ValueError, TypeError) as e:
-                            raise ValueError(
-                                f"Invalid format in region dimensions: {region}, Error: {e}"
-                            )
-                        # Draw ellipse (circle if rw and rh are equal)
+                            raise ValueError(f"Invalid circle: {region}, error: {e}")
                         draw.ellipse(
                             [rx, ry, rx + rw, ry + rh],
                             outline=color,
-                            width=outlineThickness.get("CIRCLE", 2),
+                            width=outline_thickness.get("CIRCLE", 2),
                         )
 
                 img_byte_arr = BytesIO()
                 image.save(img_byte_arr, format="PNG")
                 img_byte_arr.seek(0)
 
-                img_byte_arrs.append(
-                    {
-                        "data": img_byte_arr,
-                        "download_name": image_info.get("image-name"),
-                    }
-                )
+                original_name = image_info.get("image-name", image_name)
+                base_name = os.path.splitext(original_name)[0]
+                download_name = f"{base_name}_annotated.png"
 
-        # Prepare and return the zip file containing all processed images
+                processed_images.append((img_byte_arr, download_name))
+
+        if not processed_images:
+            return jsonify({"error": "No images with annotations found"}), 404
+
+        if len(processed_images) == 1:
+            img_byte_arr, download_name = processed_images[0]
+            return send_file(
+                img_byte_arr,
+                mimetype="image/png",
+                as_attachment=True,
+                download_name=download_name
+            )
+
         zip_byte_arr = BytesIO()
-        with zipfile.ZipFile(zip_byte_arr, "w") as zip_file:
-            for img_info in img_byte_arrs:
-                zip_file.writestr(
-                    f"{img_info['download_name']}", img_info["data"].read()
-                )
+        with zipfile.ZipFile(zip_byte_arr, "w") as zipf:
+            for img_byte_arr, download_name in processed_images:
+                zipf.writestr(download_name, img_byte_arr.read())
+                # No need to close img_byte_arr here; it will be GC'd
 
         zip_byte_arr.seek(0)
-
-        # Clean up temporary resources after sending the zip file
-        for img_info in img_byte_arrs:
-            img_info["data"].close()
 
         return send_file(
             zip_byte_arr,
             mimetype="application/zip",
             as_attachment=True,
-            download_name="images_with_annotations.zip",
+            download_name="images_with_annotations.zip"
         )
 
     except ValueError as ve:
@@ -676,18 +629,6 @@ def download_image_with_annotations():
         print("General error:", e)
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-    finally:
-        # Clean up temporary directory if it was created
-        if temp_dir and os.path.exists(temp_dir):
-            try:
-                for file in os.listdir(temp_dir):
-                    file_path = os.path.join(temp_dir, file)
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
-                os.rmdir(temp_dir)
-            except Exception as cleanup_error:
-                print(f"Error cleaning up temporary directory: {cleanup_error}")
-
 
 def convert_nan(value):
     if isinstance(value, float) and math.isnan(value):
@@ -911,40 +852,42 @@ def download_coco_annotations():
         )
 
     temp_dir = tempfile.mkdtemp()
-    zip_filename = "coco_annotations.zip"
-    zip_file_path = os.path.join(temp_dir, zip_filename)
 
     try:
-        # Create COCO format annotations for all images
         coco_data = create_coco_annotations(image_names)
-        
-        # Create a temporary JSON file with COCO annotations
-        json_filename = "coco_annotations.json"
+
+        if len(image_names) == 1:
+            json_filename = os.path.splitext(image_names[0])[0] + ".json"
+        else:
+            json_filename = "coco_annotations.json"
+
         json_path = os.path.join(temp_dir, json_filename)
-        
+
         with open(json_path, "w") as f:
             json.dump(coco_data, f, indent=2)
-        
-        # Create zip file with the annotations
-        with zipfile.ZipFile(zip_file_path, "w") as zipf:
-            zipf.write(json_path, arcname=json_filename)
+
+        @after_this_request
+        def cleanup(response):
+            try:
+                if os.path.exists(json_path):
+                    os.remove(json_path)
+                if os.path.exists(temp_dir):
+                    shutil.rmtree(temp_dir)
+            except Exception as e:
+                print(f"Cleanup error: {e}")
+            return response
 
         return send_file(
-            zip_file_path,
-            mimetype="application/zip",
+            json_path,
+            mimetype="application/json",
             as_attachment=True,
-            download_name=zip_filename,
+            download_name=json_filename
         )
+
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    finally:
-        try:
-            if temp_dir and os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)
-        except Exception as e:
-            print(f"Error cleaning up temporary directory: {e}")
 
 
 def create_coco_annotations(image_names):
@@ -1264,159 +1207,157 @@ def create_coco_annotations(image_names):
 def download_image_mask():
     try:
         data = request.get_json()
-        # Ensure the expected structure of the JSON data
         image_names = data.get("image_names", [])
         if not image_names:
-            raise ValueError("Invalid JSON data format: 'image_names' not found.")
+            return jsonify({"error": "Invalid JSON data format: 'image_names' not found."}), 400
 
-        # Initialize a temporary directory to store mask images
+        color_map = data.get("colorMap", {})
+        outline_thickness = data.get("outlineThickness", {})
+
+        color_map = {key: tuple(value) for key, value in color_map.items()}
+
         temp_dir = tempfile.mkdtemp()
+        mask_paths = []  
+        for image_name in image_names:
+            json_bytes, download_filename = create_json_response(image_name)
+            json_str = json_bytes.getvalue().decode("utf-8")
+            data_json = json.loads(json_str)
+            images = data_json.get("configuration", [])
 
-        # Process each image and create masks
-        zip_filename = "image_masks.zip"
-        zip_file_path = os.path.join(temp_dir, zip_filename)
+            for image_info in images:
+                regions = image_info.get("regions", [])
+                if not regions:
+                    continue  # skip images with no annotations
 
-        with zipfile.ZipFile(zip_file_path, "w") as zipf:
-            for image_name in image_names:
-                json_bytes, download_filename = create_json_response(image_name)
-                json_str = json_bytes.getvalue().decode("utf-8")
-                images = json.loads(json_str).get("configuration", [])
+                image_url = regions[0].get("image-src")
+                if "127.0.0.1:5001" in image_url:
+                    image_url = image_url.replace("127.0.0.1:5001", "127.0.0.1:5000")
+                elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
+                    image_url = image_url.replace(
+                        "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                        "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                    )
 
-                color_map = data.get("colorMap", {})
-                outlineThickness = data.get("outlineThickness", {})
+                response = requests.get(image_url)
+                response.raise_for_status()
+                original_image = Image.open(BytesIO(response.content))
+                if original_image.mode != "RGBA":
+                    original_image = original_image.convert("RGBA")
+                width, height = original_image.size
 
-                # Convert color map values to tuples
-                for key in color_map.keys():
-                    color_map[key] = tuple(color_map[key])
-                for image_info in images:
-                    regions = image_info.get("regions", [])
-                    if not regions:
-                        continue  # Skip if no regions are present
+                mask = Image.new(
+                    "RGB",
+                    (width, height),
+                    current_app.config.get("MASK_BACKGROUND_COLOR", (0, 0, 0))
+                )
+                draw = ImageDraw.Draw(mask)
 
-                    region = regions[
-                        0
-                    ]  # Take the first region (assuming there is at least one)
-                    image_url = region.get("image-src")
-                    # Docker container uses port 5000, so replace 5001 with 5000
-                    if "127.0.0.1:5001" in image_url:
-                        image_url = image_url.replace(
-                            "127.0.0.1:5001", "127.0.0.1:5000"
+                for region in image_info.get("regions", []):
+                    label = region.get("class")
+                    color = color_map.get(label, (255, 255, 255))
+
+                    # Points for polygon
+                    if "points" in region and region["points"]:
+                        points = region["points"]
+                        scaled_points = [
+                            (int(x * width), int(y * height)) for x, y in points
+                        ]
+                        draw.polygon(
+                            scaled_points,
+                            outline=color,
+                            fill=color,
+                            width=outline_thickness.get("POLYGON", 2),
                         )
-                    elif "http://rocky-badlands-09400-2bb445641857.herokuapp.com" in image_url:
-                        image_url = image_url.replace(
-                            "http://rocky-badlands-09400-2bb445641857.herokuapp.com",
-                            "https://rocky-badlands-09400-2bb445641857.herokuapp.com",
+                    # Bounding box (x, y, w, h)
+                    elif all(key in region for key in ("x", "y", "w", "h")):
+                        try:
+                            x = (float(region["x"][1:-1]) if isinstance(region["x"], str) else float(region["x"][0])) * width
+                            y = (float(region["y"][1:-1]) if isinstance(region["y"], str) else float(region["y"][0])) * height
+                            w = (float(region["w"][1:-1]) if isinstance(region["w"], str) else float(region["w"][0])) * width
+                            h = (float(region["h"][1:-1]) if isinstance(region["h"], str) else float(region["h"][0])) * height
+                        except (ValueError, TypeError) as e:
+                            raise ValueError(f"Invalid format in bounding box: {region}, error: {e}")
+                        draw.rectangle(
+                            [x, y, x + w, y + h],
+                            outline=color,
+                            fill=color,
+                            width=outline_thickness.get("BOUNDING_BOX", 2),
+                        )
+                    # Circle (rx, ry, rw, rh)
+                    elif all(key in region for key in ("rx", "ry", "rw", "rh")):
+                        try:
+                            rx = (float(region["rx"][1:-1]) if isinstance(region["rx"], str) else float(region["rx"][0])) * width
+                            ry = (float(region["ry"][1:-1]) if isinstance(region["ry"], str) else float(region["ry"][0])) * height
+                            rw = (float(region["rw"][1:-1]) if isinstance(region["rw"], str) else float(region["rw"][0])) * width
+                            rh = (float(region["rh"][1:-1]) if isinstance(region["rh"], str) else float(region["rh"][0])) * height
+                        except (ValueError, TypeError) as e:
+                            raise ValueError(f"Invalid format in circle: {region}, error: {e}")
+                        draw.ellipse(
+                            [rx, ry, rx + rw, ry + rh],
+                            outline=color,
+                            fill=color,
+                            width=outline_thickness.get("CIRCLE", 2),
                         )
 
-                    response = requests.get(image_url)
-                    response.raise_for_status()
-                    image = Image.open(BytesIO(response.content))
-                    if image.mode != "RGBA":
-                        image = image.convert("RGBA")
-                    width, height = image.size
-                    mask = Image.new(
-                        "RGB", (width, height), app.config["MASK_BACKGROUND_COLOR"]
-                    )  # 'RGB' mode for colored masks
-                    draw = ImageDraw.Draw(mask)
+                # Save mask image as PNG with appropriate name
+                base_name = os.path.splitext(image_info.get("image-name", image_name))[0]
+                mask_filename = f"{base_name}_mask.png"
+                mask_path = os.path.join(temp_dir, mask_filename)
+                mask.save(mask_path)
+                mask_paths.append(mask_path)
 
-                    for region in image_info.get("regions", []):
-                        label = region.get("class")
-                        color = color_map.get(
-                            label, (255, 255, 255)
-                        )  # Default to white if label not in color_map
-                        if "points" in region and region["points"]:
-                            points = region["points"]
-                            scaled_points = [
-                                (int(x * width), int(y * height)) for x, y in points
-                            ]
-                            draw.polygon(
-                                scaled_points,
-                                outline=color,
-                                fill=color,
-                                width=outlineThickness.get("POLYGON", 2),
-                            )
-                        elif all(key in region for key in ("x", "y", "w", "h")):
-                            try:
-                                x = (
-                                    float(region["x"][1:-1]) * width
-                                    if isinstance(region["x"], str)
-                                    else float(region["x"][0]) * width
-                                )
-                                y = (
-                                    float(region["y"][1:-1]) * height
-                                    if isinstance(region["y"], str)
-                                    else float(region["y"][0]) * height
-                                )
-                                w = (
-                                    float(region["w"][1:-1]) * width
-                                    if isinstance(region["w"], str)
-                                    else float(region["w"][0]) * width
-                                )
-                                h = (
-                                    float(region["h"][1:-1]) * height
-                                    if isinstance(region["h"], str)
-                                    else float(region["h"][0]) * height
-                                )
-                            except (ValueError, TypeError) as e:
-                                raise ValueError(
-                                    f"Invalid format in region dimensions: {region}, Error: {e}"
-                                )
-                            # Draw rectangle for bounding box
-                            draw.rectangle(
-                                [x, y, x + w, y + h],
-                                outline=color,
-                                fill=color,
-                                width=outlineThickness.get("BOUNDING_BOX", 2),
-                            )
-                        elif all(key in region for key in ("rx", "ry", "rw", "rh")):
-                            try:
-                                rx = (
-                                    float(region["rx"][1:-1]) * width
-                                    if isinstance(region["rx"], str)
-                                    else float(region["rx"][0]) * width
-                                )
-                                ry = (
-                                    float(region["ry"][1:-1]) * height
-                                    if isinstance(region["ry"], str)
-                                    else float(region["ry"][0]) * height
-                                )
-                                rw = (
-                                    float(region["rw"][1:-1]) * width
-                                    if isinstance(region["rw"], str)
-                                    else float(region["rw"][0]) * width
-                                )
-                                rh = (
-                                    float(region["rh"][1:-1]) * height
-                                    if isinstance(region["rh"], str)
-                                    else float(region["rh"][0]) * height
-                                )
-                            except (ValueError, TypeError) as e:
-                                raise ValueError(
-                                    f"Invalid format in region dimensions: {region}, Error: {e}"
-                                )
-                            # Draw ellipse (circle if rw and rh are equal)
-                            draw.ellipse(
-                                [rx, ry, rx + rw, ry + rh],
-                                outline=color,
-                                width=outlineThickness.get("CIRCLE", 2),
-                                fill=color,
-                            )
+        # Determine response: single mask image or ZIP
+        if len(image_names) == 1 and len(mask_paths) == 1:
+            # Single mask – return the image directly
+            single_mask_path = mask_paths[0]
 
-                    # Save mask image to temporary directory
-                    mask_filename = image_info.get("image-name")
-                    mask_path = os.path.join(temp_dir, mask_filename)
-                    mask.save(mask_path)
+            @after_this_request
+            def cleanup_single(response):
+                try:
+                    if os.path.exists(single_mask_path):
+                        os.remove(single_mask_path)
+                    if os.path.exists(temp_dir):
+                        shutil.rmtree(temp_dir)
+                except Exception as e:
+                    print(f"Cleanup error: {e}")
+                return response
 
-                    # Add mask image to zip file
-                    zipf.write(mask_path, arcname=mask_filename)
+            return send_file(
+                single_mask_path,
+                mimetype="image/png",
+                as_attachment=True,
+                download_name=os.path.basename(single_mask_path)
+            )
+        else:
+            # Multiple masks – create a ZIP archive
+            zip_filename = "image_masks.zip"
+            zip_path = os.path.join(temp_dir, zip_filename)
 
-        # Send zip file as response
-        return send_file(
-            zip_file_path,
-            mimetype="application/zip",
-            as_attachment=True,
-            download_name=zip_filename,
-        )
+            with zipfile.ZipFile(zip_path, "w") as zipf:
+                for mask_path in mask_paths:
+                    arcname = os.path.basename(mask_path)
+                    zipf.write(mask_path, arcname=arcname)
+
+            @after_this_request
+            def cleanup_zip(response):
+                try:
+                    for mask_path in mask_paths:
+                        if os.path.exists(mask_path):
+                            os.remove(mask_path)
+                    if os.path.exists(zip_path):
+                        os.remove(zip_path)
+                    if os.path.exists(temp_dir):
+                        shutil.rmtree(temp_dir)
+                except Exception as e:
+                    print(f"Cleanup error: {e}")
+                return response
+
+            return send_file(
+                zip_path,
+                mimetype="application/zip",
+                as_attachment=True,
+                download_name=zip_filename
+            )
 
     except ValueError as ve:
         print("ValueError:", ve)
@@ -1430,17 +1371,6 @@ def download_image_mask():
         print("General error:", e)
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-    finally:
-        # Clean up temporary directory
-        try:
-            if temp_dir:
-                for file in os.listdir(temp_dir):
-                    file_path = os.path.join(temp_dir, file)
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
-                os.rmdir(temp_dir)
-        except Exception as e:
-            print(f"Error cleaning up temporary directory: {e}")
 
 
 def create_yolo_annotations(image_names, color_map=None):
@@ -1603,44 +1533,72 @@ def download_yolo_annotations():
         )
 
     temp_dir = tempfile.mkdtemp()
-    zip_filename = "yolo_annotations.zip"
-    zip_file_path = os.path.join(temp_dir, zip_filename)
+    file_paths = [] 
 
     try:
+        for image_name in image_names:
+            annotations = create_yolo_annotations([image_name])
+            annotation_filename = os.path.splitext(image_name)[0] + ".txt"
+            annotation_path = os.path.join(temp_dir, annotation_filename)
+
+            with open(annotation_path, "w") as f:
+                for annotation in annotations:
+                    f.write(annotation + "\n")
+            file_paths.append(annotation_path)
+
+        if len(image_names) == 1:
+            single_file_path = file_paths[0]
+
+            @after_this_request
+            def cleanup_single(response):
+                try:
+                    os.remove(single_file_path)
+                    os.rmdir(temp_dir)
+                except Exception as e:
+                    print(f"Cleanup error: {e}")
+                return response
+
+            return send_file(
+                single_file_path,
+                mimetype="text/plain",
+                as_attachment=True,
+                download_name=os.path.basename(single_file_path)  # e.g., "image1.txt"
+            )
+
+        # Multiple images: create a ZIP archive
+        zip_filename = "yolo_annotations.zip"
+        zip_file_path = os.path.join(temp_dir, zip_filename)
+
         with zipfile.ZipFile(zip_file_path, "w") as zipf:
-            for image_name in image_names:
-                annotations = create_yolo_annotations([image_name])
+            for annotation_path in file_paths:
+                arcname = os.path.basename(annotation_path)
+                zipf.write(annotation_path, arcname=arcname)
 
-                # Create a temporary text file with YOLO annotations for each image
-                annotation_filename = os.path.splitext(image_name)[0] + ".txt"
-                annotation_path = os.path.join(temp_dir, annotation_filename)
-
-                with open(annotation_path, "w") as f:
-                    for annotation in annotations:
-                        f.write(annotation + "\n")
-
-                zipf.write(annotation_path, arcname=annotation_filename)
+        # Schedule cleanup of the whole temporary directory after sending
+        @after_this_request
+        def cleanup_zip(response):
+            try:
+                for f in file_paths:
+                    if os.path.exists(f):
+                        os.remove(f)
+                if os.path.exists(zip_file_path):
+                    os.remove(zip_file_path)
+                os.rmdir(temp_dir)
+            except Exception as e:
+                print(f"Cleanup error: {e}")
+            return response
 
         return send_file(
             zip_file_path,
             mimetype="application/zip",
             as_attachment=True,
-            download_name=zip_filename,
+            download_name=zip_filename
         )
+
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    finally:
-        try:
-            if temp_dir:
-                for file in os.listdir(temp_dir):
-                    file_path = os.path.join(temp_dir, file)
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
-                os.rmdir(temp_dir)
-        except Exception as e:
-            print(f"Error cleaning up temporary directory: {e}")
 
 
 @app.route("/imagesInfo", methods=["GET"])
