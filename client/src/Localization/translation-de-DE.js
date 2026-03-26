@@ -8,6 +8,7 @@ const translationDeDE = {
   "menu.images": "Bilder",
   "error.image": "Bild konnte nicht geladen werden",
   "error.imagevideo": "Fehlendes erforderliches Attribut",
+  "error.upload_in_progress": "Upload bereits im Gange. Bitte warten.",
   "error.server_connection":
     "Verbindung zum Server konnte nicht hergestellt werden",
   "error.downloading_file": "Fehler beim Herunterladen der Datei",

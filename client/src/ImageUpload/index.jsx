@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 import { createTheme } from "@mui/material/styles"
 import { CssBaseline, Box, Typography, IconButton } from "@mui/material"
@@ -19,6 +19,11 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
   const [progress, setProgress] = useState(0)
   const isSmallDevice = useMediaQuery(theme.breakpoints.down("sm"))
 
+  // Sync with parent prop
+  useEffect(() => {
+    setImages(settingsImages)
+  }, [settingsImages])
+
   const onDrop = useCallback(
     (acceptedFiles, fileRejections) => {
       if (fileRejections.length) {
@@ -27,6 +32,12 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           showSnackbar(errors[0].message, "error")
           return
         }
+      }
+
+      // Prevent new uploads while a previous one is in progress
+      if (loading) {
+        showSnackbar(t("error.upload_in_progress"), "info")
+        return
       }
 
       const totalImages = images.length + acceptedFiles.length
@@ -44,13 +55,13 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
 
       uploadImages(newImages)
     },
-    [images, onImageUpload, showSnackbar],
+    [images, onImageUpload, showSnackbar, loading],
   )
 
-  const uploadImages = async (images) => {
+  const uploadImages = async (newImages) => {
     const formData = new FormData()
 
-    images.forEach((image) => {
+    newImages.forEach((image) => {
       formData.append("file", image)
     })
 
@@ -77,8 +88,11 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
         preview: file.url,
         filename: file.filename,
       }))
-      setImages(uploadedImages)
-      onImageUpload(uploadedImages)
+
+      // Merge existing images with new ones
+      const updatedImages = [...images, ...uploadedImages]
+      setImages(updatedImages)
+      onImageUpload(updatedImages)
     } catch (error) {
       const errorResponse = error?.response?.data
       if (errorResponse) {
@@ -89,6 +103,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
       console.error("Error uploading images:", error)
     } finally {
       setLoading(false)
+      setProgress(0)
     }
   }
 
@@ -106,7 +121,6 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
         )
         showSnackbar(response.data.message, "success")
 
-        // Update the state to remove the deleted image
         const updatedImages = images.filter(
           (image) => image.filename !== filename,
         )
@@ -153,6 +167,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
     accept: "image/*",
     multiple: true,
     maxFiles: config.UPLOAD_LIMIT,
+    disabled: loading, // Disable dropzone during upload
   })
 
   return (
@@ -164,7 +179,7 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           border: "2px dashed #ccc",
           padding: isSmallDevice ? "0.5rem" : "1rem",
           textAlign: "center",
-          cursor: "pointer",
+          cursor: loading ? "not-allowed" : "pointer",
           marginBottom: "1rem",
           display: "flex",
           alignItems: "center",
@@ -173,9 +188,10 @@ const ImageUpload = ({ onImageUpload, settingsImages }) => {
           borderRadius: "4px",
           minHeight: "200px",
           width: isSmallDevice ? "auto" : "52vw",
+          opacity: loading ? 0.6 : 1,
         }}
       >
-        <input {...getInputProps()} data-testid="file-input" />
+        <input {...getInputProps()} data-testid="file-input" disabled={loading} />
         {isDragActive ? (
           <Typography sx={{ fontSize: "14px", color: "rgb(117, 117, 117)" }}>
             {t("configuration.image_upload.file_drop")}
