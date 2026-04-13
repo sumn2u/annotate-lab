@@ -29,6 +29,7 @@ export const RegionLabel = ({
   onChange,
   onClose,
   onOpen,
+  labels = [],
   onRegionClassAdded,
   enabledProperties,
 }) => {
@@ -65,7 +66,7 @@ export const RegionLabel = ({
                   className="circle"
                   style={{ backgroundColor: region.color }}
                 />
-                {region.cls}
+                {labels.find((l) => l.id === region.cls)?.description || region.cls}
               </div>
             )}
             {region.tags && (
@@ -149,11 +150,11 @@ export const RegionLabel = ({
                     }}
                     value={
                       region.cls
-                        ? { label: region.cls, value: region.cls }
+                        ? { label: labels.find((l) => l.id === region.cls)?.description || region.cls, value: region.cls }
                         : null
                     }
                     options={asMutable(
-                      allowedClasses.map((c) => ({ value: c, label: c })),
+                      allowedClasses.map((c) => ({ value: c, label: labels.find((l) => l.id === c)?.description || c })),
                     )}
                   />
                 </div>

@@ -78,6 +78,7 @@ export const ImageCanvas = ({
   modifyingAllowedArea = false,
   keypointDefinitions,
   enabledRegionProps,
+  labels= []
 }) => {
   const canvasEl = useRef(null)
   const layoutParams = useRef({})
@@ -308,6 +309,7 @@ export const ImageCanvas = ({
           <PreventScrollToParents key="regionTags">
             <RegionTags
               regions={regions}
+              labels = {labels}
               projectRegionBox={projectRegionBox}
               mouseEvents={mouseEvents}
               regionClsList={regionClsList}
@@ -451,6 +453,7 @@ ImageCanvas.propTypes = {
   onChangeVideoTime: PropTypes.func.isRequired,
   onRegionClassAdded: PropTypes.func.isRequired,
   onChangeVideoPlaying: PropTypes.func,
+  labels: PropTypes.array
 }
 
 export default ImageCanvas
