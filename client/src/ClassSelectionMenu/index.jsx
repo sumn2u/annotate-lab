@@ -60,6 +60,7 @@ export const ClassSelectionMenu = ({
   regionColorList,
   onSelectCls,
   regions,
+  labels
 }) => {
   const getRegionsLabelCount = (label) => {
     return regions?.filter((r) => r.cls === label).length
@@ -76,6 +77,9 @@ export const ClassSelectionMenu = ({
   }, [])
 
   const { t } = useTranslation()
+  const getLabel = (labelId) => {
+    return labels.find(label => label.id == labelId)?.description;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -101,7 +105,7 @@ export const ClassSelectionMenu = ({
               }}
             />
             <Label className={classnames({ selected: label === selectedCls })}>
-              {capitalize(label)}
+              {capitalize(getLabel(label))}
             </Label>
             <DashSep />
             {getRegionsLabelCount(label) > 0 && (

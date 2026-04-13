@@ -228,8 +228,8 @@ export const MainLayout = ({
   const selectedImages = state.images.filter((image) => image.selected)
   const hasRegions = state.images[state.selectedImage]?.regions?.length > 0
   const disableRegion =  !(state.images.length > 0 && state.regionClsList.length > 0);   // enable save button for all cases
+  const labels = settings.settings.configuration.labels || [];
   // hasRegions ? false : !state.hasNewChange
-
   return (
     <ThemeProvider theme={theme}>
       <HotkeyDiv
@@ -391,6 +391,7 @@ export const MainLayout = ({
                 regionClsList={state.regionClsList}
                 regions={activeImage ? activeImage.regions : emptyArr}
                 regionColorList={state.regionColorList}
+                labels = { labels }
                 onSelectCls={action("SELECT_CLASSIFICATION", "cls")}
               />
             ),
