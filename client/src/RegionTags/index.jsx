@@ -25,6 +25,7 @@ export const RegionTags = ({
   onDeleteRegion,
   layoutParams,
   imageSrc,
+  labels = [],
   RegionEditLabel,
   onRegionClassAdded,
   enabledRegionProps,
@@ -155,6 +156,7 @@ export const RegionTags = ({
               region={region}
               regions={regions}
               imageSrc={imageSrc}
+              labels= {labels}
               onRegionClassAdded={onRegionClassAdded}
               enabledProperties={enabledRegionProps}
             />

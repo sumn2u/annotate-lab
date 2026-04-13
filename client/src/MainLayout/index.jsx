@@ -124,6 +124,7 @@ export const MainLayout = ({
         settings.showCrosshairs &&
         !["select", "pan", "zoom"].includes(state.selectedTool)
       }
+      labels = {settings.settings.configuration.labels || []}
       key={state.selectedImage}
       autoSegmentationOptions={state.autoSegmentationOptions}
       showTags={state.showTags}
@@ -417,6 +418,7 @@ export const MainLayout = ({
               onSelectRegion={action("SELECT_REGION", "region")}
               onDeleteRegion={action("DELETE_REGION", "region")}
               onChangeRegion={action("CHANGE_REGION", "region")}
+              labels = { labels }
             />,
             state.keyframes && (
               <KeyframesSelector

@@ -276,6 +276,7 @@ export const RegionSelectorSidebarBox = ({
   onDeleteRegion,
   onChangeRegion,
   onSelectRegion,
+  labels = []
 }) => {
   const { t } = useTranslation()
 
@@ -297,6 +298,7 @@ export const RegionSelectorSidebarBox = ({
           <HeaderSep />
           {regions.map((r, i) => (
             <MemoRow
+              name = {labels.find((l) => l.id === r.cls)?.description || name}
               key={r.id}
               {...r}
               region={r}
