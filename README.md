@@ -60,6 +60,7 @@ Annotate Lab is an open-source application designed for image annotation, compri
 - [Outputs](#outputs-documentation-page)
 - [YOLO Format](#yolo-format-documentation-page)
     - [Normalization process of YOLO annotations](#normalization-process-of-yolo-annotations-documentation-page)
+- [COCO JSON Format](#coco-json-format-documentation-page)
 - [Troubleshooting](#troubleshooting-documentation-page)
 - [Contributing](#contributing)
 - [License](#license)
@@ -467,6 +468,91 @@ The above conversion will give us YOLO format string.
 0 0.46875 0.3125 0.3125 0.3125
 ```
 
+---
+
+## COCO JSON Format [[documentation page]](https://annotate-docs.dwaste.live/fundamentals/set-up-and-run/outputs#coco-format)
+
+Annotate Lab also supports exporting annotations in **COCO JSON format**, a widely used standard for object detection, segmentation, and keypoint tasks.
+
+This makes it easy to integrate Annotate Lab with popular frameworks such as:
+- Detectron2  
+- MMDetection  
+- TensorFlow Object Detection API  
+- PyTorch-based pipelines  
+
+Below is a sample COCO annotation:
+
+```json
+{
+  "info": {
+    "description": "COCO Format Annotations",
+    "url": "http://127.0.0.1:5000/",
+    "version": "1.0",
+    "year": 2026,
+    "contributor": "Annotate Lab",
+    "date_created": "2026-03-25T23:43:54.234369"
+  },
+  "licenses": [
+    {
+      "id": 1,
+      "name": "Unknown",
+      "url": ""
+    }
+  ],
+  "images": [
+    {
+      "id": 1,
+      "file_name": "glass_543.jpg",
+      "width": 474,
+      "height": 840,
+      "license": 1,
+      "date_captured": "2026-03-25T23:43:54.240259",
+      "original_name": "glass_543"
+    }
+  ],
+  "annotations": [
+    {
+      "id": 1,
+      "image_id": 1,
+      "category_id": 0,
+      "bbox": [27.71, 189.24, 147.04, 419.04],
+      "area": 61612.0,
+      "segmentation": [],
+      "iscrowd": 0
+    },
+    {
+      "id": 2,
+      "image_id": 1,
+      "category_id": 0,
+      "bbox": [190.21, 272.89, 145.21, 364.25],
+      "area": 52920.0,
+      "segmentation": [],
+      "iscrowd": 0
+    },
+    {
+      "id": 3,
+      "image_id": 1,
+      "category_id": 1,
+      "bbox": [126.22, 459.97, 106.16, 225.86],
+      "area": 23960.0,
+      "segmentation": [],
+      "iscrowd": 0
+    }
+  ],
+  "categories": [
+    {
+      "id": 0,
+      "name": "ripe",
+      "supercategory": "tomato"
+    },
+    {
+      "id": 1,
+      "name": "unripe",
+      "supercategory": "tomato"
+    }
+  ]
+}
+```
 ## Troubleshooting [[documentation page]](https://annotate-docs.dwaste.live/troubleshooting)
 
 - Ensure that both the client and server are running.

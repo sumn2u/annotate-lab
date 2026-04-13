@@ -43,66 +43,80 @@ const DownloadButton = ({
     setAnchorEl(null)
   }
 
-  const handleDownload = (format) => {
-    const config_data = {}
-    config_data["image_name"] = selectedImageName
-    config_data["image_names"] = getImageNames()
-    config_data["colorMap"] = classColorMap
-    config_data["outlineThickness"] = config.OUTLINE_THICKNESS_CONFIG
-    let url = ""
-    switch (format) {
-      case "configuration":
-        url = "download_configuration"
-        break
-      case "masked-image":
-        url = "download_image_mask"
-        break
-      case "annotated-image":
-        url = "download_image_with_annotations"
-        break
-      case "yolo-annotations":
-        url = "download_yolo_annotations"
-        break
-      case "coco-annotations":
-        url = "download_coco_annotations"
-        break
-      default:
-        url = "imagesName"
-    }
-    const withoutExtension = selectedImageName.slice(
-      0,
-      selectedImageName.lastIndexOf("."),
-    )
-    getImageFile(url, config_data)
-      .then((response) => {
-        // Create a link element and click it to trigger the download
-        const link = document.createElement("a")
-        link.href = response
-        if (format === "configuration") {
-          link.setAttribute("download", `configuration`)
-        } else if (format === "yolo-annotations") {
-          link.setAttribute("download", `yolo_annotations`)
-        } else if (format === "coco-annotations") {
-          link.setAttribute("download", `coco_annotations`)
-        } else if (format === "masked-image") {
-          link.setAttribute("download", "image_masks")
-        } else if (format == "annotated-image") {
-          link.setAttribute("download", "images_with_annotations")
-        } else {
-          link.setAttribute("download", `${withoutExtension}_${format}.png`)
-        }
-        document.body.appendChild(link)
-        link.click()
+const handleDownload = (format) => {
+  const isMultiple = selectedImages.length > 1;
+  const imageNames = getImageNames();            // array of filenames (e.g., ["cat.jpg", "dog.jpg"])
+  const firstImageName = imageNames[0] || "";    // for single-image case
+  const withoutExtension = firstImageName.slice(0, firstImageName.lastIndexOf("."));
 
-        // Cleanup
-        window.URL.revokeObjectURL(url)
-        handleClose()
-      })
-      .catch((error) => {
-        console.log(error, "error")
-        showSnackbar(t("error.downloading_file"), "error")
-      })
+  const config_data = {
+    image_name: selectedImageName,
+    image_names: imageNames,
+    colorMap: classColorMap,
+    outlineThickness: config.OUTLINE_THICKNESS_CONFIG,
+  };
+
+  let url = "";
+  switch (format) {
+    case "configuration":
+      url = "download_configuration";
+      break;
+    case "masked-image":
+      url = "download_image_mask";
+      break;
+    case "annotated-image":
+      url = "download_image_with_annotations";
+      break;
+    case "yolo-annotations":
+      url = "download_yolo_annotations";
+      break;
+    case "coco-annotations":
+      url = "download_coco_annotations";
+      break;
+    default:
+      url = "imagesName";
   }
+
+  getImageFile(url, config_data)
+    .then((response) => {
+      const link = document.createElement("a");
+      link.href = response;
+
+      // Determine filename based on format and whether multiple images are selected
+      let fileName = "";
+      switch (format) {
+        case "configuration":
+          fileName = "configuration.json";
+          break;
+        case "yolo-annotations":
+          fileName = isMultiple ? "yolo_annotations.zip" : `${withoutExtension}.txt`;
+          break;
+        case "coco-annotations":
+          fileName = "coco_annotations.json";
+          break;
+        case "masked-image":
+          fileName = isMultiple ? "image_masks.zip" : `${withoutExtension}_mask.png`;
+          break;
+        case "annotated-image":
+          fileName = isMultiple ? "images_with_annotations.zip" : `${withoutExtension}_annotated.png`;
+          break;
+        default:
+          fileName = isMultiple ? "images.zip" : `${withoutExtension}_${format}.png`;
+      }
+
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(response);
+      handleClose();
+    })
+    .catch((error) => {
+      console.log(error, "error");
+      showSnackbar(t("error.downloading_file"), "error");
+    });
+};
   const { theme } = useTheme();
   return (
     <>
