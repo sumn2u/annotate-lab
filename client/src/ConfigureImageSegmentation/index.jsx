@@ -1,9 +1,9 @@
 // @flow
 import React, { useMemo } from "react"
-import Survey from "material-survey/components/Survey"
 import { setIn, asMutable } from "seamless-immutable"
 import { CssBaseline, GlobalStyles } from "@mui/material"
 import { useTranslation } from "react-i18next"
+import SurveyWithConfirmDelete from "../SurveyWithConfirmDelete"
 
 export default ({ config, onChange }) => {
   const { t } = useTranslation()
@@ -32,6 +32,11 @@ export default ({ config, onChange }) => {
         title: t("configuration.labels"),
         description: t("configuration.labels.description"),
         type: "matrixdynamic",
+        confirmDelete: true,
+        confirmDeleteText: t(
+          "configuration.labels.delete_warning",
+          "Deleting this label may affect existing annotations that use it. Are you sure you want to continue?"
+        ),
         columns: [
           {
             cellType: "text",
@@ -65,6 +70,26 @@ export default ({ config, onChange }) => {
       ),
     [config],
   )
+
+  const handleQuestionChange = (questionId, newValue) => {
+    let processedValue = newValue
+    if (
+      questionId !== "regionTypesAllowed" &&
+      questionId !== "multipleRegions" &&
+      questionId !== "multipleRegionLabels"
+    ) {
+      let arrayId = []
+      if (Array.isArray(processedValue)) {
+        processedValue = processedValue.filter((json) => {
+          if (arrayId.includes(json.id)) return false
+          arrayId.push(json.id)
+          return true
+        })
+      }
+    }
+    onChange(setIn(config, [questionId], processedValue))
+  }
+
   return (
     <>
       <CssBaseline />
@@ -98,30 +123,12 @@ export default ({ config, onChange }) => {
           },
         }}
       />
-      <Survey
+      <SurveyWithConfirmDelete
         noActions
         variant="flat"
-        defaultAnswers={defaultAnswers}
-        onQuestionChange={(questionId, newValue) => {
-          if (
-            questionId !== "regionTypesAllowed" &&
-            questionId !== "multipleRegions" &&
-            questionId !== "multipleRegionLabels"
-          ) {
-            let arrayId = []
-            if (Array.isArray(newValue)) {
-              newValue = newValue.filter((json) => {
-                if (arrayId.includes(json.id)) return false
-                arrayId.push(json.id)
-                return true
-              })
-              onChange(setIn(config, [questionId], newValue))
-            }
-          } else {
-            onChange(setIn(config, [questionId], newValue))
-          }
-        }}
         form={form}
+        defaultAnswers={defaultAnswers}
+        onQuestionChange={handleQuestionChange}
       />
     </>
   )

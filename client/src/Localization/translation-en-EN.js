@@ -48,6 +48,7 @@ const translationEnEN = {
   "configuration.labels.option.description": "Description (optional)",
   "configuration.labels.description":
     "If you're labeling regions on an image, these are the allowed classifications or tags.",
+  "configuration.labels.delete_warning": "Deleting this label may affect existing annotations that use it. Are you sure you want to continue?",
   "configuration.regions": "Default Region Type",
   "configuration.regions.description":
     "Choose default region type that can be drawn on the image.",
