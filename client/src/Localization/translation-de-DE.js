@@ -55,6 +55,7 @@ const translationDeDE = {
     "Maximale Anzahl von Bildern erreicht",
   "configuration.image_upload.description":
     "Laden Sie Bilder hoch, die annotiert werden sollen, oder ziehen Sie Bilder hierher. Unterstützte Dateien: <strong>.jpg, .jpeg, .png</strong> und maximale Anzahl von Bildern: <strong>{{maxImages}}</strong>",
+  "configuration.labels.delete_warning": "Das Löschen dieser Bezeichnung kann vorhandene Anmerkungen beeinträchtigen, die sie verwenden. Sind Sie sicher, dass Sie fortfahren möchten?",
   "configuration.image_upload.file_drop": "Dateien hierher ziehen",
   "download.configuration": "Konfiguration",
   "download.image_mask": "Maskiertes Bild(er)",
