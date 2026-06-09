@@ -119,7 +119,13 @@ export default ({ config, onChange }) => {
             ".MuiInputBase-input": {
               width: "350px !important",
             },
-          },
+            ".MuiInputBase-root:has(input[value*='bounding-box']), .MuiInputBase-root:has(input[value*='polygon']), .MuiInputBase-root:has(input[value*='circle'])": {
+              width: "100% !important",
+            },
+            ".MuiInputBase-root:has(input[value*='bounding-box']) .MuiInputBase-input, .MuiInputBase-root:has(input[value*='polygon']) .MuiInputBase-input, .MuiInputBase-root:has(input[value*='circle']) .MuiInputBase-input": {
+              width: "100% !important",
+            }
+          }
         }}
       />
       <SurveyWithConfirmDelete
