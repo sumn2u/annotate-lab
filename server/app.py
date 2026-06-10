@@ -2,9 +2,11 @@ import io
 from flask import Flask, jsonify, request, url_for, send_from_directory, send_file, after_this_request, current_app
 from flask_cors import CORS, cross_origin
 from db.db_handler import Module
+import onnxruntime as ort
 from io import BytesIO
 import pandas as pd
 import requests
+import cv2
 import json
 from PIL import Image, ImageDraw
 import os
@@ -16,6 +18,7 @@ import math
 import re
 from datetime import datetime
 from sam_model import SamModel
+from handlers.yolo_handler import YOLOHandler
 from utils import load_image_from_url, format_regions_for_frontend
 
 app = Flask(__name__)
@@ -36,6 +39,31 @@ else:
 # Get the CLIENT_URL environment variable, set a default to 80
 client_url = os.getenv("CLIENT_URL", "http://localhost")
 
+MODEL_PATH = os.getenv("MODEL_PATH", "./models/best.onnx")
+CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", "0.5"))
+IOU_THRESHOLD = float(os.getenv("IOU_THRESHOLD", "0.45"))
+INPUT_SIZE = tuple(map(int, os.getenv("INPUT_SIZE", "640,640").split(',')))
+
+
+ort_session = None
+handler = None
+
+def init_model():
+    global ort_session, handler
+    if not os.path.exists(MODEL_PATH):
+        print(f"ERROR: Model not found at {MODEL_PATH}")
+        return
+    ort_session = ort.InferenceSession(MODEL_PATH, providers=['CPUExecutionProvider'])
+    handler = YOLOHandler(
+        input_size=INPUT_SIZE,
+        conf_threshold=CONFIDENCE_THRESHOLD,
+        iou_threshold=IOU_THRESHOLD
+    )
+    print(f"Model loaded from {MODEL_PATH}")
+    print(f"YOLOHandler: input_size={INPUT_SIZE}, conf={CONFIDENCE_THRESHOLD}, iou={IOU_THRESHOLD}")
+
+
+init_model()
 
 # Set the folder to save uploaded files
 UPLOAD_FOLDER = "uploads"
@@ -127,6 +155,61 @@ def save_annotate_info():
 
 # Allowed extensions
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/infer", methods=["POST"])
+@cross_origin(origin=client_url, headers=["Content-Type"])
+def run_inference():
+
+    if ort_session is None or handler is None:
+        return jsonify({"error": "Model not loaded"}), 500
+
+    data = request.get_json()
+    if not data or "filenames" not in data:
+        return jsonify({"error": "Missing 'filenames' in request"}), 400
+
+    filenames = data["filenames"]
+    class_names = data.get("labels", [])
+    if not class_names:
+        class_names = [f"class_{i}" for i in range(100)]
+    else:
+        print(f"Using provided labels: {class_names}", flush=True)
+
+    results = []
+    for idx, filename in enumerate(filenames):
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        
+        if not os.path.exists(file_path):
+            results.append([])
+            continue
+            
+        img = cv2.imread(file_path)
+        if img is None:
+            results.append([])
+            continue
+        
+        original_shape = img.shape[:2]
+        
+        input_tensor = handler.preprocess(img)
+        
+        ort_inputs = {ort_session.get_inputs()[0].name: input_tensor}
+        ort_outputs = ort_session.run(None, ort_inputs)
+        
+        for i, out in enumerate(ort_outputs):
+            print(f"  Output {i} shape: {out.shape}", flush=True)
+        
+        # Optional: print min/max values of raw output
+        raw_out = ort_outputs[0]
+
+        detections = handler.postprocess(ort_outputs, original_shape, class_names)
+        if len(detections) > 0:
+            print(f"First detection: {detections[0]}", flush=True)
+        
+        results.append(detections)
+    return jsonify({"results": results}), 200
 
 
 def allowed_file(filename):
